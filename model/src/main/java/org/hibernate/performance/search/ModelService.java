@@ -6,7 +6,7 @@ public interface ModelService {
 
 	void indexing();
 
-	void searching();
+	void search();
 
 	void stop();
 

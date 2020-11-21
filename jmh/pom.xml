@@ -104,4 +104,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>search6</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hibernate.performance</groupId>
+                    <artifactId>hibernate-search-performance-search6</artifactId>
+                    <version>${project.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>search5</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hibernate.performance</groupId>
+                    <artifactId>hibernate-search-performance-search5</artifactId>
+                    <version>${project.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

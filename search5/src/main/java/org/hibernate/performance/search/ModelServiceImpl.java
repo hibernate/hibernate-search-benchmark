@@ -13,7 +13,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void searching() {
+	public void search() {
 
 	}
 
