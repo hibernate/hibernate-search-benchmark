@@ -10,6 +10,16 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>model</module>
+        <module>search5</module>
+        <module>search6</module>
         <module>jmh</module>
     </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+    </properties>
+
 </project>
