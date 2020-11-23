@@ -1,5 +1,9 @@
 package org.hibernate.performance.search;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.application.ModelService;
+import org.hibernate.performance.search.application.ModelServiceFactory;
+
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
@@ -14,9 +18,11 @@ import org.openjdk.jmh.annotations.Warmup;
 public class JMHTest {
 
 	private final ModelService modelService;
+	private final SessionFactory sessionFactory;
 
 	public JMHTest() {
 		modelService = ModelServiceFactory.create();
+		sessionFactory = ModelServiceFactory.buildSessionFactory();
 	}
 
 	@Setup
@@ -39,5 +45,6 @@ public class JMHTest {
 	@TearDown
 	public void tearDown() {
 		modelService.stop();
+		sessionFactory.close();
 	}
 }

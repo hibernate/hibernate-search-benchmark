@@ -20,8 +20,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
+        <version.hibernate.orm>5.4.24.Final</version.hibernate.orm>
         <version.hibernate.search6>6.0.0.CR1</version.hibernate.search6>
         <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${version.hibernate.orm}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

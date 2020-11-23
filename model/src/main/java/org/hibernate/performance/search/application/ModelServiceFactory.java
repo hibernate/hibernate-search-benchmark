@@ -1,7 +1,11 @@
-package org.hibernate.performance.search;
+package org.hibernate.performance.search.application;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.performance.search.entity.Employee;
 
 public final class ModelServiceFactory {
 
@@ -42,5 +46,9 @@ public final class ModelServiceFactory {
 			throw new RuntimeException( "ModelService init error. Error creating " +
 					implementation + ".", e );
 		}
+	}
+
+	public static SessionFactory buildSessionFactory() {
+		return new Configuration().addAnnotatedClass( Employee.class ).buildSessionFactory();
 	}
 }

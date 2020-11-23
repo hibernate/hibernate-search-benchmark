@@ -1,4 +1,4 @@
-package org.hibernate.performance.search;
+package org.hibernate.performance.search.application;
 
 public interface ModelService {
 
