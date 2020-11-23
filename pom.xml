@@ -13,13 +13,15 @@
         <module>model</module>
         <module>search5</module>
         <module>search6</module>
-        <module>jmh</module>
+        <module>jmh-lucene</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
+        <version.hibernate.search6>6.0.0.CR1</version.hibernate.search6>
+        <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
     </properties>
 
 </project>

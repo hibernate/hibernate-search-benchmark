@@ -11,10 +11,6 @@
     </parent>
     <artifactId>hibernate-search-performance-search6</artifactId>
 
-    <properties>
-        <version.hibernate.search6>6.0.0.CR1</version.hibernate.search6>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.hibernate.performance</groupId>

@@ -11,10 +11,6 @@
     </parent>
     <artifactId>hibernate-search-performance-search5</artifactId>
 
-    <properties>
-        <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.hibernate.performance</groupId>
