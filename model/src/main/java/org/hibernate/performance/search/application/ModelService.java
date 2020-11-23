@@ -6,8 +6,6 @@ public interface ModelService {
 
 	Properties properties();
 
-	void start();
-
 	void indexing();
 
 	void search();

@@ -26,7 +26,6 @@ public class ServiceLoadIT {
 		}
 
 		try {
-			modelService.start();
 			modelService.indexing();
 			modelService.search();
 		} finally {

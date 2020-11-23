@@ -5,16 +5,11 @@ import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Warmup;
 
 @State(Scope.Benchmark)
-@Fork(1)
-@Warmup(iterations = 1)
 public class JMHTest {
 
 	private final ModelService modelService;
@@ -25,18 +20,21 @@ public class JMHTest {
 		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() );
 	}
 
-	@Setup
-	public void setup() {
-		modelService.start();
+	@Benchmark
+	@SuppressWarnings( "unused" )
+	public void bootstrap() {
+		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() ) ) {
+			// do nothing, we need just to close the instance
+		}
 	}
 
-	@Benchmark
+	// TODO @Benchmark
 	public void indexing() throws Exception {
 		modelService.indexing();
 		Thread.sleep( 100 );
 	}
 
-	@Benchmark
+	// TODO @Benchmark
 	public void search() throws Exception {
 		modelService.search();
 		Thread.sleep( 100 );
