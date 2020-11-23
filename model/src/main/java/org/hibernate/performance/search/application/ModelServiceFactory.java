@@ -2,6 +2,7 @@ package org.hibernate.performance.search.application;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -48,7 +49,11 @@ public final class ModelServiceFactory {
 		}
 	}
 
-	public static SessionFactory buildSessionFactory() {
-		return new Configuration().addAnnotatedClass( Employee.class ).buildSessionFactory();
+	public static SessionFactory buildSessionFactory(Properties additionalProperties) {
+		return new Configuration()
+				.addProperties( additionalProperties )
+				// list of Entities:
+				.addAnnotatedClass( Employee.class )
+				.buildSessionFactory();
 	}
 }

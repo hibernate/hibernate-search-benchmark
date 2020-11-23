@@ -22,7 +22,7 @@ public class JMHTest {
 
 	public JMHTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = ModelServiceFactory.buildSessionFactory();
+		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() );
 	}
 
 	@Setup

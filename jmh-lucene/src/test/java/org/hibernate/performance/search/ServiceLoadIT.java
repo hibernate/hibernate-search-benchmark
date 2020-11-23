@@ -1,5 +1,7 @@
 package org.hibernate.performance.search;
 
+import java.util.Properties;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
@@ -11,17 +13,17 @@ import org.assertj.core.api.Assertions;
 public class ServiceLoadIT {
 
 	@Test
-	public void loadSessionFactory() {
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory() ) {
+	public void loadModelServiceAndSessionFactory() {
+		ModelService modelService = ModelServiceFactory.create();
+		Assertions.assertThat( modelService ).isNotNull();
+
+		Properties properties = modelService.properties();
+		Assertions.assertThat( properties ).isNotNull();
+
+		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( properties ) ) {
 			Assertions.assertThat( sessionFactory ).isNotNull();
 			Assertions.assertThat( sessionFactory.isClosed() ).isFalse();
 		}
-	}
-
-	@Test
-	public void loadModelService() {
-		ModelService modelService = ModelServiceFactory.create();
-		Assertions.assertThat( modelService ).isNotNull();
 
 		try {
 			modelService.start();
