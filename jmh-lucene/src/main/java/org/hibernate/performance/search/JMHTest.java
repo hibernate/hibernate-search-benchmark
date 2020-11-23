@@ -3,6 +3,7 @@ package org.hibernate.performance.search;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
+import org.hibernate.performance.search.entity.Employee;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -21,17 +22,18 @@ public class JMHTest {
 	}
 
 	@Benchmark
-	@SuppressWarnings( "unused" )
+	@SuppressWarnings("unused")
 	public void bootstrap() {
 		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() ) ) {
 			// do nothing, we need just to close the instance
 		}
 	}
 
-	// TODO @Benchmark
+	@Benchmark
 	public void indexing() throws Exception {
-		modelService.indexing();
-		Thread.sleep( 100 );
+		Helper.inTransaction( sessionFactory, (session) ->
+			session.persist( new Employee() )
+		);
 	}
 
 	// TODO @Benchmark

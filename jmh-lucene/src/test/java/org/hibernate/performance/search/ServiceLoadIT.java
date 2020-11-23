@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
+import org.hibernate.performance.search.entity.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,10 @@ public class ServiceLoadIT {
 		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( properties ) ) {
 			Assertions.assertThat( sessionFactory ).isNotNull();
 			Assertions.assertThat( sessionFactory.isClosed() ).isFalse();
+
+			Helper.inTransaction( sessionFactory, (session) ->
+				session.persist( new Employee() )
+			);
 		}
 
 		try {
