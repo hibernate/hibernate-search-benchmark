@@ -9,7 +9,11 @@
         <artifactId>hibernate-search-performance</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>hibernate-search-performance-jmh-lucene</artifactId>
+    <artifactId>hibernate-search-performance-jmh-elasticsearch</artifactId>
+
+    <properties>
+        <version.elasticsearch.plugin>6.19</version.elasticsearch.plugin>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -134,6 +138,11 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.alexcojocaru</groupId>
+                <artifactId>elasticsearch-maven-plugin</artifactId>
+                <version>${version.elasticsearch.plugin}</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -152,7 +161,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.hibernate.search</groupId>
-                    <artifactId>hibernate-search-backend-lucene</artifactId>
+                    <artifactId>hibernate-search-backend-elasticsearch</artifactId>
                     <version>${version.hibernate.search6}</version>
                 </dependency>
             </dependencies>
@@ -166,7 +175,14 @@
                     <version>${project.version}</version>
                     <scope>runtime</scope>
                 </dependency>
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-search-elasticsearch</artifactId>
+                    <version>${version.hibernate.search5}</version>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>
+
+
 </project>

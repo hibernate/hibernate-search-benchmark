@@ -14,15 +14,27 @@
         <module>search5</module>
         <module>search6</module>
         <module>jmh-lucene</module>
+        <module>jmh-elasticsearch</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
+
         <version.hibernate.orm>5.4.24.Final</version.hibernate.orm>
         <version.hibernate.search6>6.0.0.CR1</version.hibernate.search6>
         <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
+        <version.jmh>1.26</version.jmh>
+        <version.log4j>2.13.3</version.log4j>
+        <version.junit.jupiter>5.7.0</version.junit.jupiter>
+        <version.assertj>3.18.1</version.assertj>
+
+        <version.processor.plugin>4.4</version.processor.plugin>
+        <version.shade.plugin>3.2.4</version.shade.plugin>
+        <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
+
+        <jmh.uberjar.name>benchmarks</jmh.uberjar.name>
     </properties>
 
     <dependencyManagement>
