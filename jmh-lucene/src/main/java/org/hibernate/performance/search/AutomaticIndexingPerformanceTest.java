@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
+import org.hibernate.performance.search.helper.TransactionHelper;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -15,12 +16,12 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
-public class JMHTest {
+public class AutomaticIndexingPerformanceTest {
 
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 
-	public JMHTest() {
+	public AutomaticIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
 		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties( false ) );
 	}
@@ -36,7 +37,7 @@ public class JMHTest {
 
 	@Benchmark
 	public void indexing() {
-		Helper.inTransaction( sessionFactory, (session) ->
+		TransactionHelper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
 		);
 

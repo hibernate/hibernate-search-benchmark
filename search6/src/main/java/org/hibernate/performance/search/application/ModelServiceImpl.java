@@ -21,6 +21,7 @@ public class ModelServiceImpl implements ModelService {
 		config.put( HibernateOrmMapperSettings.MAPPING_CONFIGURER, new SearchProgrammaticMapping() );
 		config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
+		config.put( "hibernate.search.backend.directory.type", "local-heap" );
 
 		if ( manual ) {
 			config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
@@ -30,12 +31,17 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type) {
+	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> entityClass) {
 		// we don't need to do nothing here, since we're using write-sync
 	}
 
 	@Override
 	public <E> List<E> search(Session session, Class<E> entityClass) {
 		return Search.session( session ).search( entityClass ).where( f -> f.matchAll() ).fetchHits( 100 );
+	}
+
+	@Override
+	public void massIndexing(Session session, Class<?> entityClass) throws InterruptedException {
+		Search.session( session ).massIndexer( entityClass ).startAndWait();
 	}
 }

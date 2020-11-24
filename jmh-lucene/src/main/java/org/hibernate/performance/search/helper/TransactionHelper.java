@@ -1,4 +1,4 @@
-package org.hibernate.performance.search;
+package org.hibernate.performance.search.helper;
 
 import java.util.function.Consumer;
 
@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-public class Helper {
+public class TransactionHelper {
 
 	public static void inTransaction(SessionFactory sessionFactory, Consumer<Session> action) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {

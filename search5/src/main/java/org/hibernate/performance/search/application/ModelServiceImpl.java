@@ -31,9 +31,9 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type) {
+	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> entityClass) {
 		ExtendedSearchIntegrator integrator = ContextHelper.getSearchIntegratorBySF( sessionFactory );
-		PojoIndexedTypeIdentifier identifier = new PojoIndexedTypeIdentifier( type );
+		PojoIndexedTypeIdentifier identifier = new PojoIndexedTypeIdentifier( entityClass );
 
 		// Ensure that we'll block until all works have been performed
 		for ( IndexManager indexManager : integrator.getIndexBinding( identifier ).getIndexManagerSelector().all() ) {
@@ -53,5 +53,11 @@ public class ModelServiceImpl implements ModelService {
 		@SuppressWarnings("deprecation")
 		org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery);
 		return fullTextQuery.list(); //return a list of managed objects
+	}
+
+	@Override
+	public void massIndexing(Session session, Class<?> entityClass) throws InterruptedException {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+		fullTextSession.createIndexer( entityClass ).startAndWait();
 	}
 }

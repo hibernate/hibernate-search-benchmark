@@ -8,15 +8,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
+import org.hibernate.performance.search.helper.TransactionHelper;
 
 import org.junit.jupiter.api.Test;
 
 import org.assertj.core.api.Assertions;
 
-public class ServiceLoadIT {
+public class AutomaticIndexingIT {
 
 	@Test
-	public void loadModelServiceAndSessionFactory() {
+	public void smoke() {
 		ModelService modelService = ModelServiceFactory.create();
 		Assertions.assertThat( modelService ).isNotNull();
 
@@ -27,7 +28,7 @@ public class ServiceLoadIT {
 			Assertions.assertThat( sessionFactory ).isNotNull();
 			Assertions.assertThat( sessionFactory.isClosed() ).isFalse();
 
-			Helper.inTransaction( sessionFactory, (session) ->
+			TransactionHelper.inTransaction( sessionFactory, (session) ->
 				session.persist( new Employee() )
 			);
 			modelService.waitForIndexFlush( sessionFactory, Employee.class );

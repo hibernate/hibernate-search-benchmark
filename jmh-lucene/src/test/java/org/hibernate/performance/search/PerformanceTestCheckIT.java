@@ -12,7 +12,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
  * Just check if the tests work producing some results,
  * see README to know how to run the benchmark from the command line to obtain more reliable results.
  */
-public class SmokeIT {
+public class PerformanceTestCheckIT {
 
 	@Test
 	public void test() throws Exception {
