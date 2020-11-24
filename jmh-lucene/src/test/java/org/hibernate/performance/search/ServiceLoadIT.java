@@ -1,7 +1,9 @@
 package org.hibernate.performance.search;
 
+import java.util.List;
 import java.util.Properties;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
@@ -29,12 +31,11 @@ public class ServiceLoadIT {
 				session.persist( new Employee() )
 			);
 			modelService.waitForIndexFlush( sessionFactory, Employee.class );
-		}
 
-		try {
-			modelService.search();
-		} finally {
-			modelService.stop();
+			try ( Session session = sessionFactory.openSession() ) {
+				List<Employee> search = modelService.search( session, Employee.class );
+				Assertions.assertThat( search ).isNotEmpty();
+			}
 		}
 	}
 }

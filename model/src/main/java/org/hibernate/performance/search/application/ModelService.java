@@ -1,7 +1,9 @@
 package org.hibernate.performance.search.application;
 
+import java.util.List;
 import java.util.Properties;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public interface ModelService {
@@ -10,8 +12,6 @@ public interface ModelService {
 
 	void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type);
 
-	void search();
-
-	void stop();
+	<E> List<E> search(Session session, Class<E> entityClass);
 
 }

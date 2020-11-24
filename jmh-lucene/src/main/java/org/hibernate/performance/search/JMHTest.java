@@ -1,5 +1,8 @@
 package org.hibernate.performance.search;
 
+import java.util.List;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
@@ -9,6 +12,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class JMHTest {
@@ -30,7 +34,7 @@ public class JMHTest {
 	}
 
 	@Benchmark
-	public void indexing() throws Exception {
+	public void indexing() {
 		Helper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
 		);
@@ -38,15 +42,18 @@ public class JMHTest {
 		modelService.waitForIndexFlush( sessionFactory, Employee.class );
 	}
 
-	// TODO @Benchmark
-	public void search() throws Exception {
-		modelService.search();
-		Thread.sleep( 100 );
+	@Benchmark
+	public void search(Blackhole blackhole) throws Exception {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Employee> search = modelService.search( session, Employee.class );
+
+			// This call provides a side effect preventing JIT to eliminate dependent computations
+			blackhole.consume( search );
+		}
 	}
 
 	@TearDown
 	public void tearDown() {
-		modelService.stop();
 		sessionFactory.close();
 	}
 }

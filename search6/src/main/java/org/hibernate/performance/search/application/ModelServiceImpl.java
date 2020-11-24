@@ -1,8 +1,11 @@
 package org.hibernate.performance.search.application;
 
+import java.util.List;
 import java.util.Properties;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
@@ -26,12 +29,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void search() {
-
-	}
-
-	@Override
-	public void stop() {
-
+	public <E> List<E> search(Session session, Class<E> entityClass) {
+		return Search.session( session ).search( entityClass ).where( f -> f.matchAll() ).fetchHits( 100 );
 	}
 }
