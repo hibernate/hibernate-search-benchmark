@@ -34,6 +34,8 @@ public class JMHTest {
 		Helper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
 		);
+
+		modelService.waitForIndexFlush( sessionFactory, Employee.class );
 	}
 
 	// TODO @Benchmark

@@ -2,11 +2,13 @@ package org.hibernate.performance.search.application;
 
 import java.util.Properties;
 
+import org.hibernate.SessionFactory;
+
 public interface ModelService {
 
 	Properties properties();
 
-	void indexing();
+	void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type);
 
 	void search();
 

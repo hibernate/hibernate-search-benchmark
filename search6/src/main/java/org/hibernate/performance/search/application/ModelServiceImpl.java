@@ -2,6 +2,7 @@ package org.hibernate.performance.search.application;
 
 import java.util.Properties;
 
+import org.hibernate.SessionFactory;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
@@ -20,8 +21,8 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void indexing() {
-
+	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type) {
+		// we don't need to do nothing here, since we're using write-sync
 	}
 
 	@Override

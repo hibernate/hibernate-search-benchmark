@@ -28,10 +28,10 @@ public class ServiceLoadIT {
 			Helper.inTransaction( sessionFactory, (session) ->
 				session.persist( new Employee() )
 			);
+			modelService.waitForIndexFlush( sessionFactory, Employee.class );
 		}
 
 		try {
-			modelService.indexing();
 			modelService.search();
 		} finally {
 			modelService.stop();
