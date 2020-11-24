@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 
 public interface ModelService {
 
-	Properties properties();
+	Properties properties(boolean manual);
 
 	void waitForIndexFlush(SessionFactory sessionFactory, Class<?> type);
 

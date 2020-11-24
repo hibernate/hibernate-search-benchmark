@@ -20,7 +20,7 @@ public class ServiceLoadIT {
 		ModelService modelService = ModelServiceFactory.create();
 		Assertions.assertThat( modelService ).isNotNull();
 
-		Properties properties = modelService.properties();
+		Properties properties = modelService.properties( false );
 		Assertions.assertThat( properties ).isNotNull();
 
 		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( properties ) ) {

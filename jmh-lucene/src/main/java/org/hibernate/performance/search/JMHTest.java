@@ -22,13 +22,14 @@ public class JMHTest {
 
 	public JMHTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() );
+		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties( false ) );
 	}
 
 	@Benchmark
 	@SuppressWarnings("unused")
 	public void bootstrap() {
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties() ) ) {
+		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory(
+				modelService.properties( false ) ) ) {
 			// do nothing, we need just to close the instance
 		}
 	}

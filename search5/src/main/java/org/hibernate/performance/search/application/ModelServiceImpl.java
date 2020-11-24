@@ -18,10 +18,15 @@ import org.hibernate.search.spi.impl.PojoIndexedTypeIdentifier;
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties() {
+	public Properties properties(boolean manual) {
 		Properties properties = new Properties();
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
 		properties.put( "hibernate.search.default.directory_provider", "local-heap" );
+
+		if ( manual ) {
+			properties.put( "hibernate.search.indexing_strategy", "manual" );
+		}
+
 		return properties;
 	}
 

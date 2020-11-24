@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.automaticindexing.AutomaticIndexingStrategyName;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
@@ -13,13 +14,18 @@ import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrateg
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties() {
+	public Properties properties(boolean manual) {
 		Properties config = new Properties();
 		config.put( HibernateOrmMapperSettings.SCHEMA_MANAGEMENT_STRATEGY,
 				SchemaManagementStrategyName.DROP_AND_CREATE_AND_DROP );
 		config.put( HibernateOrmMapperSettings.MAPPING_CONFIGURER, new SearchProgrammaticMapping() );
 		config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
+
+		if ( manual ) {
+			config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
+		}
+
 		return config;
 	}
 
