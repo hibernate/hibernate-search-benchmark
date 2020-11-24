@@ -27,15 +27,6 @@ public class AutomaticIndexingPerformanceTest {
 	}
 
 	@Benchmark
-	@SuppressWarnings("unused")
-	public void bootstrap() {
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory(
-				modelService.properties( false ) ) ) {
-			// do nothing, we need just to close the instance
-		}
-	}
-
-	@Benchmark
 	public void indexing() {
 		TransactionHelper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
