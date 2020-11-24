@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
-import org.hibernate.performance.search.helper.TransactionHelper;
+import org.hibernate.performance.search.application.HibernateORMHelper;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,11 +24,11 @@ public class AutomaticIndexingIT {
 		Properties properties = modelService.properties( false );
 		Assertions.assertThat( properties ).isNotNull();
 
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( properties ) ) {
+		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
 			Assertions.assertThat( sessionFactory ).isNotNull();
 			Assertions.assertThat( sessionFactory.isClosed() ).isFalse();
 
-			TransactionHelper.inTransaction( sessionFactory, (session) ->
+			HibernateORMHelper.inTransaction( sessionFactory, (session) ->
 				session.persist( new Employee() )
 			);
 

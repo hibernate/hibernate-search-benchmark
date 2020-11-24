@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
-import org.hibernate.performance.search.helper.TransactionHelper;
+import org.hibernate.performance.search.application.HibernateORMHelper;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +21,9 @@ public class ManualIndexingIT {
 		ModelService modelService = ModelServiceFactory.create();
 		Properties properties = modelService.properties( true );
 
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory( properties ) ) {
+		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
 			for (int i=0; i<10; i++) {
-				TransactionHelper.inTransaction( sessionFactory, (session) -> {
+				HibernateORMHelper.inTransaction( sessionFactory, (session) -> {
 					for (int j=0; j<10; j++) {
 						session.persist( new Employee() );
 					}

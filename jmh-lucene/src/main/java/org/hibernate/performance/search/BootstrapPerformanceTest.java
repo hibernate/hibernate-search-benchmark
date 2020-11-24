@@ -1,6 +1,7 @@
 package org.hibernate.performance.search;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.application.HibernateORMHelper;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 
@@ -22,7 +23,7 @@ public class BootstrapPerformanceTest {
 	@Benchmark
 	@SuppressWarnings("unused")
 	public void bootstrap() {
-		try ( SessionFactory sessionFactory = ModelServiceFactory.buildSessionFactory(
+		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory(
 				modelService.properties( false ) ) ) {
 			// do nothing, we need just to close the instance
 		}

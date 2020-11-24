@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
-import org.hibernate.performance.search.helper.TransactionHelper;
+import org.hibernate.performance.search.application.HibernateORMHelper;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -23,12 +23,12 @@ public class AutomaticIndexingPerformanceTest {
 
 	public AutomaticIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties( false ) );
+		sessionFactory = HibernateORMHelper.buildSessionFactory( modelService.properties( false ) );
 	}
 
 	@Benchmark
 	public void indexing() {
-		TransactionHelper.inTransaction( sessionFactory, (session) ->
+		HibernateORMHelper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
 		);
 	}

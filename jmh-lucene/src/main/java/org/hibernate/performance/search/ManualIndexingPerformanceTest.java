@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
 import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
-import org.hibernate.performance.search.helper.TransactionHelper;
+import org.hibernate.performance.search.application.HibernateORMHelper;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -20,13 +20,13 @@ public class ManualIndexingPerformanceTest {
 
 	public ManualIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = ModelServiceFactory.buildSessionFactory( modelService.properties( true ) );
+		sessionFactory = HibernateORMHelper.buildSessionFactory( modelService.properties( true ) );
 	}
 
 	@Setup
 	public void init() {
 		for (int i=0; i<10; i++) {
-			TransactionHelper.inTransaction( sessionFactory, (session) -> {
+			HibernateORMHelper.inTransaction( sessionFactory, (session) -> {
 				for (int j=0; j<10; j++) {
 					session.persist( new Employee() );
 				}

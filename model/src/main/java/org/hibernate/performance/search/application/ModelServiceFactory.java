@@ -49,11 +49,5 @@ public final class ModelServiceFactory {
 		}
 	}
 
-	public static SessionFactory buildSessionFactory(Properties additionalProperties) {
-		return new Configuration()
-				.addProperties( additionalProperties )
-				// list of Entities:
-				.addAnnotatedClass( Employee.class )
-				.buildSessionFactory();
-	}
+
 }
