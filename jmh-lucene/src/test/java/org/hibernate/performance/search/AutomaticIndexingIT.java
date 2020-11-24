@@ -31,7 +31,6 @@ public class AutomaticIndexingIT {
 			TransactionHelper.inTransaction( sessionFactory, (session) ->
 				session.persist( new Employee() )
 			);
-			modelService.waitForIndexFlush( sessionFactory, Employee.class );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				List<Employee> search = modelService.search( session, Employee.class );

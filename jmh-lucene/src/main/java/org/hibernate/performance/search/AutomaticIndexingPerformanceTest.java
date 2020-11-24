@@ -40,8 +40,6 @@ public class AutomaticIndexingPerformanceTest {
 		TransactionHelper.inTransaction( sessionFactory, (session) ->
 			session.persist( new Employee() )
 		);
-
-		modelService.waitForIndexFlush( sessionFactory, Employee.class );
 	}
 
 	@Benchmark

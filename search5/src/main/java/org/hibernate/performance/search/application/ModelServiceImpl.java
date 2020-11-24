@@ -4,16 +4,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.backend.FlushLuceneWork;
 import org.hibernate.search.cfg.Environment;
-import org.hibernate.search.engine.integration.impl.ExtendedSearchIntegrator;
-import org.hibernate.search.hcore.util.impl.ContextHelper;
-import org.hibernate.search.indexes.spi.IndexManager;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.search.spi.impl.PojoIndexedTypeIdentifier;
 
 public class ModelServiceImpl implements ModelService {
 
@@ -28,17 +22,6 @@ public class ModelServiceImpl implements ModelService {
 		}
 
 		return properties;
-	}
-
-	@Override
-	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> entityClass) {
-		ExtendedSearchIntegrator integrator = ContextHelper.getSearchIntegratorBySF( sessionFactory );
-		PojoIndexedTypeIdentifier identifier = new PojoIndexedTypeIdentifier( entityClass );
-
-		// Ensure that we'll block until all works have been performed
-		for ( IndexManager indexManager : integrator.getIndexBinding( identifier ).getIndexManagerSelector().all() ) {
-			indexManager.performStreamOperation( new FlushLuceneWork( null, identifier ), null, false );
-		}
 	}
 
 	@Override

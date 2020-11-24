@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.automaticindexing.AutomaticIndexingStrategyName;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
@@ -28,11 +27,6 @@ public class ModelServiceImpl implements ModelService {
 		}
 
 		return config;
-	}
-
-	@Override
-	public void waitForIndexFlush(SessionFactory sessionFactory, Class<?> entityClass) {
-		// we don't need to do nothing here, since we're using write-sync
 	}
 
 	@Override
