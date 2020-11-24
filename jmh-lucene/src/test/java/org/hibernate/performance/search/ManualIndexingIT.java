@@ -19,7 +19,7 @@ public class ManualIndexingIT {
 	@Test
 	public void smoke() throws Exception {
 		ModelService modelService = ModelServiceFactory.create();
-		Properties properties = modelService.properties( true );
+		Properties properties = modelService.properties( ModelService.Kind.LUCENE_MANUAL_INDEXING );
 
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
 			for (int i=0; i<10; i++) {

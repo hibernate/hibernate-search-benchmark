@@ -24,7 +24,7 @@ public class BootstrapPerformanceTest {
 	@SuppressWarnings("unused")
 	public void bootstrap() {
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory(
-				modelService.properties( ModelService.Kind.LUCENE_AUTOMATIC_INDEXING ) ) ) {
+				modelService.properties( ModelService.Kind.ELASTICSEARCH_AUTOMATIC_INDEXING ) ) ) {
 			// do nothing, we need just to close the instance
 		}
 	}

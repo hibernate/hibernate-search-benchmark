@@ -20,7 +20,8 @@ public class ManualIndexingPerformanceTest {
 
 	public ManualIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = HibernateORMHelper.buildSessionFactory( modelService.properties( true ) );
+		sessionFactory = HibernateORMHelper.buildSessionFactory( modelService.properties(
+				ModelService.Kind.LUCENE_MANUAL_INDEXING ) );
 	}
 
 	@Setup

@@ -12,12 +12,23 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties(boolean manual) {
+	public Properties properties(Kind kind) {
 		Properties properties = new Properties();
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
-		properties.put( "hibernate.search.default.directory_provider", "local-heap" );
+		if ( kind.isLucene() ) {
+			properties.put( "hibernate.search.default.directory_provider", "local-heap" );
+		} else {
+			properties.put( "hibernate.search.default.indexmanager", "elasticsearch" );
+			properties.put( "hibernate.search.default.elasticsearch.host", "http://127.0.0.1:9200" );
+			properties.put( "hibernate.search.default.elasticsearch.username", "" );
+			properties.put( "hibernate.search.default.elasticsearch.password", "" );
+			properties.put(
+					"hibernate.search.default.elasticsearch.index_schema_management_strategy",
+					"drop-and-create-and-drop"
+			);
+		}
 
-		if ( manual ) {
+		if ( kind.isManual() ) {
 			properties.put( "hibernate.search.indexing_strategy", "manual" );
 		}
 

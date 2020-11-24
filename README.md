@@ -37,7 +37,7 @@ Run Elasticsearch server in another process e.g.: `p1`.
 [p0]> mvn clean install -P search5
 << fork `p1` from `p0` >>
 [p1]> ./jmh-elasticsearch/target/elasticsearch0/bin/elasticsearch
-[p0]> java -jar jmh-elasticsearch/target/benhmark.jar
+[p0]> java -jar jmh-elasticsearch/target/benchmark.jar
 ```
 
 Run Elasticsearch server in another process e.g.: `p1`.

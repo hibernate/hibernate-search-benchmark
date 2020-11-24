@@ -21,7 +21,7 @@ public class AutomaticIndexingIT {
 		ModelService modelService = ModelServiceFactory.create();
 		Assertions.assertThat( modelService ).isNotNull();
 
-		Properties properties = modelService.properties( false );
+		Properties properties = modelService.properties( ModelService.Kind.LUCENE_AUTOMATIC_INDEXING );
 		Assertions.assertThat( properties ).isNotNull();
 
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {

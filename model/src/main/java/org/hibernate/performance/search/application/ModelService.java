@@ -7,7 +7,30 @@ import org.hibernate.Session;
 
 public interface ModelService {
 
-	Properties properties(boolean manual);
+	enum Kind {
+		LUCENE_AUTOMATIC_INDEXING(true, false),
+		LUCENE_MANUAL_INDEXING(true, true),
+		ELASTICSEARCH_AUTOMATIC_INDEXING(false, false),
+		ELASTICSEARCH_MANUAL_INDEXING(false, true);
+
+		private boolean lucene;
+		private boolean manual;
+
+		Kind(boolean lucene, boolean manual) {
+			this.lucene = lucene;
+			this.manual = manual;
+		}
+
+		public boolean isLucene() {
+			return lucene;
+		}
+
+		public boolean isManual() {
+			return manual;
+		}
+	}
+
+	Properties properties(Kind kind);
 
 	<E> List<E> search(Session session, Class<E> entityClass);
 

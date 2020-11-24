@@ -13,16 +13,24 @@ import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrateg
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties(boolean manual) {
+	public Properties properties(Kind kind) {
 		Properties config = new Properties();
 		config.put( HibernateOrmMapperSettings.SCHEMA_MANAGEMENT_STRATEGY,
 				SchemaManagementStrategyName.DROP_AND_CREATE_AND_DROP );
 		config.put( HibernateOrmMapperSettings.MAPPING_CONFIGURER, new SearchProgrammaticMapping() );
 		config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
-		config.put( "hibernate.search.backend.directory.type", "local-heap" );
 
-		if ( manual ) {
+		if ( kind.isLucene() ) {
+			config.put( "hibernate.search.backend.directory.type", "local-heap" );
+		} else {
+			config.put( "hibernate.search.backend.hosts", "localhost:9200" );
+			config.put( "hibernate.search.backend.protocol", "http" );
+			config.put( "hibernate.search.backend.username", "" );
+			config.put( "hibernate.search.backend.password", "" );
+		}
+
+		if ( kind.isManual() ) {
 			config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
 		}
 

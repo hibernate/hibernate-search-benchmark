@@ -23,7 +23,8 @@ public class AutomaticIndexingPerformanceTest {
 
 	public AutomaticIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
-		sessionFactory = HibernateORMHelper.buildSessionFactory( modelService.properties( false ) );
+		sessionFactory = HibernateORMHelper.buildSessionFactory(
+				modelService.properties( ModelService.Kind.LUCENE_AUTOMATIC_INDEXING ) );
 	}
 
 	@Benchmark
