@@ -1,20 +1,33 @@
 package org.hibernate.performance.search.entity;
 
-import java.util.UUID;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-public class Employee {
-
-	@Id
-	@GeneratedValue
-	private Long id;
+public class Employee extends IdEntity {
 
 	private String name;
+	private String surname;
 
-	public Employee() {
-		this.name = UUID.randomUUID().toString();
+	@NaturalId
+	private String socialSecurityNumber;
+
+	@ManyToOne
+	private Company company;
+
+	@ManyToOne
+	private BusinessUnit businessUnit;
+
+	@ManyToOne
+	private Manager manager;
+
+	public String getName() {
+		return name;
+	}
+
+	public String getSurname() {
+		return surname;
 	}
 }
