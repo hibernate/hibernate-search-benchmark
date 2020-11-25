@@ -23,6 +23,28 @@
             <artifactId>hibernate-search-mapper-orm</artifactId>
             <version>${version.hibernate.search6}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${version.junit.jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${version.assertj}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- used to test the bootstrap of the mapping -->
+        <dependency>
+            <groupId>org.hibernate.search</groupId>
+            <artifactId>hibernate-search-backend-lucene</artifactId>
+            <version>${version.hibernate.search6}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
