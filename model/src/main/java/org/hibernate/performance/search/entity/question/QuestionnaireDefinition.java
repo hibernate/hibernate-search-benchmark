@@ -10,6 +10,10 @@ import org.hibernate.performance.search.entity.IdEntity;
 @Entity
 public class QuestionnaireDefinition extends IdEntity {
 
+	private String title;
+
+	private String description;
+
 	private Integer year;
 
 	@OneToMany(mappedBy = "questionnaire")
