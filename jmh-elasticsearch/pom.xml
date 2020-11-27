@@ -20,20 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>org.hibernate.performance</groupId>
-            <artifactId>hibernate-search-performance-model</artifactId>
+            <artifactId>hibernate-search-performance-jmh-tck</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-            <version>${version.jmh}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${version.log4j}</version>
         </dependency>
 
         <dependency>

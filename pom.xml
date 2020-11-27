@@ -13,6 +13,7 @@
         <module>model</module>
         <module>search5</module>
         <module>search6</module>
+        <module>jmh-tck</module>
         <module>jmh-lucene</module>
         <module>jmh-elasticsearch</module>
     </modules>
