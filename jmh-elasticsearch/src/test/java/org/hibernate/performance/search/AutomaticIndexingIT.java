@@ -7,8 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.HibernateORMHelper;
 import org.hibernate.performance.search.application.ModelService;
-import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
+import org.hibernate.performance.search.util.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +18,10 @@ public class AutomaticIndexingIT {
 
 	@Test
 	public void smoke() {
-		ModelService modelService = ModelServiceFactory.create();
+		ModelService modelService = TckBackendHelperFactory.getModelService();
 		Assertions.assertThat( modelService ).isNotNull();
 
-		Properties properties = modelService.properties( ModelService.Kind.ELASTICSEARCH_AUTOMATIC_INDEXING );
+		Properties properties = TckBackendHelperFactory.autoProperties();
 		Assertions.assertThat( properties ).isNotNull();
 
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
@@ -34,7 +34,6 @@ public class AutomaticIndexingIT {
 
 			try ( Session session = sessionFactory.openSession() ) {
 				List<Employee> search = modelService.search( session, Employee.class );
-				// by default we're write sync and not read sync
 				Assertions.assertThat( search ).isNotNull();
 			}
 		}

@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.application.ModelService;
-import org.hibernate.performance.search.application.ModelServiceFactory;
-import org.hibernate.performance.search.entity.Employee;
 import org.hibernate.performance.search.application.HibernateORMHelper;
+import org.hibernate.performance.search.application.ModelService;
+import org.hibernate.performance.search.entity.Employee;
+import org.hibernate.performance.search.util.TckBackendHelperFactory;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -22,9 +22,8 @@ public class AutomaticIndexingPerformanceTest {
 	private final SessionFactory sessionFactory;
 
 	public AutomaticIndexingPerformanceTest() {
-		modelService = ModelServiceFactory.create();
-		sessionFactory = HibernateORMHelper.buildSessionFactory(
-				modelService.properties( ModelService.Kind.LUCENE_AUTOMATIC_INDEXING ) );
+		modelService = TckBackendHelperFactory.getModelService();
+		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.autoProperties() );
 	}
 
 	@Benchmark

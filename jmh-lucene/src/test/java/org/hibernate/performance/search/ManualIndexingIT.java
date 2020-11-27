@@ -6,9 +6,9 @@ import java.util.Properties;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.application.ModelService;
-import org.hibernate.performance.search.application.ModelServiceFactory;
 import org.hibernate.performance.search.entity.Employee;
 import org.hibernate.performance.search.application.HibernateORMHelper;
+import org.hibernate.performance.search.util.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ public class ManualIndexingIT {
 
 	@Test
 	public void smoke() throws Exception {
-		ModelService modelService = ModelServiceFactory.create();
-		Properties properties = modelService.properties( ModelService.Kind.LUCENE_MANUAL_INDEXING );
+		ModelService modelService = TckBackendHelperFactory.getModelService();
+		Properties properties = TckBackendHelperFactory.manualProperties();
 
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
 			for (int i=0; i<10; i++) {
