@@ -3,7 +3,7 @@ package org.hibernate.performance.search;
 import java.util.Properties;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.HibernateORMHelper;
 
 import org.junit.jupiter.api.Test;
 
