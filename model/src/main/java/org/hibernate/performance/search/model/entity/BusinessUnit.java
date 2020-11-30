@@ -11,4 +11,16 @@ public class BusinessUnit extends IdEntity {
 	@ManyToOne
 	private Company owner;
 
+	private BusinessUnit() {
+	}
+
+	public BusinessUnit(Integer id, String name, Company owner) {
+		super( id );
+		this.name = name;
+		this.owner = owner;
+	}
+
+	public Company getOwner() {
+		return owner;
+	}
 }

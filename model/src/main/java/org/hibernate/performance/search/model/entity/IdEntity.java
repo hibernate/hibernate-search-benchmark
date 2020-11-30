@@ -8,13 +8,17 @@ import javax.persistence.MappedSuperclass;
 public class IdEntity {
 
 	@Id
-	private Integer id;
+	protected Integer id;
 
 	protected IdEntity() {
 	}
 
 	public IdEntity(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	@Override
