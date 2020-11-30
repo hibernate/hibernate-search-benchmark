@@ -23,9 +23,10 @@ public class ManualIndexingIT {
 
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( properties ) ) {
 			for (int i=0; i<10; i++) {
+				Integer a = i;
 				HibernateORMHelper.inTransaction( sessionFactory, (session) -> {
 					for (int j=0; j<10; j++) {
-						session.persist( new Employee() );
+						session.persist( new Employee( a + j*10 ) );
 					}
 				} );
 			}

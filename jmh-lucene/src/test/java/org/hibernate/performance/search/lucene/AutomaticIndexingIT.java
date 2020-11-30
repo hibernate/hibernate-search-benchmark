@@ -29,7 +29,7 @@ public class AutomaticIndexingIT {
 			Assertions.assertThat( sessionFactory.isClosed() ).isFalse();
 
 			HibernateORMHelper.inTransaction( sessionFactory, (session) ->
-				session.persist( new Employee() )
+				session.persist( new Employee( 1 ) )
 			);
 
 			try ( Session session = sessionFactory.openSession() ) {

@@ -11,4 +11,10 @@ public class Manager extends Employee {
 	@OneToMany(mappedBy = "manager")
 	private List<Employee> employees = new ArrayList<>();
 
+	private Manager() {
+	}
+
+	public Manager(Integer id) {
+		super( id );
+	}
 }

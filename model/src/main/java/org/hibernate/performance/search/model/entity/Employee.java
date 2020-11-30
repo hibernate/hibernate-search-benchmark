@@ -23,6 +23,13 @@ public class Employee extends IdEntity {
 	@ManyToOne
 	private Manager manager;
 
+	protected Employee() {
+	}
+
+	public Employee(Integer id) {
+		super( id );
+	}
+
 	public String getName() {
 		return name;
 	}

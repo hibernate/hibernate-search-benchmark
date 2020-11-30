@@ -1,7 +1,6 @@
 package org.hibernate.performance.search.model.entity;
 
 import java.util.Objects;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -9,8 +8,14 @@ import javax.persistence.MappedSuperclass;
 public class IdEntity {
 
 	@Id
-	@GeneratedValue
 	private Integer id;
+
+	protected IdEntity() {
+	}
+
+	public IdEntity(Integer id) {
+		this.id = id;
+	}
 
 	@Override
 	public boolean equals(Object o) {
