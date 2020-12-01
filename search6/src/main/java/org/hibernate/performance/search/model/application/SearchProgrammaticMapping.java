@@ -84,6 +84,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep questionnaireInstance = mapping.type( QuestionnaireInstance.class );
 		questionnaireInstance.indexed();
+		questionnaireInstance.property( "uniqueCode" ).documentId();
 		questionnaireInstance.property( "definition" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "approval" ).indexedEmbedded().indexingDependency()

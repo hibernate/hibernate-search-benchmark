@@ -41,6 +41,14 @@ public class QuestionnaireDefinition extends IdEntity {
 		return title;
 	}
 
+	public Company getCompany() {
+		return company;
+	}
+
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}

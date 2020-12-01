@@ -33,4 +33,9 @@ public class Manager extends Employee {
 	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
+
+	@Override
+	public List<Employee> getCollaborators() {
+		return employees;
+	}
 }

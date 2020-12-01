@@ -95,6 +95,7 @@ public final class SearchProgrammaticMapping {
 		// QuestionnaireInstance
 		IndexedMapping questionnaireInstance = mapping.entity( QuestionnaireInstance.class ).indexed();
 		questionnaireInstance
+				.property( "uniqueCode", ElementType.FIELD ).documentId()
 				.property( "definition", ElementType.FIELD ).indexEmbedded()
 				.property( "approval", ElementType.FIELD ).indexEmbedded()
 				.property( "subject", ElementType.FIELD ).indexEmbedded();

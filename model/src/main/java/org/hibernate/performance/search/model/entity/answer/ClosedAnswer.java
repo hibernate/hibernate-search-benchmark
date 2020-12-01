@@ -13,4 +13,16 @@ public class ClosedAnswer extends Answer {
 
 	private Integer choice;
 
+	private ClosedAnswer() {
+	}
+
+	public ClosedAnswer(QuestionnaireInstance questionnaire, ClosedQuestion question) {
+		super( questionnaire );
+		this.question = question;
+	}
+
+	// set later at questionnaire compilation time
+	public void setChoice(Integer choice) {
+		this.choice = choice;
+	}
 }

@@ -7,11 +7,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.entity.Company;
+import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.performance.search.model.service.CompanyFactory;
 import org.hibernate.performance.search.model.service.EmployeeFactory;
+import org.hibernate.performance.search.model.service.EmployeeRepository;
 import org.hibernate.performance.search.model.service.QuestionnaireDefinitionFactory;
+import org.hibernate.performance.search.model.service.QuestionnaireInstanceFactory;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,9 +40,27 @@ public class ModelIT {
 
 			List<QuestionnaireDefinition> questionnaireDefinitions = QuestionnaireDefinitionFactory
 					.createQuestionnaireDefinitions( companyReference.get() );
-			for (QuestionnaireDefinition questionnaire : questionnaireDefinitions) {
+			for ( QuestionnaireDefinition questionnaire : questionnaireDefinitions ) {
 				HibernateORMHelper.inTransaction( sessionFactory, session -> session.persist( questionnaire ) );
 			}
+
+			HibernateORMHelper.inTransaction( sessionFactory, session -> {
+				EmployeeRepository repository = new EmployeeRepository( session );
+				List<Employee> employees = repository.getEmployees( companyReference.get() );
+				List<QuestionnaireDefinition> definitions = repository.getQuestionnaireDefinitions(
+						companyReference.get() );
+
+				for ( Employee employee : employees ) {
+					for ( QuestionnaireDefinition definition : definitions ) {
+						List<QuestionnaireInstance> questionnaireInstances = QuestionnaireInstanceFactory
+								.createQuestionnaireInstances( employee, definition );
+
+						for (QuestionnaireInstance instance : questionnaireInstances) {
+							session.persist( instance );
+						}
+					}
+				}
+			} );
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package org.hibernate.performance.search.model.entity;
 
+import java.util.Collections;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -53,8 +55,24 @@ public class Employee extends IdEntity {
 		return businessUnit;
 	}
 
+	public Manager getManager() {
+		return manager;
+	}
+
 	public void setManager(Manager manager) {
 		this.manager = manager;
+	}
+
+	public List<Employee> getCollaborators() {
+		return Collections.emptyList();
+	}
+
+	public List<Employee> getSelfAndColleagues() {
+		if ( manager == null ) {
+			return Collections.singletonList( this );
+		}
+
+		return manager.getCollaborators();
 	}
 
 	@Override

@@ -21,4 +21,6 @@ public abstract class Question extends IdEntity {
 		this.questionnaire = questionnaire;
 		this.text = text;
 	}
+
+	public abstract boolean isClosed();
 }

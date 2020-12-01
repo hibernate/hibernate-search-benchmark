@@ -13,4 +13,16 @@ public class OpenAnswer extends Answer {
 
 	private String text;
 
+	private OpenAnswer() {
+	}
+
+	public OpenAnswer(QuestionnaireInstance questionnaire, OpenQuestion question) {
+		super( questionnaire );
+		this.question = question;
+	}
+
+	// set later at questionnaire compilation time
+	public void setText(String text) {
+		this.text = text;
+	}
 }

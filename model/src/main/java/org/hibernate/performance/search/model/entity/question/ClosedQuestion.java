@@ -14,4 +14,9 @@ public class ClosedQuestion extends Question {
 		super( id, questionnaire, text );
 		this.weight = weight;
 	}
+
+	@Override
+	public boolean isClosed() {
+		return true;
+	}
 }
