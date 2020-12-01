@@ -8,9 +8,12 @@ import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
 
-public class EmployeeFactory {
+public final class EmployeeFactory {
 
 	private static final int EMPLOYEE_PER_BUSINESS_UNIT = 10;
+
+	private EmployeeFactory() {
+	}
 
 	public static Manager createEmployeeTree(Company company) {
 		List<BusinessUnit> businessUnits = company.getBusinessUnits();

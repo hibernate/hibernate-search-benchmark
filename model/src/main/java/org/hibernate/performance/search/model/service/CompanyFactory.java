@@ -6,9 +6,12 @@ import java.util.List;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 
-public class CompanyFactory {
+public final class CompanyFactory {
 
 	public static final int UNIT_PER_COMPANY = 10;
+
+	private CompanyFactory() {
+	}
 
 	public static Company createCompanyAndUnits(int companyId) {
 		Company company = new Company( companyId, "Company" + companyId );
