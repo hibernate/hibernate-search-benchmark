@@ -1,12 +1,12 @@
 package org.hibernate.performance.search.model.entity.answer;
 
 import java.util.Objects;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
-@Entity
+@MappedSuperclass
 public abstract class Answer {
 
 	@Id
@@ -21,6 +21,10 @@ public abstract class Answer {
 
 	public Answer(QuestionnaireInstance questionnaire) {
 		this.questionnaire = questionnaire;
+	}
+
+	public QuestionnaireInstance getQuestionnaire() {
+		return questionnaire;
 	}
 
 	@Override

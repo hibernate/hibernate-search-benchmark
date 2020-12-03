@@ -37,4 +37,9 @@ public class Company extends IdEntity {
 	public void setBusinessUnits(List<BusinessUnit> businessUnits) {
 		this.businessUnits = businessUnits;
 	}
+
+	@Override
+	public String toString() {
+		return legalName;
+	}
 }

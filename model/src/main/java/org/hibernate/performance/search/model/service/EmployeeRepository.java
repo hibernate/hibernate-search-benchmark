@@ -11,6 +11,8 @@ import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
 public class EmployeeRepository {
@@ -91,6 +93,33 @@ public class EmployeeRepository {
 		CriteriaQuery<Long> query = criteria.select( builder.count( root ) )
 				.where( builder.isNotNull( root.get( "text" ) ) );
 
+		return entityManager.createQuery( query ).getSingleResult();
+	}
+
+	public List<PerformanceSummary> findByEmployee(Employee employee) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<PerformanceSummary> criteria = builder.createQuery( PerformanceSummary.class );
+		Root<PerformanceSummary> root = criteria.from( PerformanceSummary.class );
+		CriteriaQuery<PerformanceSummary> query = criteria.select( root )
+				.where( builder.equal( root.get( "employee" ), employee ) );
+		return entityManager.createQuery( query ).getResultList();
+	}
+
+	public List<QuestionnaireInstance> findBySubject(Employee subject) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
+		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
+		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
+				.where( builder.equal( root.get( "subject" ), subject ) );
+		return entityManager.createQuery( query ).getResultList();
+	}
+
+	public QuestionnaireInstance findByUniqueCode(String code) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
+		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
+		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
+				.where( builder.equal( root.get( "uniqueCode" ), code ) );
 		return entityManager.createQuery( query ).getSingleResult();
 	}
 }

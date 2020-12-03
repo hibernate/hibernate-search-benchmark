@@ -91,22 +91,23 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "subject" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
-		questionnaireInstance.property( "answers" ).indexedEmbedded().includeDepth( 1 )
+		questionnaireInstance.property( "openAnswers" ).indexedEmbedded().includeDepth( 1 )
 				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
-
-		TypeMappingStep answer = mapping.type( Answer.class );
-		answer.indexed();
-		answer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "answers" ) );
+		questionnaireInstance.property( "closedAnswers" ).indexedEmbedded().includeDepth( 1 )
+				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
 		openAnswer.indexed();
+		openAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 )
+				.associationInverseSide( PojoModelPath.parse( "openAnswers" ) );
 		openAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		openAnswer.property( "text" ).fullTextField();
 
 		TypeMappingStep closedAnswer = mapping.type( ClosedAnswer.class );
 		closedAnswer.indexed();
+		closedAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 )
+				.associationInverseSide( PojoModelPath.parse( "closedAnswers" ) );
 		closedAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		closedAnswer.property( "choice" ).genericField();

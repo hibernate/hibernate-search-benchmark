@@ -46,8 +46,12 @@ public class QuestionnaireInstance {
 	private EvaluationType evaluationType;
 
 	@OneToMany(mappedBy = "questionnaire")
-	@Cascade( CascadeType.PERSIST )
-	private List<Answer> answers;
+	@Cascade(CascadeType.PERSIST)
+	private List<ClosedAnswer> closedAnswers;
+
+	@OneToMany(mappedBy = "questionnaire")
+	@Cascade(CascadeType.PERSIST)
+	private List<OpenAnswer> openAnswers;
 
 	private QuestionnaireInstance() {
 	}
@@ -63,17 +67,46 @@ public class QuestionnaireInstance {
 		initAnswers();
 	}
 
+	public QuestionnaireInstanceId getId() {
+		return new QuestionnaireInstanceId( definition, approval, subject );
+	}
+
+	public Employee getSubject() {
+		return subject;
+	}
+
+	public Integer getYear() {
+		return definition.getYear();
+	}
+
+	public int getMaxScore() {
+		int result = 0;
+		for ( ClosedAnswer answer : closedAnswers ) {
+			result += answer.getMaxScore();
+		}
+		return result;
+	}
+
+	public int getScore() {
+		int result = 0;
+		for ( ClosedAnswer answer : closedAnswers ) {
+			result += answer.getScore();
+		}
+		return result;
+	}
+
 	@SuppressWarnings("unchecked")
 	private void initAnswers() {
 		List<Question> questions = definition.getQuestions();
-		answers = new ArrayList<>( questions.size() );
+		closedAnswers = new ArrayList<>( questions.size() );
+		openAnswers = new ArrayList<>( questions.size() );
 
 		for ( Question question : questions ) {
 			if ( question.isClosed() ) {
-				answers.add( new ClosedAnswer( this, (ClosedQuestion) question ) );
+				closedAnswers.add( new ClosedAnswer( this, (ClosedQuestion) question ) );
 			}
 			else {
-				answers.add( new OpenAnswer( this, (OpenQuestion) question ) );
+				openAnswers.add( new OpenAnswer( this, (OpenQuestion) question ) );
 			}
 		}
 	}

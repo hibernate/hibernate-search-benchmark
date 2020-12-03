@@ -100,25 +100,31 @@ public final class SearchProgrammaticMapping {
 				.property( "approval", ElementType.FIELD ).indexEmbedded()
 				.property( "subject", ElementType.FIELD ).indexEmbedded();
 
-		PropertyMapping answers = questionnaireInstance.property( "answers", ElementType.FIELD );
-		answers.indexEmbedded().depth( 1 );
-		answers.containedIn();
+		PropertyMapping closedAnswers = questionnaireInstance.property( "closedAnswers", ElementType.FIELD );
+		closedAnswers.indexEmbedded().depth( 1 );
+		closedAnswers.containedIn();
 
-		// Answer
-		IndexedMapping answer = mapping.entity( Answer.class ).indexed();
-		PropertyMapping questionnaireProperty = answer.property( "questionnaire", ElementType.FIELD );
-		questionnaireProperty.indexEmbedded().depth( 1 );
-		questionnaireProperty.containedIn();
+		PropertyMapping openAnswers = questionnaireInstance.property( "openAnswers", ElementType.FIELD );
+		openAnswers.indexEmbedded().depth( 1 );
+		openAnswers.containedIn();
 
 		// OpenAnswer
 		IndexedMapping openAnswer = mapping.entity( OpenAnswer.class ).indexed();
 		openAnswer.property( "text", ElementType.FIELD ).field();
 		openAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
 
+		PropertyMapping questionnairePropertyOA = openAnswer.property( "questionnaire", ElementType.FIELD );
+		questionnairePropertyOA.indexEmbedded().depth( 1 );
+		questionnairePropertyOA.containedIn();
+
 		// ClosedAnswer
 		IndexedMapping closedAnswer = mapping.entity( ClosedAnswer.class ).indexed();
 		closedAnswer.property( "choice", ElementType.FIELD ).field().numericField();
 		closedAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
+
+		PropertyMapping questionnairePropertyCA = closedAnswer.property( "questionnaire", ElementType.FIELD );
+		questionnairePropertyCA.indexEmbedded().depth( 1 );
+		questionnairePropertyCA.containedIn();
 
 		// PerformanceSummary
 		IndexedMapping performanceSummary = mapping.entity( PerformanceSummary.class ).indexed();

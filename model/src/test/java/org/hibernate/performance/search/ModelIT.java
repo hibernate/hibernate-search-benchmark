@@ -27,6 +27,7 @@ import org.hibernate.performance.search.model.service.EmployeeFactory;
 import org.hibernate.performance.search.model.service.EmployeeRepository;
 import org.hibernate.performance.search.model.service.QuestionnaireDefinitionFactory;
 import org.hibernate.performance.search.model.service.QuestionnaireInstanceFactory;
+import org.hibernate.performance.search.model.service.Scorer;
 
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +88,6 @@ public class ModelIT {
 				assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 100 );
 
 				assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 11880 );
-				assertThat( repository.count( Answer.class ) ).isEqualTo( 237600 );
 				assertThat( repository.count( OpenAnswer.class ) ).isEqualTo( 118800 );
 				assertThat( repository.count( ClosedAnswer.class ) ).isEqualTo( 118800 );
 			}
@@ -100,6 +100,8 @@ public class ModelIT {
 				assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 118800 );
 				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 118800 );
 			}
+
+			new Scorer( sessionFactory ).generateScoreForQuestionnaires( companyReference.get() );
 		}
 	}
 }

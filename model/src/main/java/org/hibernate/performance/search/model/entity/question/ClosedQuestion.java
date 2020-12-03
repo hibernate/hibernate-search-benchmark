@@ -19,4 +19,8 @@ public class ClosedQuestion extends Question {
 	public boolean isClosed() {
 		return true;
 	}
+
+	public Integer getWeight() {
+		return weight;
+	}
 }

@@ -45,6 +45,10 @@ public class QuestionnaireDefinition extends IdEntity {
 		return company;
 	}
 
+	public Integer getYear() {
+		return year;
+	}
+
 	public List<Question> getQuestions() {
 		return questions;
 	}
