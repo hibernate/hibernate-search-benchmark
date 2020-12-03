@@ -1,5 +1,6 @@
 package org.hibernate.performance.search.model.entity.answer;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -11,6 +12,7 @@ public class OpenAnswer extends Answer {
 	@ManyToOne
 	private OpenQuestion question;
 
+	@Column(name="text",columnDefinition="LONGTEXT")
 	private String text;
 
 	private OpenAnswer() {

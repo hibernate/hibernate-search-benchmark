@@ -23,6 +23,9 @@ public class ClosedAnswer extends Answer {
 
 	// set later at questionnaire compilation time
 	public void setChoice(Integer choice) {
+		if ( choice < 0 || choice > 7 ) {
+			throw new RuntimeException( "Wrong selection. Min:0 (included) - Max:7 (included)." );
+		}
 		this.choice = choice;
 	}
 }
