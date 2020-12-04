@@ -34,6 +34,6 @@ public interface ModelService {
 
 	<E> List<E> search(Session session, Class<E> entityClass);
 
-	void massIndexing(Session session, Class<?> entityClass) throws InterruptedException;
+	void massIndexing(Session session) throws InterruptedException;
 
 }

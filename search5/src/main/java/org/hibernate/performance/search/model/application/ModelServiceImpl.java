@@ -50,8 +50,8 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void massIndexing(Session session, Class<?> entityClass) throws InterruptedException {
+	public void massIndexing(Session session) throws InterruptedException {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
-		fullTextSession.createIndexer( entityClass ).startAndWait();
+		fullTextSession.createIndexer().startAndWait();
 	}
 }

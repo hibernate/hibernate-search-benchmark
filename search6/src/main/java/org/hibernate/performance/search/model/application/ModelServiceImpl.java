@@ -43,7 +43,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public void massIndexing(Session session, Class<?> entityClass) throws InterruptedException {
-		Search.session( session ).massIndexer( entityClass ).startAndWait();
+	public void massIndexing(Session session) throws InterruptedException {
+		Search.session( session ).massIndexer().startAndWait();
 	}
 }
