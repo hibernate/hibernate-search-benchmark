@@ -4,10 +4,10 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
-import org.hibernate.performance.search.model.entity.answer.Answer;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstanceId;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
@@ -85,16 +85,21 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		TypeMappingStep questionnaireInstance = mapping.type( QuestionnaireInstance.class );
 		questionnaireInstance.indexed();
 		questionnaireInstance.property( "uniqueCode" ).documentId();
-		questionnaireInstance.property( "definition" ).indexedEmbedded().indexingDependency()
-				.reindexOnUpdate( ReindexOnUpdate.NO );
-		questionnaireInstance.property( "approval" ).indexedEmbedded().indexingDependency()
-				.reindexOnUpdate( ReindexOnUpdate.NO );
-		questionnaireInstance.property( "subject" ).indexedEmbedded().indexingDependency()
+		questionnaireInstance.property( "id" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "openAnswers" ).indexedEmbedded().includeDepth( 1 )
 				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
 		questionnaireInstance.property( "closedAnswers" ).indexedEmbedded().includeDepth( 1 )
 				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
+
+		TypeMappingStep qiId = mapping.type( QuestionnaireInstanceId.class );
+		qiId.property( "definition" ).indexedEmbedded().indexingDependency()
+				.reindexOnUpdate( ReindexOnUpdate.NO );
+		qiId.property( "approval" ).indexedEmbedded().indexingDependency()
+				.reindexOnUpdate( ReindexOnUpdate.NO );
+		qiId.property( "subject" ).indexedEmbedded().indexingDependency()
+				.reindexOnUpdate( ReindexOnUpdate.NO );
+
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
 		openAnswer.indexed();

@@ -110,16 +110,7 @@ public class EmployeeRepository {
 		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
-				.where( builder.equal( root.get( "subject" ), subject ) );
+				.where( builder.equal( root.get( "id" ).get( "subject" ), subject ) );
 		return entityManager.createQuery( query ).getResultList();
-	}
-
-	public QuestionnaireInstance findByUniqueCode(String code) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
-		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
-		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
-				.where( builder.equal( root.get( "uniqueCode" ), code ) );
-		return entityManager.createQuery( query ).getSingleResult();
 	}
 }

@@ -2,16 +2,22 @@ package org.hibernate.performance.search.model.entity.answer;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
+@Embeddable
 public class QuestionnaireInstanceId implements Serializable {
 
+	@ManyToOne
 	private QuestionnaireDefinition definition;
 
+	@ManyToOne
 	private Employee approval;
 
+	@ManyToOne
 	private Employee subject;
 
 	public QuestionnaireInstanceId(
@@ -23,6 +29,18 @@ public class QuestionnaireInstanceId implements Serializable {
 	}
 
 	private QuestionnaireInstanceId() {
+	}
+
+	public QuestionnaireDefinition getDefinition() {
+		return definition;
+	}
+
+	public Employee getApproval() {
+		return approval;
+	}
+
+	public Employee getSubject() {
+		return subject;
 	}
 
 	@Override
