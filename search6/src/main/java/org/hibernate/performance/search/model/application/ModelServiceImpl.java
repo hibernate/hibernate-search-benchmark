@@ -43,6 +43,12 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, String value) {
+		return Search.session( session ).search( entityClass ).where(
+				f -> f.match().field( fieldName ).matching( value ) ).fetchHits( 100 );
+	}
+
+	@Override
 	public void massIndexing(Session session) throws InterruptedException {
 		Search.session( session ).massIndexer().startAndWait();
 	}

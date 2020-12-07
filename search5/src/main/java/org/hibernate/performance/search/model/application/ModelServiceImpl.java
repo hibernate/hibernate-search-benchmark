@@ -50,6 +50,20 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, String value) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+
+		QueryBuilder b = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity( entityClass ).get();
+
+		org.apache.lucene.search.Query luceneQuery = b.keyword().onField( fieldName ).matching( value ).createQuery();
+
+		@SuppressWarnings("deprecation")
+		org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery);
+		return fullTextQuery.list(); //return a list of managed objects
+	}
+
+	@Override
 	public void massIndexing(Session session) throws InterruptedException {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 		fullTextSession.createIndexer().startAndWait();

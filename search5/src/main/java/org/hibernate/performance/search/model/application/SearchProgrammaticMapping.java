@@ -29,6 +29,22 @@ public final class SearchProgrammaticMapping {
 	public static SearchMapping create() {
 		SearchMapping mapping = new SearchMapping();
 
+		// Company
+		IndexedMapping company = mapping.entity( Company.class ).indexed();
+		company.property( "legalName", ElementType.FIELD ).field().analyze( Analyze.NO );
+
+		PropertyMapping businessUnits = company.property( "businessUnits", ElementType.FIELD );
+		businessUnits.indexEmbedded().depth( 1 );
+		businessUnits.containedIn();
+
+		// BusinessUnit
+		IndexedMapping businessUnit = mapping.entity( BusinessUnit.class ).indexed();
+		businessUnit.property( "name", ElementType.FIELD ).field().analyze( Analyze.NO );
+
+		PropertyMapping owner = businessUnit.property( "owner", ElementType.FIELD );
+		owner.indexEmbedded().depth( 1 );
+		owner.containedIn();
+
 		// Employee
 		IndexedMapping employee = mapping.entity( Employee.class ).indexed();
 		employee
@@ -51,22 +67,6 @@ public final class SearchProgrammaticMapping {
 		// index 2 employee-levels down to the hierarchy
 		employees.indexEmbedded().depth( 2 );
 		employees.containedIn();
-
-		// Company
-		IndexedMapping company = mapping.entity( Company.class ).indexed();
-		company.property( "legalName", ElementType.FIELD ).field().analyze( Analyze.NO );
-
-		PropertyMapping businessUnits = company.property( "businessUnits", ElementType.FIELD );
-		businessUnits.indexEmbedded().depth( 1 );
-		businessUnits.containedIn();
-
-		// BusinessUnit
-		IndexedMapping businessUnit = mapping.entity( BusinessUnit.class ).indexed();
-		businessUnit.property( "name", ElementType.FIELD ).field().analyze( Analyze.NO );
-
-		PropertyMapping owner = businessUnit.property( "owner", ElementType.FIELD );
-		owner.indexEmbedded().depth( 1 );
-		owner.containedIn();
 
 		// QuestionnaireDefinition
 		IndexedMapping questionnaireDefinition = mapping.entity( QuestionnaireDefinition.class ).indexed();

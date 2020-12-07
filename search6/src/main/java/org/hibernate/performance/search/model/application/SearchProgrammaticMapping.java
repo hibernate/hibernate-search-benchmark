@@ -26,6 +26,20 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 	public void configure(HibernateOrmMappingConfigurationContext context) {
 		ProgrammaticMappingConfigurationContext mapping = context.programmaticMapping();
 
+		TypeMappingStep company = mapping.type( Company.class );
+		company.indexed();
+		company.property( "legalName" ).keywordField();
+		company.property( "businessUnits" ).indexedEmbedded()
+				.includeDepth( 1 )
+				.associationInverseSide( PojoModelPath.parse( "owner" ) );
+
+		TypeMappingStep businessUnit = mapping.type( BusinessUnit.class );
+		businessUnit.indexed();
+		businessUnit.property( "name" ).keywordField();
+		businessUnit.property( "owner" ).indexedEmbedded()
+				.includeDepth( 1 )
+				.associationInverseSide( PojoModelPath.parse( "businessUnits" ) );
+
 		TypeMappingStep employee = mapping.type( Employee.class );
 		employee.indexed();
 		employee.property( "name" ).keywordField();
@@ -45,19 +59,6 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 				// index 2 employee-levels down to the hierarchy
 				.includeDepth( 1 )
 				.associationInverseSide( PojoModelPath.parse( "manager" ) );
-
-		TypeMappingStep company = mapping.type( Company.class );
-		company.property( "legalName" ).keywordField();
-		company.property( "businessUnits" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "owner" ) );
-
-		TypeMappingStep businessUnit = mapping.type( BusinessUnit.class );
-		businessUnit.indexed();
-		businessUnit.property( "name" ).keywordField();
-		businessUnit.property( "owner" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "businessUnits" ) );
 
 		TypeMappingStep questionnaireDefinition = mapping.type( QuestionnaireDefinition.class );
 		questionnaireDefinition.indexed();
