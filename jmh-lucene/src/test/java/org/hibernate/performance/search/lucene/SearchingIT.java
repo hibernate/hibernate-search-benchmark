@@ -1,4 +1,6 @@
-package org.hibernate.performance.search.tck;
+package org.hibernate.performance.search.lucene;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -9,72 +11,68 @@ import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
+import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.infra.Blackhole;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-@State(Scope.Benchmark)
-public class SearchingPerformanceTest {
+@TestInstance( TestInstance.Lifecycle.PER_CLASS )
+public class SearchingIT {
 
-	private final ModelService modelService;
-	private final SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
+	private ModelService modelService;
 
-	public SearchingPerformanceTest() {
-		modelService = TckBackendHelperFactory.getModelService();
+	@BeforeAll
+	public void beforeAll() throws Exception {
 		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.manualProperties() );
-	}
+		modelService = TckBackendHelperFactory.getModelService();
 
-	@Setup(Level.Trial)
-	public void setup() throws Exception {
 		new DomainDataFiller( sessionFactory ).fillData( 0 );
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			modelService.massIndexing( session );
 		}
 	}
 
-	@TearDown(Level.Trial)
-	public void tearDown() {
+	@AfterAll
+	public void afterAll() {
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
 	}
 
-	@Benchmark
-	public void company(Blackhole blackhole) {
+	@Test
+	public void company() {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
 			List<Company> companies = modelService.search( session, Company.class, "legalName", "Company0" );
-			blackhole.consume( companies );
+			assertThat( companies ).hasSize( 1 );
 
 			// no match
 			companies = modelService.search( session, Company.class, "legalName", "CompanyX" );
-			blackhole.consume( companies );
+			assertThat( companies ).isEmpty();
 
 			// nested match
 			companies = modelService.search( session, Company.class, "businessUnits.name", "Unit7" );
-			blackhole.consume( companies );
+			assertThat( companies ).hasSize( 1 );
 		}
 	}
 
-	@Benchmark
-	public void businessUnit(Blackhole blackhole) {
+	@Test
+	public void businessUnit() {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
 			List<BusinessUnit> businessUnits = modelService.search( session, BusinessUnit.class, "name", "Unit7" );
-			blackhole.consume( businessUnits );
+			assertThat( businessUnits ).hasSize( 1 );
 
 			// no match
 			businessUnits = modelService.search( session, BusinessUnit.class, "name", "UnitX" );
-			blackhole.consume( businessUnits );
+			assertThat( businessUnits ).isEmpty();
 
 			// nested match
 			businessUnits = modelService.search( session, BusinessUnit.class, "owner.legalName", "Company0" );
-			blackhole.consume( businessUnits );
+			assertThat( businessUnits ).hasSize( 10 );
 		}
 	}
 }
