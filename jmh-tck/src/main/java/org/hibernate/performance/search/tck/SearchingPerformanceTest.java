@@ -9,6 +9,7 @@ import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
+import org.hibernate.performance.search.model.entity.Employee;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -75,6 +76,36 @@ public class SearchingPerformanceTest {
 			// nested match
 			businessUnits = modelService.search( session, BusinessUnit.class, "owner.legalName", "Company0" );
 			blackhole.consume( businessUnits );
+		}
+	}
+
+	@Benchmark
+	public void employee(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// match
+			List<Employee> employees = modelService.search( session, Employee.class, "name", "name77" );
+			blackhole.consume( employees );
+
+			// no match
+			employees = modelService.search( session, Employee.class, "name", "nameX" );
+			blackhole.consume( employees );
+
+			// count
+			long count = modelService.count( session, Employee.class, "surname", "surname77" );
+			blackhole.consume( count );
+
+			// range
+			employees = modelService.range( session, Employee.class, "socialSecurityNumber",
+					"socialSecurityNumber32", "socialSecurityNumber41" );
+			blackhole.consume( employees );
+
+			// nested match
+			count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
+			blackhole.consume( count );
+
+			// projection
+			List<Object> ids = modelService.projectId( session, Employee.class, "businessUnit.name", "Unit7" );
+			blackhole.consume( ids );
 		}
 	}
 }

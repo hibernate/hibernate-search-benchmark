@@ -11,6 +11,7 @@ import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
+import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.AfterAll;
@@ -75,4 +76,36 @@ public class SearchingIT {
 			assertThat( businessUnits ).hasSize( 10 );
 		}
 	}
+
+	@Test
+	public void employee() {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// match
+			List<Employee> employees = modelService.search( session, Employee.class, "name", "name77" );
+			assertThat( employees ).hasSize( 1 );
+
+			// no match
+			employees = modelService.search( session, Employee.class, "name", "nameX" );
+			assertThat( employees ).isEmpty();
+
+			// count
+			long count = modelService.count( session, Employee.class, "surname", "surname77" );
+			assertThat( count ).isEqualTo( 1 );
+
+			// range
+			employees = modelService.range( session, Employee.class, "socialSecurityNumber",
+					"socialSecurityNumber32", "socialSecurityNumber41" );
+			assertThat( employees ).extracting( "id" )
+					.containsExactlyInAnyOrder( 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41 );
+
+			// nested match
+			count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
+			assertThat( count ).isEqualTo( 100 );
+
+			// projection
+			List<Object> ids = modelService.projectId( session, Employee.class, "businessUnit.name", "Unit7" );
+			assertThat( ids ).containsExactlyInAnyOrder( 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 );
+		}
+	}
+
 }

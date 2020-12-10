@@ -2,8 +2,10 @@ package org.hibernate.performance.search.model.application;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.cfg.Environment;
@@ -17,7 +19,8 @@ public class ModelServiceImpl implements ModelService {
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
 		if ( kind.isLucene() ) {
 			properties.put( "hibernate.search.default.directory_provider", "local-heap" );
-		} else {
+		}
+		else {
 			properties.put( "hibernate.search.default.indexmanager", "elasticsearch" );
 			properties.put( "hibernate.search.default.elasticsearch.host", "http://127.0.0.1:9200" );
 			properties.put( "hibernate.search.default.elasticsearch.username", "" );
@@ -44,9 +47,8 @@ public class ModelServiceImpl implements ModelService {
 
 		org.apache.lucene.search.Query luceneQuery = b.all().createQuery();
 
-		@SuppressWarnings("deprecation")
-		org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery);
-		return fullTextQuery.list(); //return a list of managed objects
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		return fullTextQuery.list();
 	}
 
 	@Override
@@ -58,9 +60,53 @@ public class ModelServiceImpl implements ModelService {
 
 		org.apache.lucene.search.Query luceneQuery = b.keyword().onField( fieldName ).matching( value ).createQuery();
 
-		@SuppressWarnings("deprecation")
-		org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery);
-		return fullTextQuery.list(); //return a list of managed objects
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		return fullTextQuery.list();
+	}
+
+	@Override
+	public long count(Session session, Class<?> entityClass, String fieldName, String value) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+
+		QueryBuilder b = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity( entityClass ).get();
+
+		org.apache.lucene.search.Query luceneQuery = b.keyword().onField( fieldName ).matching( value ).createQuery();
+
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( 0 );
+
+		return fullTextQuery.getResultSize();
+	}
+
+	@Override
+	public <E> List<E> range(Session session, Class<E> entityClass, String fieldName, String start, String end) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+
+		QueryBuilder b = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity( entityClass ).get();
+
+		// include limits
+		org.apache.lucene.search.Query luceneQuery = b.range().onField( fieldName ).from( start ).to( end )
+				.createQuery();
+
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		return fullTextQuery.list();
+	}
+
+	@Override
+	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, String value) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+
+		QueryBuilder b = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity( entityClass ).get();
+
+		org.apache.lucene.search.Query luceneQuery = b.keyword().onField( fieldName ).matching( value ).createQuery();
+
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setProjection( FullTextQuery.ID );
+		List<Object[]> list = fullTextQuery.list();
+		return list.stream().map( item -> item[0] ).collect( Collectors.toList() );
 	}
 
 	@Override
