@@ -48,19 +48,19 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, String value) {
+	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value) {
 		return Search.session( session ).search( entityClass ).where(
 				f -> f.match().field( fieldName ).matching( value ) ).fetchHits( LIMIT );
 	}
 
 	@Override
-	public long count(Session session, Class<?> entityClass, String fieldName, String value) {
+	public long count(Session session, Class<?> entityClass, String fieldName, Object value) {
 		return Search.session( session ).search( entityClass ).where(
 				f -> f.match().field( fieldName ).matching( value ) ).fetchTotalHitCount();
 	}
 
 	@Override
-	public <E> List<E> range(Session session, Class<E> entityClass, String fieldName, String start, String end) {
+	public <E> List<E> range(Session session, Class<E> entityClass, String fieldName, Object start, Object end) {
 		return Search.session( session ).search( entityClass ).where(
 				f -> f.range().field( fieldName )
 						// include limits
@@ -69,7 +69,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, String value) {
+	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value) {
 		List<EntityReference> entityReferences = Search.session( session ).search( entityClass )
 				.selectEntityReference()
 				.where( f -> f.match().field( fieldName ).matching( value ) )

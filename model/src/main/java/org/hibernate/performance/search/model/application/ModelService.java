@@ -34,13 +34,13 @@ public interface ModelService {
 
 	<E> List<E> search(Session session, Class<E> entityClass);
 
-	<E> List<E> search(Session session, Class<E> entityClass, String fieldName, String value);
+	<E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value);
 
-	long count(Session session, Class<?> entityClass, String fieldName, String value);
+	long count(Session session, Class<?> entityClass, String fieldName, Object value);
 
-	<E> List<E> range(Session session, Class<E> entityClass, String fieldName, String start, String end);
+	<E> List<E> range(Session session, Class<E> entityClass, String fieldName, Object start, Object end);
 
-	List<Object> projectId(Session session, Class<?> entityClass, String fieldName, String value);
+	List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value);
 
 	void massIndexing(Session session) throws InterruptedException;
 

@@ -17,7 +17,6 @@ import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigur
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.ProgrammaticMappingConfigurationContext;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMappingStep;
-import org.hibernate.search.mapper.pojo.model.path.PojoModelPath;
 
 public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfigurer {
 
@@ -29,15 +28,13 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		company.indexed();
 		company.property( "legalName" ).keywordField();
 		company.property( "businessUnits" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "owner" ) );
+				.includeDepth( 1 );
 
 		TypeMappingStep businessUnit = mapping.type( BusinessUnit.class );
 		businessUnit.indexed();
 		businessUnit.property( "name" ).keywordField();
 		businessUnit.property( "owner" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "businessUnits" ) );
+				.includeDepth( 1 );
 
 		TypeMappingStep employee = mapping.type( Employee.class );
 		employee.indexed();
@@ -49,15 +46,13 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 				ReindexOnUpdate.NO );
 		employee.property( "manager" ).indexedEmbedded()
 				// index 3 managers up to the hierarchy
-				.includeDepth( 3 )
-				.associationInverseSide( PojoModelPath.parse( "employees" ) );
+				.includeDepth( 3 );
 
 		TypeMappingStep manager = mapping.type( Manager.class );
 		manager.indexed();
 		manager.property( "employees" ).indexedEmbedded()
 				// index 2 employee-levels down to the hierarchy
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "manager" ) );
+				.includeDepth( 1 );
 
 		TypeMappingStep questionnaireDefinition = mapping.type( QuestionnaireDefinition.class );
 		questionnaireDefinition.indexed();
@@ -65,14 +60,12 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		questionnaireDefinition.property( "description" ).fullTextField();
 		questionnaireDefinition.property( "year" ).genericField();
 		questionnaireDefinition.property( "questions" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
+				.includeDepth( 1 );
 
 		TypeMappingStep question = mapping.type( Question.class );
 		question.indexed();
 		question.property( "questionnaire" ).indexedEmbedded()
-				.includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "questions" ) );
+				.includeDepth( 1 );
 		question.property( "text" ).fullTextField();
 
 		TypeMappingStep openQuestion = mapping.type( OpenQuestion.class );
@@ -85,10 +78,8 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		TypeMappingStep questionnaireInstance = mapping.type( QuestionnaireInstance.class );
 		questionnaireInstance.indexed();
 		questionnaireInstance.property( "uniqueCode" ).genericField();
-		questionnaireInstance.property( "openAnswers" ).indexedEmbedded().includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
-		questionnaireInstance.property( "closedAnswers" ).indexedEmbedded().includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "questionnaire" ) );
+		questionnaireInstance.property( "openAnswers" ).indexedEmbedded().includeDepth( 1 );
+		questionnaireInstance.property( "closedAnswers" ).indexedEmbedded().includeDepth( 1 );
 		questionnaireInstance.property( "definition" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "approval" ).indexedEmbedded().indexingDependency()
@@ -98,16 +89,14 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
 		openAnswer.indexed();
-		openAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "openAnswers" ) );
+		openAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 );
 		openAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		openAnswer.property( "text" ).fullTextField();
 
 		TypeMappingStep closedAnswer = mapping.type( ClosedAnswer.class );
 		closedAnswer.indexed();
-		closedAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 )
-				.associationInverseSide( PojoModelPath.parse( "closedAnswers" ) );
+		closedAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 );
 		closedAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		closedAnswer.property( "choice" ).genericField();

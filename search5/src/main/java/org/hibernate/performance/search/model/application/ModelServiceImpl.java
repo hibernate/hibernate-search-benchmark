@@ -52,7 +52,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, String value) {
+	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 
 		QueryBuilder b = fullTextSession.getSearchFactory()
@@ -65,7 +65,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public long count(Session session, Class<?> entityClass, String fieldName, String value) {
+	public long count(Session session, Class<?> entityClass, String fieldName, Object value) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 
 		QueryBuilder b = fullTextSession.getSearchFactory()
@@ -80,7 +80,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public <E> List<E> range(Session session, Class<E> entityClass, String fieldName, String start, String end) {
+	public <E> List<E> range(Session session, Class<E> entityClass, String fieldName, Object start, Object end) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 
 		QueryBuilder b = fullTextSession.getSearchFactory()
@@ -95,7 +95,7 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, String value) {
+	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 
 		QueryBuilder b = fullTextSession.getSearchFactory()
