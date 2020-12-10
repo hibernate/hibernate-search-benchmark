@@ -2,10 +2,12 @@ package org.hibernate.performance.search.model.entity.answer;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
@@ -24,8 +26,18 @@ public class QuestionnaireInstance {
 		SELF, MANAGER, COLLEAGUE, COLLABORATOR
 	}
 
-	@EmbeddedId
-	private QuestionnaireInstanceId id;
+	@Id
+	@GeneratedValue
+	protected Integer id;
+
+	@ManyToOne
+	private QuestionnaireDefinition definition;
+
+	@ManyToOne
+	private Employee approval;
+
+	@ManyToOne
+	private Employee subject;
 
 	@NaturalId
 	private String uniqueCode;
@@ -46,19 +58,21 @@ public class QuestionnaireInstance {
 
 	public QuestionnaireInstance(QuestionnaireDefinition definition, Employee approval, Employee subject,
 			EvaluationType evaluationType) {
-		this.id = new QuestionnaireInstanceId( definition, approval, subject );
-		this.uniqueCode = id.getUniqueCode();
+		this.definition = definition;
+		this.approval = approval;
+		this.subject = subject;
+		this.uniqueCode = getUniqueCode();
 		this.evaluationType = evaluationType;
 
 		initAnswers();
 	}
 
 	public Employee getSubject() {
-		return id.getSubject();
+		return subject;
 	}
 
 	public Integer getYear() {
-		return id.getDefinition().getYear();
+		return definition.getYear();
 	}
 
 	public int getMaxScore() {
@@ -77,9 +91,17 @@ public class QuestionnaireInstance {
 		return result;
 	}
 
+	public String getUniqueCode() {
+		return definition.getId() + ":" + approval.getId() + ":" + subject.getId();
+	}
+
 	@SuppressWarnings("unchecked")
 	private void initAnswers() {
-		List<Question> questions = id.getDefinition().getQuestions();
+		List<Question> questions = definition.getQuestions();
+		if ( questions == null || questions.isEmpty() ) {
+			return;
+		}
+
 		closedAnswers = new ArrayList<>( questions.size() );
 		openAnswers = new ArrayList<>( questions.size() );
 

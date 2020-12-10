@@ -110,7 +110,7 @@ public class EmployeeRepository {
 		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
-				.where( builder.equal( root.get( "id" ).get( "subject" ), subject ) );
+				.where( builder.equal( root.get( "subject" ), subject ) );
 		return entityManager.createQuery( query ).getResultList();
 	}
 }

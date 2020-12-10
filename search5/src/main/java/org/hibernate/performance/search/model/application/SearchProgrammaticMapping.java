@@ -9,14 +9,12 @@ import org.hibernate.performance.search.model.entity.Manager;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
-import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstanceId;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.cfg.EntityMapping;
 import org.hibernate.search.cfg.IndexedMapping;
 import org.hibernate.search.cfg.PropertyMapping;
 import org.hibernate.search.cfg.SearchMapping;
@@ -48,7 +46,6 @@ public final class SearchProgrammaticMapping {
 		// Employee
 		IndexedMapping employee = mapping.entity( Employee.class ).indexed();
 		employee
-				.property( "id", ElementType.FIELD ).documentId()
 				.property( "name", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "surname", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "socialSecurityNumber", ElementType.FIELD ).field().analyze( Analyze.NO )
@@ -96,8 +93,10 @@ public final class SearchProgrammaticMapping {
 		// QuestionnaireInstance
 		IndexedMapping questionnaireInstance = mapping.entity( QuestionnaireInstance.class ).indexed();
 		questionnaireInstance
-				.property( "uniqueCode", ElementType.FIELD ).documentId()
-				.property( "id", ElementType.FIELD ).indexEmbedded();
+				.property( "uniqueCode", ElementType.FIELD ).field().analyze( Analyze.NO )
+				.property( "definition", ElementType.FIELD ).indexEmbedded()
+				.property( "approval", ElementType.FIELD ).indexEmbedded()
+				.property( "subject", ElementType.FIELD ).indexEmbedded();
 
 		PropertyMapping closedAnswers = questionnaireInstance.property( "closedAnswers", ElementType.FIELD );
 		closedAnswers.indexEmbedded().depth( 1 );
@@ -106,11 +105,6 @@ public final class SearchProgrammaticMapping {
 		PropertyMapping openAnswers = questionnaireInstance.property( "openAnswers", ElementType.FIELD );
 		openAnswers.indexEmbedded().depth( 1 );
 		openAnswers.containedIn();
-
-		EntityMapping qiId = mapping.entity( QuestionnaireInstanceId.class );
-		qiId.property( "definition", ElementType.FIELD ).indexEmbedded()
-			.property( "approval", ElementType.FIELD ).indexEmbedded()
-			.property( "subject", ElementType.FIELD ).indexEmbedded();
 
 		// OpenAnswer
 		IndexedMapping openAnswer = mapping.entity( OpenAnswer.class ).indexed();
