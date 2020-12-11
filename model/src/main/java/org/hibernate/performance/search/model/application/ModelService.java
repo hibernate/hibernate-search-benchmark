@@ -40,6 +40,8 @@ public interface ModelService {
 
 	<E> List<E> range(Session session, Class<E> entityClass, String fieldName, Object start, Object end);
 
+	<E> List<E> rangeOrderBy(Session session, Class<E> entityClass, String fieldName, Object start, Object end);
+
 	List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value);
 
 	void massIndexing(Session session) throws InterruptedException;

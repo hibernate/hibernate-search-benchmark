@@ -72,7 +72,8 @@ public final class SearchProgrammaticMapping {
 		questionnaireDefinition.property( "id", ElementType.FIELD ).documentId();
 		questionnaireDefinition.property( "title", ElementType.FIELD ).field();
 		questionnaireDefinition.property( "description", ElementType.FIELD ).field();
-		questionnaireDefinition.property( "year", ElementType.FIELD ).field().numericField();
+		questionnaireDefinition.property( "year", ElementType.FIELD ).field().numericField().sortableField();
+		questionnaireDefinition.property( "company", ElementType.FIELD ).indexEmbedded();
 
 		PropertyMapping questions = questionnaireDefinition.property( "questions", ElementType.FIELD );
 		questions.indexEmbedded().depth( 1 );

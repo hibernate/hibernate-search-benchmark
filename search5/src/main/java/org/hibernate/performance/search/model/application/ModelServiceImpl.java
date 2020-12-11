@@ -95,6 +95,25 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> rangeOrderBy(Session session, Class<E> entityClass, String fieldName, Object start, Object end) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+
+		QueryBuilder b = fullTextSession.getSearchFactory()
+				.buildQueryBuilder().forEntity( entityClass ).get();
+
+		// include limits
+		org.apache.lucene.search.Query luceneQuery = b.range().onField( fieldName ).from( start ).to( end )
+				.createQuery();
+
+		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+
+		// sorted by the same field on which we apply the range
+		fullTextQuery.setSort( b.sort().byField( fieldName ).createSort() );
+
+		return fullTextQuery.list();
+	}
+
+	@Override
 	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 

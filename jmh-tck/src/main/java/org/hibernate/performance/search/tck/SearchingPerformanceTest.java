@@ -11,6 +11,8 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
+import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -119,6 +121,34 @@ public class SearchingPerformanceTest {
 			// traverse the tree down
 			List<Manager> managers = modelService.search( session, Manager.class, "employees.name", "name77" );
 			blackhole.consume( managers );
+		}
+	}
+
+	@Benchmark
+	public void questions(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// range and order on numeric field
+			List<QuestionnaireDefinition> questionnaires = modelService.rangeOrderBy(
+					session, QuestionnaireDefinition.class, "year", 2021, 2025 );
+			blackhole.consume( questionnaires );
+
+			// full text search
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "title", "2023" );
+			blackhole.consume( questionnaires );
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "description", "2025" );
+			blackhole.consume( questionnaires );
+
+			// indexEmbedded match
+			long count = modelService.count( session, QuestionnaireDefinition.class, "company.legalName", "Company0" );
+			blackhole.consume( count );
+
+			// full text search on indexEmbedded
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "questions.text", "2022" );
+			blackhole.consume( questionnaires );
+
+			// numeric field
+			List<ClosedQuestion> questions = modelService.search( session, ClosedQuestion.class, "weight", 7 );
+			blackhole.consume( questions );
 		}
 	}
 }

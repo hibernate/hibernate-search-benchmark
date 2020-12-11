@@ -12,6 +12,7 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigurer;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -60,9 +61,11 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		TypeMappingStep questionnaireDefinition = mapping.type( QuestionnaireDefinition.class );
 		questionnaireDefinition.indexed();
 		questionnaireDefinition.property( "id" ).genericField();
-		questionnaireDefinition.property( "title" ).fullTextField();
-		questionnaireDefinition.property( "description" ).fullTextField();
-		questionnaireDefinition.property( "year" ).genericField();
+		questionnaireDefinition.property( "title" ).fullTextField().analyzer( "default" );
+		questionnaireDefinition.property( "description" ).fullTextField().analyzer( "default" );
+		questionnaireDefinition.property( "year" ).genericField().sortable( Sortable.YES );
+		questionnaireDefinition.property( "company" ).indexedEmbedded()
+				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireDefinition.property( "questions" ).indexedEmbedded()
 				.includeDepth( 1 );
 
@@ -71,7 +74,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		question.property( "id" ).genericField();
 		question.property( "questionnaire" ).indexedEmbedded()
 				.includeDepth( 1 );
-		question.property( "text" ).fullTextField();
+		question.property( "text" ).fullTextField().analyzer( "default" );
 
 		TypeMappingStep openQuestion = mapping.type( OpenQuestion.class );
 		openQuestion.indexed();
@@ -99,7 +102,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		openAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 );
 		openAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
-		openAnswer.property( "text" ).fullTextField();
+		openAnswer.property( "text" ).fullTextField().analyzer( "default" );
 
 		TypeMappingStep closedAnswer = mapping.type( ClosedAnswer.class );
 		closedAnswer.indexed();

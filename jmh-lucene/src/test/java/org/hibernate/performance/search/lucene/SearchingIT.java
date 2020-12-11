@@ -13,6 +13,8 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
+import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-@TestInstance( TestInstance.Lifecycle.PER_CLASS )
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchingIT {
 
 	private SessionFactory sessionFactory;
@@ -99,7 +101,8 @@ public class SearchingIT {
 
 			// range
 			employees = modelService.range( session, Employee.class, "socialSecurityNumber",
-					"socialSecurityNumber32", "socialSecurityNumber41" );
+					"socialSecurityNumber32", "socialSecurityNumber41"
+			);
 			assertThat( employees ).extracting( "id" )
 					.containsExactlyInAnyOrder( 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41 );
 
@@ -125,4 +128,31 @@ public class SearchingIT {
 		}
 	}
 
+	@Test
+	public void questions() {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// range and order on numeric field
+			List<QuestionnaireDefinition> questionnaires = modelService.rangeOrderBy(
+					session, QuestionnaireDefinition.class, "year", 2021, 2025 );
+			assertThat( questionnaires ).extracting( "id" ).containsExactly( 1, 2, 3, 4, 5 );
+
+			// full text search
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "title", "2023" );
+			assertThat( questionnaires ).extracting( "id" ).containsExactly( 3 );
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "description", "2025" );
+			assertThat( questionnaires ).extracting( "id" ).containsExactly( 5 );
+
+			// indexEmbedded match
+			long count = modelService.count( session, QuestionnaireDefinition.class, "company.legalName", "Company0" );
+			assertThat( count ).isEqualTo( 10 );
+
+			// full text search on indexEmbedded
+			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "questions.text", "2022" );
+			assertThat( questionnaires ).extracting( "id" ).containsExactly( 2 );
+
+			// numeric field
+			List<ClosedQuestion> questions = modelService.search( session, ClosedQuestion.class, "weight", 7 );
+			assertThat( questions ).hasSize( 40 );
+		}
+	}
 }

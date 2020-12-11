@@ -69,6 +69,17 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> rangeOrderBy(Session session, Class<E> entityClass, String fieldName, Object start, Object end) {
+		return Search.session( session ).search( entityClass ).where(
+				f -> f.range().field( fieldName )
+						// include limits
+						.between( start, RangeBoundInclusion.INCLUDED, end, RangeBoundInclusion.INCLUDED ) )
+				// sorted by the same field on which we apply the range
+				.sort( f -> f.field( fieldName ) )
+				.fetchHits( LIMIT );
+	}
+
+	@Override
 	public List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value) {
 		List<EntityReference> entityReferences = Search.session( session ).search( entityClass )
 				.selectEntityReference()
