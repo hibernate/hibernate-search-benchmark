@@ -56,8 +56,12 @@ public class SearchingPerformanceTest {
 			companies = modelService.search( session, Company.class, "legalName", "CompanyX" );
 			blackhole.consume( companies );
 
-			// nested match
+			// indexEmbedded match
 			companies = modelService.search( session, Company.class, "businessUnits.name", "Unit7" );
+			blackhole.consume( companies );
+
+			// search by id
+			companies = modelService.search( session, Company.class, "id", 0 );
 			blackhole.consume( companies );
 		}
 	}
@@ -73,7 +77,7 @@ public class SearchingPerformanceTest {
 			businessUnits = modelService.search( session, BusinessUnit.class, "name", "UnitX" );
 			blackhole.consume( businessUnits );
 
-			// nested match
+			// indexEmbedded match
 			businessUnits = modelService.search( session, BusinessUnit.class, "owner.legalName", "Company0" );
 			blackhole.consume( businessUnits );
 		}
@@ -99,7 +103,7 @@ public class SearchingPerformanceTest {
 					"socialSecurityNumber32", "socialSecurityNumber41" );
 			blackhole.consume( employees );
 
-			// nested match
+			// indexEmbedded match
 			count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
 			blackhole.consume( count );
 

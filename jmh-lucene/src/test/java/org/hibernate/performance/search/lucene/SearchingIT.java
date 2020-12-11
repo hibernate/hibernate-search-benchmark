@@ -54,8 +54,12 @@ public class SearchingIT {
 			companies = modelService.search( session, Company.class, "legalName", "CompanyX" );
 			assertThat( companies ).isEmpty();
 
-			// nested match
+			// indexEmbedded match
 			companies = modelService.search( session, Company.class, "businessUnits.name", "Unit7" );
+			assertThat( companies ).hasSize( 1 );
+
+			// search by id
+			companies = modelService.search( session, Company.class, "id", 0 );
 			assertThat( companies ).hasSize( 1 );
 		}
 	}
@@ -71,7 +75,7 @@ public class SearchingIT {
 			businessUnits = modelService.search( session, BusinessUnit.class, "name", "UnitX" );
 			assertThat( businessUnits ).isEmpty();
 
-			// nested match
+			// indexEmbedded match
 			businessUnits = modelService.search( session, BusinessUnit.class, "owner.legalName", "Company0" );
 			assertThat( businessUnits ).hasSize( 10 );
 		}
@@ -98,7 +102,7 @@ public class SearchingIT {
 			assertThat( employees ).extracting( "id" )
 					.containsExactlyInAnyOrder( 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41 );
 
-			// nested match
+			// indexEmbedded match
 			count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
 			assertThat( count ).isEqualTo( 100 );
 
