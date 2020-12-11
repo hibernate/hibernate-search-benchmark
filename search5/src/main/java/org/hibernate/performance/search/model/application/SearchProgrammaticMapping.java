@@ -53,19 +53,18 @@ public final class SearchProgrammaticMapping {
 				.property( "surname", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "socialSecurityNumber", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "company", ElementType.FIELD ).indexEmbedded()
-				.property( "businessUnit", ElementType.FIELD ).indexEmbedded()
-				// index 3 managers up to the hierarchy
-				.property( "manager", ElementType.FIELD ).indexEmbedded().depth( 3 );
+				.property( "businessUnit", ElementType.FIELD ).indexEmbedded();
 
 		PropertyMapping managerProperty = employee.property( "manager", ElementType.FIELD );
-		managerProperty.indexEmbedded().depth( 1 );
+		// index 4 managers up to the hierarchy
+		managerProperty.indexEmbedded().depth( 4 );
 		managerProperty.containedIn();
 
 		// Manager
 		IndexedMapping manager = mapping.entity( Manager.class ).indexed();
 		PropertyMapping employees = manager.property( "employees", ElementType.FIELD );
-		// index 2 employee-levels down to the hierarchy
-		employees.indexEmbedded().depth( 2 );
+		// index 1 employee-levels down to the hierarchy
+		employees.indexEmbedded().depth( 1 );
 		employees.containedIn();
 
 		// QuestionnaireDefinition

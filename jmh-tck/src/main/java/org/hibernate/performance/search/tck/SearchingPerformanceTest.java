@@ -10,6 +10,7 @@ import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
+import org.hibernate.performance.search.model.entity.Manager;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -110,6 +111,14 @@ public class SearchingPerformanceTest {
 			// projection
 			List<Object> ids = modelService.projectId( session, Employee.class, "businessUnit.name", "Unit7" );
 			blackhole.consume( ids );
+
+			// traverse the tree up
+			employees = modelService.search( session, Employee.class, "manager.manager.manager.manager.name", "name0" );
+			blackhole.consume( employees );
+
+			// traverse the tree down
+			List<Manager> managers = modelService.search( session, Manager.class, "employees.name", "name77" );
+			blackhole.consume( managers );
 		}
 	}
 }

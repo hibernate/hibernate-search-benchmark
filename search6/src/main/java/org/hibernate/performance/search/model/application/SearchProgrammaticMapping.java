@@ -48,13 +48,13 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		employee.property( "businessUnit" ).indexedEmbedded().indexingDependency().reindexOnUpdate(
 				ReindexOnUpdate.NO );
 		employee.property( "manager" ).indexedEmbedded()
-				// index 3 managers up to the hierarchy
-				.includeDepth( 3 );
+				// index 4 managers up to the hierarchy
+				.includeDepth( 4 );
 
 		TypeMappingStep manager = mapping.type( Manager.class );
 		manager.indexed();
 		manager.property( "employees" ).indexedEmbedded()
-				// index 2 employee-levels down to the hierarchy
+				// index 1 employee-level down to the hierarchy
 				.includeDepth( 1 );
 
 		TypeMappingStep questionnaireDefinition = mapping.type( QuestionnaireDefinition.class );

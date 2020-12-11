@@ -12,6 +12,7 @@ import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
+import org.hibernate.performance.search.model.entity.Manager;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.AfterAll;
@@ -109,6 +110,18 @@ public class SearchingIT {
 			// projection
 			List<Object> ids = modelService.projectId( session, Employee.class, "businessUnit.name", "Unit7" );
 			assertThat( ids ).containsExactlyInAnyOrder( 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 );
+
+			// traverse the tree up
+			employees = modelService.search( session, Employee.class, "manager.manager.manager.manager.name", "name0" );
+			assertThat( employees ).extracting( "id" ).containsExactlyInAnyOrder(
+					71, 72, 73, 74, 75, 76, 77, 78, 79,
+					81, 82, 83, 84, 85, 86, 87, 88, 89,
+					91, 92, 93, 94, 95, 96, 97, 98, 99
+			);
+
+			// traverse the tree down
+			List<Manager> managers = modelService.search( session, Manager.class, "employees.name", "name77" );
+			assertThat( managers ).extracting( "id" ).containsExactlyInAnyOrder( 70 );
 		}
 	}
 
