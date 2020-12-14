@@ -12,6 +12,7 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigurer;
@@ -118,7 +119,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		performanceSummary.property( "employee" ).indexedEmbedded().includeDepth( 3 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		performanceSummary.property( "year" ).genericField();
-		performanceSummary.property( "maxScore" ).genericField();
-		performanceSummary.property( "employeeScore" ).genericField();
+		performanceSummary.property( "maxScore" ).genericField().projectable( Projectable.YES );
+		performanceSummary.property( "employeeScore" ).genericField().projectable( Projectable.YES );
 	}
 }

@@ -33,7 +33,7 @@ public class AutomaticIndexingIT {
 			);
 
 			try ( Session session = sessionFactory.openSession() ) {
-				List<Employee> search = modelService.search( session, Employee.class );
+				List<Employee> search = modelService.search( session, Employee.class, 100 );
 				Assertions.assertThat( search ).hasSize( 1 );
 
 				search = modelService.search( session, Employee.class, "id", 1 );

@@ -15,6 +15,7 @@ import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.search.cfg.IndexedMapping;
 import org.hibernate.search.cfg.PropertyMapping;
 import org.hibernate.search.cfg.SearchMapping;
@@ -138,8 +139,8 @@ public final class SearchProgrammaticMapping {
 				.property( "id", ElementType.FIELD ).documentId()
 				.property( "employee", ElementType.FIELD ).indexEmbedded().depth( 3 )
 				.property( "year", ElementType.FIELD ).field().numericField()
-				.property( "maxScore", ElementType.FIELD ).field().numericField()
-				.property( "employeeScore", ElementType.FIELD ).field().numericField();
+				.property( "maxScore", ElementType.FIELD ).field().numericField().store( Store.YES )
+				.property( "employeeScore", ElementType.FIELD ).field().numericField().store( Store.YES );
 
 		return mapping;
 	}

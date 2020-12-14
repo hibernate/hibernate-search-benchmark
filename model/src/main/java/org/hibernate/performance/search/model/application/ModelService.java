@@ -32,9 +32,12 @@ public interface ModelService {
 
 	Properties properties(Kind kind);
 
-	<E> List<E> search(Session session, Class<E> entityClass);
+	<E> List<E> search(Session session, Class<E> entityClass, Integer limit);
 
 	<E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value);
+
+	<E> List<E> searchAnd(Session session, Class<E> entityClass, String fieldName1, Object value1,
+			String fieldName2, Object value2);
 
 	long count(Session session, Class<?> entityClass, String fieldName, Object value);
 
@@ -43,6 +46,9 @@ public interface ModelService {
 	<E> List<E> rangeOrderBy(Session session, Class<E> entityClass, String fieldName, Object start, Object end);
 
 	List<Object> projectId(Session session, Class<?> entityClass, String fieldName, Object value);
+
+	List<List<?>> project(Session session, Class<?> entityClass, String fieldName1, Object value1,
+			String fieldName2, Object value2, String projectedField1, String projectedField2);
 
 	void massIndexing(Session session) throws InterruptedException;
 

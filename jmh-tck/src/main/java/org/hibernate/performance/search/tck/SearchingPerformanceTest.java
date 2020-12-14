@@ -11,6 +11,11 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.answer.Answer;
+import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
+import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
@@ -149,6 +154,47 @@ public class SearchingPerformanceTest {
 			// numeric field
 			List<ClosedQuestion> questions = modelService.search( session, ClosedQuestion.class, "weight", 7 );
 			blackhole.consume( questions );
+		}
+	}
+
+	@Benchmark
+	public void answers(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// find all bounded
+			List<QuestionnaireInstance> questionnaires = modelService
+					.search( session, QuestionnaireInstance.class, 12080 );
+			blackhole.consume( questionnaires );
+
+			// find unbounded
+			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
+			blackhole.consume( search );
+
+			// high-match count on full text field
+			long count = modelService.count( session, OpenAnswer.class, "text", "search" );
+			blackhole.consume( count );
+
+			// high-match range
+			List<ClosedAnswer> closedAnswers = modelService.range( session, ClosedAnswer.class, "choice", 5, 7 );
+			blackhole.consume( closedAnswers );
+
+			// high-match on nested full text field
+			questionnaires = modelService.search(
+					session, QuestionnaireInstance.class, "openAnswers.text", "annotation" );
+			blackhole.consume( questionnaires );
+
+			// more predicates
+			closedAnswers = modelService.searchAnd(
+					session, ClosedAnswer.class, "questionnaire.uniqueCode", "0:0:0", "choice", 7 );
+			blackhole.consume( closedAnswers );
+
+			List<PerformanceSummary> performances = modelService.searchAnd(
+					session, PerformanceSummary.class, "employee.manager.manager.surname", "surname0", "year", 2025 );
+			blackhole.consume( performances );
+			List<List<?>> projections = modelService.project(
+					session, PerformanceSummary.class, "employee.surname", "surname77", "year", 2025, "maxScore",
+					"employeeScore"
+			);
+			blackhole.consume( projections );
 		}
 	}
 }

@@ -2,6 +2,7 @@ package org.hibernate.performance.search.lucene;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,6 +14,11 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.answer.Answer;
+import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
+import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
@@ -155,4 +161,48 @@ public class SearchingIT {
 			assertThat( questions ).hasSize( 40 );
 		}
 	}
+
+	@Test
+	public void answers() {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// find all bounded
+			List<QuestionnaireInstance> questionnaires = modelService
+					.search( session, QuestionnaireInstance.class, 12080 );
+			assertThat( questionnaires ).hasSize( 11880 );
+
+			// find unbounded
+			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
+			assertThat( search ).hasSize( 237600 );
+
+			// high-match count on full text field
+			long count = modelService.count( session, OpenAnswer.class, "text", "search" );
+			assertThat( count ).isEqualTo( 44383 );
+
+			// high-match range
+			List<ClosedAnswer> closedAnswers = modelService.range( session, ClosedAnswer.class, "choice", 5, 7 );
+			// 100 is the max results
+			assertThat( closedAnswers ).hasSize( 100 );
+
+			// high-match on nested full text field
+			questionnaires = modelService.search(
+					session, QuestionnaireInstance.class, "openAnswers.text", "annotation" );
+			// 100 is the max results
+			assertThat( questionnaires ).hasSize( 100 );
+
+			// more predicates
+			closedAnswers = modelService.searchAnd(
+					session, ClosedAnswer.class, "questionnaire.uniqueCode", "0:0:0", "choice", 7 );
+			assertThat( closedAnswers ).extracting( "id" ).containsExactly( 241 );
+
+			List<PerformanceSummary> performances = modelService.searchAnd(
+					session, PerformanceSummary.class, "employee.manager.manager.surname", "surname0", "year", 2025 );
+			assertThat( performances ).hasSize( 22 );
+			List<List<?>> projections = modelService.project(
+					session, PerformanceSummary.class, "employee.surname", "surname77", "year", 2025, "maxScore",
+					"employeeScore"
+			);
+			assertThat( projections ).containsExactly( Arrays.asList( 4480, 2333 ) );
+		}
+	}
+
 }

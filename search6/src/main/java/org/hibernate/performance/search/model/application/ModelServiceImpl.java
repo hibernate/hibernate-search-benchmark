@@ -5,12 +5,18 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
+import org.hibernate.search.engine.search.predicate.SearchPredicate;
+import org.hibernate.search.engine.search.predicate.dsl.MatchPredicateOptionsStep;
+import org.hibernate.search.engine.search.projection.SearchProjection;
+import org.hibernate.search.engine.search.projection.dsl.FieldProjectionValueStep;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.automaticindexing.AutomaticIndexingStrategyName;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
 import org.hibernate.search.mapper.orm.common.EntityReference;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
+import org.hibernate.search.mapper.orm.scope.SearchScope;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.hibernate.search.util.common.data.RangeBoundInclusion;
 
 public class ModelServiceImpl implements ModelService {
@@ -43,14 +49,27 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
-	public <E> List<E> search(Session session, Class<E> entityClass) {
-		return Search.session( session ).search( entityClass ).where( f -> f.matchAll() ).fetchHits( LIMIT );
+	public <E> List<E> search(Session session, Class<E> entityClass, Integer limit) {
+		return Search.session( session ).search( entityClass ).where( f -> f.matchAll() ).fetchHits( limit );
 	}
 
 	@Override
 	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value) {
 		return Search.session( session ).search( entityClass ).where(
 				f -> f.match().field( fieldName ).matching( value ) ).fetchHits( LIMIT );
+	}
+
+	@Override
+	public <E> List<E> searchAnd(Session session, Class<E> entityClass, String fieldName1, Object value1,
+			String fieldName2, Object value2) {
+		SearchSession searchSession = Search.session( session );
+
+		SearchScope<E> scope = searchSession.scope( entityClass );
+		MatchPredicateOptionsStep<?> matching1 = scope.predicate().match().field( fieldName1 ).matching( value1 );
+		MatchPredicateOptionsStep<?> matching2 = scope.predicate().match().field( fieldName2 ).matching( value2 );
+		SearchPredicate predicate = scope.predicate().bool().must( matching1 ).must( matching2 ).toPredicate();
+
+		return searchSession.search( scope ).where( predicate ).fetchHits( LIMIT );
 	}
 
 	@Override
@@ -87,6 +106,25 @@ public class ModelServiceImpl implements ModelService {
 				.fetchHits( LIMIT );
 
 		return entityReferences.stream().map( a -> a.id() ).collect( Collectors.toList() );
+	}
+
+	@Override
+	public List<List<?>> project(Session session, Class<?> entityClass, String fieldName1, Object value1,
+			String fieldName2, Object value2, String projectedField1, String projectedField2) {
+		SearchSession searchSession = Search.session( session );
+
+		SearchScope<?> scope = searchSession.scope( entityClass );
+
+		FieldProjectionValueStep<?, Object> projection1 = scope.projection().field( projectedField1 );
+		FieldProjectionValueStep<?, Object> projection2 = scope.projection().field( projectedField2 );
+		SearchProjection<List<?>> projection = scope.projection().composite( projection1, projection2 )
+				.toProjection();
+
+		MatchPredicateOptionsStep<?> matching1 = scope.predicate().match().field( fieldName1 ).matching( value1 );
+		MatchPredicateOptionsStep<?> matching2 = scope.predicate().match().field( fieldName2 ).matching( value2 );
+		SearchPredicate predicate = scope.predicate().bool().must( matching1 ).must( matching2 ).toPredicate();
+
+		return searchSession.search( scope ).select( projection ).where( predicate ).fetchHits( LIMIT );
 	}
 
 	@Override
