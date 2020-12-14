@@ -33,6 +33,7 @@ public class Scorer {
 
 	private void generateScoreForQuestionnaires(Employee employee) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			session.refresh( employee );
 			EmployeeRepository repository = new EmployeeRepository( session );
 			List<PerformanceSummary> performanceSummaries = repository.findByEmployee( employee );
 			List<QuestionnaireInstance> questionnaireInstances = repository.findBySubject( employee );
