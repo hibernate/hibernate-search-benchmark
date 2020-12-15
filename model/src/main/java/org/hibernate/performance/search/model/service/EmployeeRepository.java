@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.performance.search.model.entity.Company;
@@ -29,6 +30,15 @@ public class EmployeeRepository {
 		Root<Employee> root = criteria.from( Employee.class );
 		CriteriaQuery<Employee> query = criteria.select( root )
 				.where( builder.equal( root.get( "company" ), company ) );
+		return entityManager.createQuery( query ).getResultList();
+	}
+
+	public List<Employee> getEmployees(Integer businessUnitId) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Employee> criteria = builder.createQuery( Employee.class );
+		Root<Employee> root = criteria.from( Employee.class );
+		CriteriaQuery<Employee> query = criteria.select( root )
+				.where( builder.equal( root.get( "businessUnit" ).get( "id" ), businessUnitId ) );
 		return entityManager.createQuery( query ).getResultList();
 	}
 
@@ -111,6 +121,20 @@ public class EmployeeRepository {
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
 				.where( builder.equal( root.get( "subject" ), subject ) );
+		return entityManager.createQuery( query ).getResultList();
+	}
+
+	public List<QuestionnaireInstance> findByApprovalOrSubject(Employee employee) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
+		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
+
+		Predicate subjectPredicate = builder.equal( root.get( "subject" ), employee );
+		Predicate employeePredicate = builder.equal( root.get( "approval" ), employee );
+
+		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
+				.where( builder.or( subjectPredicate, employeePredicate ) );
+
 		return entityManager.createQuery( query ).getResultList();
 	}
 }

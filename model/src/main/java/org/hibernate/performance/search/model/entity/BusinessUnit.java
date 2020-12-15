@@ -11,7 +11,7 @@ public class BusinessUnit extends IdEntity {
 	@ManyToOne
 	private Company owner;
 
-	private BusinessUnit() {
+	public BusinessUnit() {
 	}
 
 	public BusinessUnit(Integer id, String name, Company owner) {

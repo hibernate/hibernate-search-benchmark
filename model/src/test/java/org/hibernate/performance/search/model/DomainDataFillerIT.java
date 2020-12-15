@@ -7,13 +7,12 @@ import java.util.Properties;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
-import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
-import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
@@ -44,15 +43,23 @@ public class DomainDataFillerIT {
 				assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 100 );
 
 				assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 11880 );
-				assertThat( repository.count( OpenAnswer.class ) ).isEqualTo( 118800 );
-				assertThat( repository.count( ClosedAnswer.class ) ).isEqualTo( 118800 );
+				assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 118800 );
+				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 118800 );
 			}
+
+			new DomainDataRemover( sessionFactory ).deleteData( 9 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );
 
-				assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 118800 );
-				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 118800 );
+				assertThat( repository.count( Company.class ) ).isEqualTo( 1 );
+				assertThat( repository.count( BusinessUnit.class ) ).isEqualTo( 9 );
+				assertThat( repository.count( Manager.class ) ).isEqualTo( 9 );
+				assertThat( repository.count( Employee.class ) ).isEqualTo( 90 );
+
+				assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 10680 );
+				assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 106800 );
+				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 106800 );
 			}
 		}
 	}

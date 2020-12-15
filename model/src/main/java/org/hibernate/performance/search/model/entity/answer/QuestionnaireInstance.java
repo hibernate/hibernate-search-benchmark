@@ -46,11 +46,11 @@ public class QuestionnaireInstance {
 	private EvaluationType evaluationType;
 
 	@OneToMany(mappedBy = "questionnaire")
-	@Cascade(CascadeType.PERSIST)
+	@Cascade(CascadeType.ALL)
 	private List<ClosedAnswer> closedAnswers;
 
 	@OneToMany(mappedBy = "questionnaire")
-	@Cascade(CascadeType.PERSIST)
+	@Cascade(CascadeType.ALL)
 	private List<OpenAnswer> openAnswers;
 
 	private QuestionnaireInstance() {
