@@ -21,8 +21,6 @@ import org.hibernate.search.util.common.data.RangeBoundInclusion;
 
 public class ModelServiceImpl implements ModelService {
 
-	private static final int LIMIT = 100;
-
 	@Override
 	public Properties properties(Kind kind) {
 		Properties config = new Properties();
@@ -56,7 +54,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public <E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value) {
 		return Search.session( session ).search( entityClass ).where(
-				f -> f.match().field( fieldName ).matching( value ) ).fetchHits( LIMIT );
+				f -> f.match().field( fieldName ).matching( value ) ).fetchHits( DEFAULT_LIMIT );
 	}
 
 	@Override
@@ -69,7 +67,7 @@ public class ModelServiceImpl implements ModelService {
 		MatchPredicateOptionsStep<?> matching2 = scope.predicate().match().field( fieldName2 ).matching( value2 );
 		SearchPredicate predicate = scope.predicate().bool().must( matching1 ).must( matching2 ).toPredicate();
 
-		return searchSession.search( scope ).where( predicate ).fetchHits( LIMIT );
+		return searchSession.search( scope ).where( predicate ).fetchHits( DEFAULT_LIMIT );
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class ModelServiceImpl implements ModelService {
 				f -> f.range().field( fieldName )
 						// include limits
 						.between( start, RangeBoundInclusion.INCLUDED, end, RangeBoundInclusion.INCLUDED ) )
-				.fetchHits( LIMIT );
+				.fetchHits( DEFAULT_LIMIT );
 	}
 
 	@Override
@@ -95,7 +93,7 @@ public class ModelServiceImpl implements ModelService {
 						.between( start, RangeBoundInclusion.INCLUDED, end, RangeBoundInclusion.INCLUDED ) )
 				// sorted by the same field on which we apply the range
 				.sort( f -> f.field( fieldName ) )
-				.fetchHits( LIMIT );
+				.fetchHits( DEFAULT_LIMIT );
 	}
 
 	@Override
@@ -103,7 +101,7 @@ public class ModelServiceImpl implements ModelService {
 		List<EntityReference> entityReferences = Search.session( session ).search( entityClass )
 				.selectEntityReference()
 				.where( f -> f.match().field( fieldName ).matching( value ) )
-				.fetchHits( LIMIT );
+				.fetchHits( DEFAULT_LIMIT );
 
 		return entityReferences.stream().map( a -> a.id() ).collect( Collectors.toList() );
 	}
@@ -124,7 +122,7 @@ public class ModelServiceImpl implements ModelService {
 		MatchPredicateOptionsStep<?> matching2 = scope.predicate().match().field( fieldName2 ).matching( value2 );
 		SearchPredicate predicate = scope.predicate().bool().must( matching1 ).must( matching2 ).toPredicate();
 
-		return searchSession.search( scope ).select( projection ).where( predicate ).fetchHits( LIMIT );
+		return searchSession.search( scope ).select( projection ).where( predicate ).fetchHits( DEFAULT_LIMIT );
 	}
 
 	@Override

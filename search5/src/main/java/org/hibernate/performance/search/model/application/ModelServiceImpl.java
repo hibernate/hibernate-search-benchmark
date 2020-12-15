@@ -65,6 +65,7 @@ public class ModelServiceImpl implements ModelService {
 		Query luceneQuery = b.keyword().onField( fieldName ).matching( value ).createQuery();
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		return fullTextQuery.list();
 	}
 
@@ -84,6 +85,7 @@ public class ModelServiceImpl implements ModelService {
 		Query luceneQuery = b.bool().must( luceneQuery1 ).must( luceneQuery2 ).createQuery();
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		return fullTextQuery.list();
 	}
 
@@ -113,6 +115,7 @@ public class ModelServiceImpl implements ModelService {
 		Query luceneQuery = b.range().onField( fieldName ).from( start ).to( end ).createQuery();
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		return fullTextQuery.list();
 	}
 
@@ -127,6 +130,7 @@ public class ModelServiceImpl implements ModelService {
 		Query luceneQuery = b.range().onField( fieldName ).from( start ).to( end ).createQuery();
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 
 		// sorted by the same field on which we apply the range
 		fullTextQuery.setSort( b.sort().byField( fieldName ).createSort() );
@@ -145,6 +149,7 @@ public class ModelServiceImpl implements ModelService {
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
 		fullTextQuery.setProjection( FullTextQuery.ID );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		List<Object[]> list = fullTextQuery.list();
 		return list.stream().map( item -> item[0] ).collect( Collectors.toList() );
 	}
@@ -165,6 +170,7 @@ public class ModelServiceImpl implements ModelService {
 		Query luceneQuery = b.bool().must( luceneQuery1 ).must( luceneQuery2 ).createQuery();
 
 		FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery( luceneQuery, entityClass );
+		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		fullTextQuery.setProjection( projectedField1, projectedField2 );
 
 		return (List<List<?>>) fullTextQuery.list().stream().map( (array) -> Arrays.asList( array ) ).collect(

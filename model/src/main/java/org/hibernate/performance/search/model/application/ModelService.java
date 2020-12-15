@@ -7,6 +7,8 @@ import org.hibernate.Session;
 
 public interface ModelService {
 
+	int DEFAULT_LIMIT = 100;
+
 	enum Kind {
 		LUCENE_AUTOMATIC_INDEXING(true, false),
 		LUCENE_MANUAL_INDEXING(true, true),
