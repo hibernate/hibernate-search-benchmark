@@ -15,6 +15,7 @@ public final class CompanyFactory {
 
 	public static Company createCompanyAndUnits(int companyId) {
 		Company company = new Company( companyId, "Company" + companyId );
+		company.setDescription( "This is a real description for the company " + companyId );
 		List<BusinessUnit> units = new ArrayList<>( UNIT_PER_COMPANY );
 
 		for ( int i = 0; i < UNIT_PER_COMPANY; i++ ) {

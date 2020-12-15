@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
+import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
@@ -22,7 +23,7 @@ import org.hibernate.performance.search.model.service.EmployeeRepository;
 
 import org.junit.jupiter.api.Test;
 
-public class DomainDataFillerIT {
+public class DomainDataIT {
 
 	@Test
 	public void test() {
@@ -60,6 +61,15 @@ public class DomainDataFillerIT {
 				assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 10680 );
 				assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 106800 );
 				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 106800 );
+			}
+
+			new DomainDataUpdater( sessionFactory ).doSomeChangesOnCompanyAndBusinessUnit( 7, 1 );
+
+			try ( Session session = sessionFactory.openSession() ) {
+				EmployeeRepository repository = new EmployeeRepository( session );
+
+				assertThat( repository.count( Company.class ) ).isEqualTo( 2 );
+				assertThat( repository.count( BusinessUnit.class ) ).isEqualTo( 9 );
 			}
 		}
 	}

@@ -21,6 +21,7 @@ import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstanc
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.tck.SearchingPerformanceTest;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.AfterAll;
@@ -28,6 +29,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+/**
+ * These are the same tests cases we have in {@link SearchingPerformanceTest}.
+ * <p>
+ * The sense of keeping this test class is to check that everything is indexed as it is supposed to be.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchingIT {
 

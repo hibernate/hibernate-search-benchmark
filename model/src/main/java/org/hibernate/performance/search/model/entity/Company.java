@@ -14,8 +14,10 @@ public class Company extends IdEntity {
 	@NaturalId
 	private String legalName;
 
+	private String description;
+
 	@OneToMany(mappedBy = "owner")
-	@Cascade(CascadeType.PERSIST)
+	@Cascade(CascadeType.ALL)
 	private List<BusinessUnit> businessUnits;
 
 	private Company() {
@@ -36,6 +38,14 @@ public class Company extends IdEntity {
 
 	public void setBusinessUnits(List<BusinessUnit> businessUnits) {
 		this.businessUnits = businessUnits;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ public final class SearchProgrammaticMapping {
 		IndexedMapping company = mapping.entity( Company.class ).indexed();
 		company.property( "id", ElementType.FIELD ).documentId();
 		company.property( "legalName", ElementType.FIELD ).field().analyze( Analyze.NO );
+		company.property( "description", ElementType.FIELD ).field();
 
 		PropertyMapping businessUnits = company.property( "businessUnits", ElementType.FIELD );
 		businessUnits.indexEmbedded().depth( 1 );

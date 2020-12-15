@@ -30,6 +30,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		company.indexed();
 		company.property( "id" ).genericField();
 		company.property( "legalName" ).keywordField();
+		company.property( "description" ).fullTextField().analyzer( "default" );
 		company.property( "businessUnits" ).indexedEmbedded()
 				.includeDepth( 1 );
 
