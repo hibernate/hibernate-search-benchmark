@@ -173,7 +173,8 @@ public class ModelServiceImpl implements ModelService {
 		fullTextQuery.setMaxResults( DEFAULT_LIMIT );
 		fullTextQuery.setProjection( projectedField1, projectedField2 );
 
-		return (List<List<?>>) fullTextQuery.list().stream().map( (array) -> Arrays.asList( array ) ).collect(
+		List<Object[]> list = fullTextQuery.list();
+		return list.stream().map( (array) -> Arrays.asList( array[0], array[1] ) ).collect(
 				Collectors.toList() );
 	}
 

@@ -120,7 +120,7 @@ public final class SearchProgrammaticMapping {
 		openAnswer.property( "text", ElementType.FIELD ).field();
 		openAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
 
-		PropertyMapping questionnairePropertyOA = openAnswer.property( "questionnaire", ElementType.FIELD );
+		PropertyMapping questionnairePropertyOA = openAnswer.property( "questionnaire", ElementType.METHOD );
 		questionnairePropertyOA.indexEmbedded().depth( 1 );
 		questionnairePropertyOA.containedIn();
 
@@ -130,7 +130,7 @@ public final class SearchProgrammaticMapping {
 		closedAnswer.property( "choice", ElementType.FIELD ).field().numericField();
 		closedAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
 
-		PropertyMapping questionnairePropertyCA = closedAnswer.property( "questionnaire", ElementType.FIELD );
+		PropertyMapping questionnairePropertyCA = closedAnswer.property( "questionnaire", ElementType.METHOD );
 		questionnairePropertyCA.indexEmbedded().depth( 1 );
 		questionnairePropertyCA.containedIn();
 

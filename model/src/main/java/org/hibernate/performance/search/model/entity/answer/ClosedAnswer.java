@@ -23,6 +23,10 @@ public class ClosedAnswer extends Answer {
 		this.question = question;
 	}
 
+	public QuestionnaireInstance getQuestionnaire() {
+		return questionnaire;
+	}
+
 	public int getMaxScore() {
 		return question.getWeight() * MAX_VALUE;
 	}

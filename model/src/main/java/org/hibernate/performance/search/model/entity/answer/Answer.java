@@ -14,7 +14,7 @@ public abstract class Answer {
 	protected Integer id;
 
 	@ManyToOne
-	private QuestionnaireInstance questionnaire;
+	protected QuestionnaireInstance questionnaire;
 
 	protected Answer() {
 	}

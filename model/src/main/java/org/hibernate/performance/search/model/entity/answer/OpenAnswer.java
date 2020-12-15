@@ -23,6 +23,10 @@ public class OpenAnswer extends Answer {
 		this.question = question;
 	}
 
+	public QuestionnaireInstance getQuestionnaire() {
+		return questionnaire;
+	}
+
 	// set later at questionnaire compilation time
 	public void setText(String text) {
 		this.text = text;
