@@ -14,7 +14,7 @@ public class Manager extends Employee {
 	@Cascade(CascadeType.PERSIST)
 	private List<Employee> employees;
 
-	private Manager() {
+	public Manager() {
 	}
 
 	public Manager(BusinessUnit businessUnit, int baseId) {

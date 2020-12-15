@@ -14,20 +14,17 @@ import org.openjdk.jmh.annotations.TearDown;
 @State(Scope.Benchmark)
 public class AutomaticIndexingInsertPerformanceTest {
 
-	private final SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 	private DomainDataFiller domainDataFiller;
 
-	public AutomaticIndexingInsertPerformanceTest() {
+	@Setup(Level.Iteration)
+	public void setup() throws Exception {
 		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.autoProperties() );
 		domainDataFiller = new DomainDataFiller( sessionFactory );
-	}
-
-	@Setup(Level.Trial)
-	public void setup() throws Exception {
 		domainDataFiller.fillData( 0 );
 	}
 
-	@TearDown(Level.Trial)
+	@TearDown(Level.Iteration)
 	public void tearDown() {
 		if ( sessionFactory != null ) {
 			sessionFactory.close();

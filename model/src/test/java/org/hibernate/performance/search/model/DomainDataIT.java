@@ -63,13 +63,30 @@ public class DomainDataIT {
 				assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 106800 );
 			}
 
-			new DomainDataUpdater( sessionFactory ).doSomeChangesOnCompanyAndBusinessUnit( 7, 1 );
+			DomainDataUpdater updater = new DomainDataUpdater( sessionFactory );
+			updater.doSomeChangesOnCompanyAndBusinessUnit( 7, 1 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );
 
 				assertThat( repository.count( Company.class ) ).isEqualTo( 2 );
 				assertThat( repository.count( BusinessUnit.class ) ).isEqualTo( 9 );
+			}
+
+			try ( Session session = sessionFactory.openSession() ) {
+				Employee employee = session.load( Employee.class, 70 );
+				Manager manager = employee.getManager();
+
+				assertThat( manager.getId() ).isEqualTo( 30 );
+			}
+
+			updater.doSomeChangesOnEmployee( 70, 0 );
+
+			try ( Session session = sessionFactory.openSession() ) {
+				Employee employee = session.load( Employee.class, 70 );
+				Manager manager = employee.getManager();
+
+				assertThat( manager.getId() ).isEqualTo( 0 );
 			}
 		}
 	}

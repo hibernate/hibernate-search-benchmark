@@ -15,18 +15,15 @@ import org.openjdk.jmh.annotations.TearDown;
 @State(Scope.Benchmark)
 public class AutomaticIndexingDeletePerformanceTest {
 
-	private final SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
-	public AutomaticIndexingDeletePerformanceTest() {
-		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.autoProperties() );
-	}
-
-	@Setup(Level.Trial)
+	@Setup(Level.Iteration)
 	public void setup() throws Exception {
+		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.autoProperties() );
 		new DomainDataFiller( sessionFactory ).fillData( 0 );
 	}
 
-	@TearDown(Level.Trial)
+	@TearDown(Level.Iteration)
 	public void tearDown() {
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
