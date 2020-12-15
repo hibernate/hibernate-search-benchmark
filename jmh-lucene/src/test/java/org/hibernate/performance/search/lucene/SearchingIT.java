@@ -165,15 +165,6 @@ public class SearchingIT {
 	@Test
 	public void answers() {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// find all bounded
-			List<QuestionnaireInstance> questionnaires = modelService
-					.search( session, QuestionnaireInstance.class, 12080 );
-			assertThat( questionnaires ).hasSize( 11880 );
-
-			// find unbounded
-			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
-			assertThat( search ).hasSize( 237600 );
-
 			// high-match count on full text field
 			long count = modelService.count( session, OpenAnswer.class, "text", "search" );
 			assertThat( count ).isEqualTo( 44383 );
@@ -184,7 +175,7 @@ public class SearchingIT {
 			assertThat( closedAnswers ).hasSize( 100 );
 
 			// high-match on nested full text field
-			questionnaires = modelService.search(
+			List<QuestionnaireInstance> questionnaires = modelService.search(
 					session, QuestionnaireInstance.class, "openAnswers.text", "annotation" );
 			// 100 is the max results
 			assertThat( questionnaires ).hasSize( 100 );
@@ -205,4 +196,17 @@ public class SearchingIT {
 		}
 	}
 
+	@Test
+	public void largeLoading() {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// find all bounded
+			List<QuestionnaireInstance> questionnaires = modelService
+					.search( session, QuestionnaireInstance.class, 12080 );
+			assertThat( questionnaires ).hasSize( 11880 );
+
+			// find unbounded
+			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
+			assertThat( search ).hasSize( 237600 );
+		}
+	}
 }

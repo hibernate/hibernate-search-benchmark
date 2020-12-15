@@ -160,15 +160,6 @@ public class SearchingPerformanceTest {
 	@Benchmark
 	public void answers(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// find all bounded
-			List<QuestionnaireInstance> questionnaires = modelService
-					.search( session, QuestionnaireInstance.class, 12080 );
-			blackhole.consume( questionnaires );
-
-			// find unbounded
-			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
-			blackhole.consume( search );
-
 			// high-match count on full text field
 			long count = modelService.count( session, OpenAnswer.class, "text", "search" );
 			blackhole.consume( count );
@@ -178,7 +169,7 @@ public class SearchingPerformanceTest {
 			blackhole.consume( closedAnswers );
 
 			// high-match on nested full text field
-			questionnaires = modelService.search(
+			List<QuestionnaireInstance> questionnaires = modelService.search(
 					session, QuestionnaireInstance.class, "openAnswers.text", "annotation" );
 			blackhole.consume( questionnaires );
 
@@ -195,6 +186,20 @@ public class SearchingPerformanceTest {
 					"employeeScore"
 			);
 			blackhole.consume( projections );
+		}
+	}
+
+	@Benchmark
+	public void largeLoading(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			// find all bounded
+			List<QuestionnaireInstance> questionnaires = modelService
+					.search( session, QuestionnaireInstance.class, 12080 );
+			blackhole.consume( questionnaires );
+
+			// find unbounded
+			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
+			blackhole.consume( search );
 		}
 	}
 }
