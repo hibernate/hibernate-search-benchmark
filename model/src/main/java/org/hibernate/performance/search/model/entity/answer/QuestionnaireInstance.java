@@ -2,6 +2,7 @@ package org.hibernate.performance.search.model.entity.answer;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -53,6 +54,9 @@ public class QuestionnaireInstance {
 	@Cascade(CascadeType.ALL)
 	private List<OpenAnswer> openAnswers;
 
+	@Column(name = "notes", columnDefinition = "LONGTEXT")
+	private String notes;
+
 	private QuestionnaireInstance() {
 	}
 
@@ -65,6 +69,10 @@ public class QuestionnaireInstance {
 		this.evaluationType = evaluationType;
 
 		initAnswers();
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public Employee getSubject() {
@@ -93,6 +101,18 @@ public class QuestionnaireInstance {
 
 	public String getUniqueCode() {
 		return definition.getId() + ":" + approval.getId() + ":" + subject.getId();
+	}
+
+	public List<ClosedAnswer> getClosedAnswers() {
+		return closedAnswers;
+	}
+
+	public List<OpenAnswer> getOpenAnswers() {
+		return openAnswers;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	@SuppressWarnings("unchecked")

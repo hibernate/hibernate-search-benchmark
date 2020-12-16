@@ -22,5 +22,9 @@ public abstract class Question extends IdEntity {
 		this.text = text;
 	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public abstract boolean isClosed();
 }

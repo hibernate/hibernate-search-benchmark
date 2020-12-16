@@ -1,5 +1,6 @@
 package org.hibernate.performance.search.model.application;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.SessionFactory;
@@ -7,6 +8,12 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
+import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.question.Question;
+import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.service.EmployeeRepository;
 
 public class DomainDataUpdater {
 
@@ -28,7 +35,8 @@ public class DomainDataUpdater {
 			if ( oldCompany == null ) {
 				newCompany = new Company( newCompanyId, "Company" + newCompanyId );
 				session.persist( newCompany );
-			} else {
+			}
+			else {
 				newCompany = oldCompany;
 			}
 
@@ -81,4 +89,53 @@ public class DomainDataUpdater {
 		} );
 	}
 
+	public void updateQuestionnaire(int questionnaireDefinitionId) {
+		int iteration = counter.getAndIncrement();
+
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			QuestionnaireDefinition definition = session.load(
+					QuestionnaireDefinition.class, questionnaireDefinitionId );
+			definition.setDescription(
+					"This is the description for questionnaire definition #" + questionnaireDefinitionId + " - iteration #" + iteration + "." );
+
+			session.merge( definition );
+
+			List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
+			for ( QuestionnaireInstance instance : instances ) {
+				instance.setNotes( "This is a note for questionnaire instance #" + instance
+						.getId() + " - iteration #" + iteration + "." );
+
+				session.merge( instance );
+			}
+		} );
+	}
+
+	public void updateQuestionsAndAnswers(int questionnaireDefinitionId) {
+		int iteration = counter.getAndIncrement();
+
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			QuestionnaireDefinition definition = session.load(
+					QuestionnaireDefinition.class, questionnaireDefinitionId );
+			List<Question> questions = definition.getQuestions();
+			for ( Question question : questions ) {
+				question.setText(
+						"This is the text for question #" + question.getId() + " - iteration #" + iteration + "." );
+
+				session.merge( question );
+			}
+
+			List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
+			for ( QuestionnaireInstance instance : instances ) {
+				for ( ClosedAnswer answer : instance.getClosedAnswers() ) {
+					answer.setChoice( iteration % 8 );
+					session.merge( answer );
+				}
+				for ( OpenAnswer answer : instance.getOpenAnswers() ) {
+					answer.setText( "This is a response to the open answer " + answer
+							.getId() + " - iteration #" + iteration + "." );
+					session.merge( answer );
+				}
+			}
+		} );
+	}
 }

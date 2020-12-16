@@ -23,6 +23,10 @@ public abstract class Answer {
 		this.questionnaire = questionnaire;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
 	public QuestionnaireInstance getQuestionnaire() {
 		return questionnaire;
 	}

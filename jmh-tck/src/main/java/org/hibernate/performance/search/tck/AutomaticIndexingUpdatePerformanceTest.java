@@ -42,4 +42,14 @@ public class AutomaticIndexingUpdatePerformanceTest {
 	public void employeeAndManager() {
 		domainDataUpdater.doSomeChangesOnEmployee( 70, 0 );
 	}
+
+	@Benchmark
+	public void questionnaire() {
+		domainDataUpdater.updateQuestionnaire( 7 );
+	}
+
+	@Benchmark
+	public void questionsAndAnswers() {
+		domainDataUpdater.updateQuestionsAndAnswers( 9 );
+	}
 }

@@ -12,7 +12,7 @@ public class OpenAnswer extends Answer {
 	@ManyToOne
 	private OpenQuestion question;
 
-	@Column(name="text",columnDefinition="LONGTEXT")
+	@Column(name = "text", columnDefinition = "LONGTEXT")
 	private String text;
 
 	private OpenAnswer() {

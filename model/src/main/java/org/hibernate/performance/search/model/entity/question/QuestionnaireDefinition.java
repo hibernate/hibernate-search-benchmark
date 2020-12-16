@@ -26,7 +26,7 @@ public class QuestionnaireDefinition extends IdEntity {
 	@Cascade( CascadeType.PERSIST )
 	private List<Question> questions;
 
-	private QuestionnaireDefinition() {
+	public QuestionnaireDefinition() {
 	}
 
 	public QuestionnaireDefinition(Integer id, String title, String description, Integer year, Company company) {
@@ -55,5 +55,9 @@ public class QuestionnaireDefinition extends IdEntity {
 
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

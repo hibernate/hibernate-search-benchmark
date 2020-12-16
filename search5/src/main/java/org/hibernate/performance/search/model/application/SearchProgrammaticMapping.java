@@ -104,7 +104,8 @@ public final class SearchProgrammaticMapping {
 				.property( "uniqueCode", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "definition", ElementType.FIELD ).indexEmbedded()
 				.property( "approval", ElementType.FIELD ).indexEmbedded()
-				.property( "subject", ElementType.FIELD ).indexEmbedded();
+				.property( "subject", ElementType.FIELD ).indexEmbedded()
+				.property( "notes", ElementType.FIELD ).field();
 
 		PropertyMapping closedAnswers = questionnaireInstance.property( "closedAnswers", ElementType.FIELD );
 		closedAnswers.indexEmbedded().depth( 1 );

@@ -12,6 +12,7 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.search.engine.backend.analysis.AnalyzerNames;
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
@@ -97,6 +98,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "subject" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
+		questionnaireInstance.property( "notes" ).fullTextField().analyzer( AnalyzerNames.DEFAULT );
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
 		openAnswer.indexed();

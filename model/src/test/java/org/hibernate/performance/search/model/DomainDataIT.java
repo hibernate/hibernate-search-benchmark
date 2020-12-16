@@ -88,6 +88,9 @@ public class DomainDataIT {
 
 				assertThat( manager.getId() ).isEqualTo( 0 );
 			}
+
+			updater.updateQuestionnaire( 7 );
+			updater.updateQuestionsAndAnswers( 9 );
 		}
 	}
 }
