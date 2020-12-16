@@ -1,5 +1,6 @@
 package org.hibernate.performance.search.model.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -18,9 +19,9 @@ public class Company extends IdEntity {
 
 	@OneToMany(mappedBy = "owner")
 	@Cascade(CascadeType.ALL)
-	private List<BusinessUnit> businessUnits;
+	private List<BusinessUnit> businessUnits = new ArrayList<>();
 
-	private Company() {
+	public Company() {
 	}
 
 	public Company(Integer id, String legalName) {

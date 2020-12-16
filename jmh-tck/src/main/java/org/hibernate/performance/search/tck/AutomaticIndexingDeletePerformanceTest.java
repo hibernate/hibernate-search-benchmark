@@ -1,5 +1,7 @@
 package org.hibernate.performance.search.tck;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
@@ -16,14 +18,16 @@ import org.openjdk.jmh.annotations.TearDown;
 public class AutomaticIndexingDeletePerformanceTest {
 
 	private SessionFactory sessionFactory;
+	private AtomicInteger businessUnit;
 
-	@Setup(Level.Iteration)
+	@Setup(Level.Invocation)
 	public void setup() throws Exception {
 		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.autoProperties() );
 		new DomainDataFiller( sessionFactory ).fillData( 0 );
+		businessUnit = new AtomicInteger( 9 );
 	}
 
-	@TearDown(Level.Iteration)
+	@TearDown(Level.Invocation)
 	public void tearDown() {
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
@@ -31,7 +35,7 @@ public class AutomaticIndexingDeletePerformanceTest {
 	}
 
 	@Benchmark
-	public void delete() throws Exception {
-		new DomainDataRemover( sessionFactory ).deleteData( 9 );
+	public void delete() {
+		new DomainDataRemover( sessionFactory ).deleteData( businessUnit.getAndDecrement() );
 	}
 }
