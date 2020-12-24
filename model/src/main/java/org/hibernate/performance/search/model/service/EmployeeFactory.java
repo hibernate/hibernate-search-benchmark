@@ -14,7 +14,7 @@ public final class EmployeeFactory {
 	private final int employeePerBusinessUnit;
 
 	public EmployeeFactory(RelationshipSize relationshipSize) {
-		employeePerBusinessUnit = relationshipSize.getEmployeePerBusinessUnit();
+		employeePerBusinessUnit = relationshipSize.getEmployeesPerBusinessUnit();
 	}
 
 	public Manager createEmployeeTree(Company company) {

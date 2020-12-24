@@ -12,7 +12,7 @@ public final class CompanyFactory {
 	public final int unitPerCompany;
 
 	public CompanyFactory(RelationshipSize relationshipSize) {
-		unitPerCompany = relationshipSize.getUnitPerCompany();
+		unitPerCompany = relationshipSize.getUnitsPerCompany();
 	}
 
 	public Company createCompanyAndUnits(int companyId) {
