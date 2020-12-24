@@ -8,24 +8,22 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public final class QuestionnaireDefinitionFactory {
 
-	private static final int QUESTIONNAIRE_DEFINITIONS_FOR_COMPANY = 10;
+	private final RelationshipSize relationshipSize;
 
-	// deterministic sequence of WEIGHTS:
-	private static final int[] CLOSED_QUESTIONS_WEIGHTS = { 7, 3, 9, 3, 3, 9, 7, 7, 7, 9 };
-
-	private static final int OPEN_QUESTIONS_FOR_QUESTIONNAIRE = 10;
-
-	private QuestionnaireDefinitionFactory() {
+	public QuestionnaireDefinitionFactory(RelationshipSize relationshipSize) {
+		this.relationshipSize = relationshipSize;
 	}
 
-	public static List<QuestionnaireDefinition> createQuestionnaireDefinitions(Company company) {
-		ArrayList<QuestionnaireDefinition> result = new ArrayList<>( QUESTIONNAIRE_DEFINITIONS_FOR_COMPANY );
+	public List<QuestionnaireDefinition> createQuestionnaireDefinitions(Company company) {
+		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
+		ArrayList<QuestionnaireDefinition> result = new ArrayList<>( definitionsForCompany );
 
-		for ( int i = 0; i < QUESTIONNAIRE_DEFINITIONS_FOR_COMPANY; i++ ) {
-			int id = company.getId() * QUESTIONNAIRE_DEFINITIONS_FOR_COMPANY + i;
+		for ( int i = 0; i < definitionsForCompany; i++ ) {
+			int id = company.getId() * definitionsForCompany + i;
 			int year = 2020 + i;
 			String title = "Questionnaire " + company + " " + year;
 
@@ -38,16 +36,19 @@ public final class QuestionnaireDefinitionFactory {
 		return result;
 	}
 
-	private static void addQuestions(QuestionnaireDefinition questionnaire) {
-		int totalQuestionsNumber = CLOSED_QUESTIONS_WEIGHTS.length + OPEN_QUESTIONS_FOR_QUESTIONNAIRE;
+	private void addQuestions(QuestionnaireDefinition questionnaire) {
+		int[] closedQuestionsWeights = relationshipSize.getClosedQuestionsWeightsForQuestionnaire();
+		int openQuestionsSize = relationshipSize.getOpenQuestionsForQuestionnaire();
+
+		int totalQuestionsNumber = closedQuestionsWeights.length + openQuestionsSize;
 		int baseId = questionnaire.getId() * totalQuestionsNumber;
 		ArrayList<Question> questions = new ArrayList<>( totalQuestionsNumber );
 
-		for ( int i = 0; i < CLOSED_QUESTIONS_WEIGHTS.length; i++ ) {
+		for ( int i = 0; i < closedQuestionsWeights.length; i++ ) {
 			String text = questionnaire.getTitle() + " - Closed Question " + ( i + 1 );
-			questions.add( new ClosedQuestion( baseId++, questionnaire, text, CLOSED_QUESTIONS_WEIGHTS[i] ) );
+			questions.add( new ClosedQuestion( baseId++, questionnaire, text, closedQuestionsWeights[i] ) );
 		}
-		for ( int i = 0; i < OPEN_QUESTIONS_FOR_QUESTIONNAIRE; i++ ) {
+		for ( int i = 0; i < openQuestionsSize; i++ ) {
 			String text = questionnaire.getTitle() + " - Open Question " + ( i + 1 );
 			questions.add( new OpenQuestion( baseId++, questionnaire, text ) );
 		}

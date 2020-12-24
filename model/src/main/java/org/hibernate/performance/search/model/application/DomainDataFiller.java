@@ -9,6 +9,7 @@ import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.model.service.AnswerFiller;
 import org.hibernate.performance.search.model.service.CompanyFactory;
 import org.hibernate.performance.search.model.service.EmployeeFactory;
@@ -20,9 +21,19 @@ import org.hibernate.performance.search.model.service.Scorer;
 public class DomainDataFiller {
 
 	private final SessionFactory sessionFactory;
+	private final CompanyFactory companyFactory;
+	private final EmployeeFactory employeeFactory;
+	private final QuestionnaireDefinitionFactory questionnaireDefinitionFactory;
 
 	public DomainDataFiller(SessionFactory sessionFactory) {
+		this( sessionFactory, RelationshipSize.LARGE );
+	}
+
+	public DomainDataFiller(SessionFactory sessionFactory, RelationshipSize relationshipSize) {
 		this.sessionFactory = sessionFactory;
+		this.companyFactory = new CompanyFactory( relationshipSize );
+		this.employeeFactory = new EmployeeFactory( relationshipSize );
+		this.questionnaireDefinitionFactory = new QuestionnaireDefinitionFactory( relationshipSize );
 	}
 
 	public void fillData(int companyId) {
@@ -31,19 +42,19 @@ public class DomainDataFiller {
 
 		// Phase 1: create the company and its business units
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
-			Company company = CompanyFactory.createCompanyAndUnits( companyId );
+			Company company = companyFactory.createCompanyAndUnits( companyId );
 			session.persist( company );
 			companyReference.set( company );
 		} );
 
 		// Phase 2: create the employees' organization chart
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
-			Manager ceo = EmployeeFactory.createEmployeeTree( companyReference.get() );
+			Manager ceo = employeeFactory.createEmployeeTree( companyReference.get() );
 			session.persist( ceo );
 		} );
 
 		// Phase 3: define the questionnaires
-		List<QuestionnaireDefinition> questionnaireDefinitions = QuestionnaireDefinitionFactory
+		List<QuestionnaireDefinition> questionnaireDefinitions = questionnaireDefinitionFactory
 				.createQuestionnaireDefinitions( companyReference.get() );
 		for ( QuestionnaireDefinition questionnaire : questionnaireDefinitions ) {
 			HibernateORMHelper.inTransaction( sessionFactory, session -> session.persist( questionnaire ) );

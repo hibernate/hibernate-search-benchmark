@@ -5,21 +5,23 @@ import java.util.List;
 
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public final class CompanyFactory {
 
-	public static final int UNIT_PER_COMPANY = 10;
+	public final int unitPerCompany;
 
-	private CompanyFactory() {
+	public CompanyFactory(RelationshipSize relationshipSize) {
+		unitPerCompany = relationshipSize.getUnitPerCompany();
 	}
 
-	public static Company createCompanyAndUnits(int companyId) {
+	public Company createCompanyAndUnits(int companyId) {
 		Company company = new Company( companyId, "Company" + companyId );
 		company.setDescription( "This is a real description for the company " + companyId );
-		List<BusinessUnit> units = new ArrayList<>( UNIT_PER_COMPANY );
+		List<BusinessUnit> units = new ArrayList<>( unitPerCompany );
 
-		for ( int i = 0; i < UNIT_PER_COMPANY; i++ ) {
-			int buId = UNIT_PER_COMPANY * companyId + i;
+		for ( int i = 0; i < unitPerCompany; i++ ) {
+			int buId = unitPerCompany * companyId + i;
 			units.add( new BusinessUnit( buId, "Unit" + buId, company ) );
 		}
 		company.setBusinessUnits( units );

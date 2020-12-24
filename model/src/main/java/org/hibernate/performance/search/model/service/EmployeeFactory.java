@@ -7,15 +7,17 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public final class EmployeeFactory {
 
-	private static final int EMPLOYEE_PER_BUSINESS_UNIT = 10;
+	private final int employeePerBusinessUnit;
 
-	private EmployeeFactory() {
+	public EmployeeFactory(RelationshipSize relationshipSize) {
+		employeePerBusinessUnit = relationshipSize.getEmployeePerBusinessUnit();
 	}
 
-	public static Manager createEmployeeTree(Company company) {
+	public Manager createEmployeeTree(Company company) {
 		List<BusinessUnit> businessUnits = company.getBusinessUnits();
 		Manager[] managers = new Manager[businessUnits.size() + 1];
 
@@ -32,13 +34,13 @@ public final class EmployeeFactory {
 		return managers[1];
 	}
 
-	private static Manager createManagerAndEmployees(BusinessUnit businessUnit) {
-		int baseId = businessUnit.getId() * EMPLOYEE_PER_BUSINESS_UNIT;
+	private Manager createManagerAndEmployees(BusinessUnit businessUnit) {
+		int baseId = businessUnit.getId() * employeePerBusinessUnit;
 		Manager manager = new Manager( businessUnit, baseId );
 
 		// creating 2 extra slot to link managers
-		ArrayList<Employee> employees = new ArrayList<>( EMPLOYEE_PER_BUSINESS_UNIT + 1 );
-		for ( int i = 1; i < EMPLOYEE_PER_BUSINESS_UNIT; i++ ) {
+		ArrayList<Employee> employees = new ArrayList<>( employeePerBusinessUnit + 1 );
+		for ( int i = 1; i < employeePerBusinessUnit; i++ ) {
 			employees.add( new Employee( manager, baseId + i ) );
 		}
 
