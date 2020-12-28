@@ -87,12 +87,17 @@ public class AutomaticIndexingState {
 		for ( AutomaticIndexingInsertPartitionState threadState : indexInsertPartitions ) {
 			int actualIndexSize = threadState.actualIndexSize();
 			int threadNumber = threadState.threadNumber();
-			result.add( new AutomaticIndexingUpdatePartitionState(
-					sessionFactory, relationshipSize, actualIndexSize, numberOfThreads, threadNumber,
-					invocationSize
-			) );
+			result.add( createUpdatePartition( actualIndexSize, threadNumber ) );
 		}
 		return result;
+	}
+
+	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int actualIndexSize, int threadNumber) {
+		return ( RelationshipSize.SMALL.equals( relationshipSize ) ) ? new AutomaticIndexingUpdateSmallPartitionState(
+				sessionFactory, actualIndexSize, numberOfThreads, threadNumber, invocationSize
+		) : new AutomaticIndexingUpdateMLPartitionState(
+				sessionFactory, relationshipSize, actualIndexSize, numberOfThreads, threadNumber, invocationSize
+		);
 	}
 
 	private List<AutomaticIndexingDeletePartitionState> createDeletePartitions() {
