@@ -40,7 +40,7 @@ public class AutomaticIndexingDeletePartitionState {
 		List<Integer> result = new ArrayList<>( numberOfBusinessUnit / numberOfThreads + 1 );
 
 		for ( int i = 0; i < numberOfBusinessUnit; i++ ) {
-			if ( i % threadNumber == 0 ) {
+			if ( i % numberOfThreads == threadNumber ) {
 				result.add( i );
 			}
 		}

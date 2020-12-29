@@ -48,11 +48,14 @@ public class AutomaticIndexingInsertPartitionState {
 		return ( invocation -> {
 			int baseInvocationId = invocation * invocationSize * numberOfThreads;
 
-			ArrayList<Integer> result = new ArrayList<>( ( initialIndexSize / numberOfThreads ) + 1 );
-			for ( int i = 0; i < invocationSize; i++ ) {
+			ArrayList<Integer> result = new ArrayList<>( invocationSize );
+			int i = 0;
+
+			while ( result.size() < invocationSize ) {
 				if ( i % numberOfThreads == threadNumber ) {
 					result.add( initialIndexSize + baseInvocationId + i );
 				}
+				i++;
 			}
 
 			return result;

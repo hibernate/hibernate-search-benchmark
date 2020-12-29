@@ -16,8 +16,8 @@ public class AutomaticIndexingState {
 	private final int invocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
-	private final List<AutomaticIndexingInsertPartitionState> indexInsertPartitions;
 
+	private List<AutomaticIndexingInsertPartitionState> indexInsertPartitions;
 	private List<AutomaticIndexingUpdatePartitionState> indexUpdatePartitions;
 	private List<AutomaticIndexingDeletePartitionState> indexDeletePartitions;
 	private SessionFactory sessionFactory;
@@ -29,7 +29,6 @@ public class AutomaticIndexingState {
 		this.invocationSize = invocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
-		this.indexInsertPartitions = createInsertPartitions();
 	}
 
 	public void start() {
@@ -38,6 +37,7 @@ public class AutomaticIndexingState {
 		for ( int i = 0; i < initialIndexSize; i++ ) {
 			domainDataFiller.fillData( i );
 		}
+		indexInsertPartitions = createInsertPartitions();
 	}
 
 	public void stop() {
@@ -53,9 +53,9 @@ public class AutomaticIndexingState {
 
 	public AutomaticIndexingUpdatePartitionState getUpdatePartition(int threadNumber) {
 		checkThreadNumber( threadNumber );
-		synchronized (indexUpdatePartitions) {
+		synchronized (this) {
 			if ( indexUpdatePartitions == null ) {
-				createUpdatePartitions();
+				indexUpdatePartitions = createUpdatePartitions();
 			}
 		}
 		return indexUpdatePartitions.get( threadNumber );
@@ -63,12 +63,16 @@ public class AutomaticIndexingState {
 
 	public AutomaticIndexingDeletePartitionState getDeletePartition(int threadNumber) {
 		checkThreadNumber( threadNumber );
-		synchronized (indexDeletePartitions) {
+		synchronized (this) {
 			if ( indexDeletePartitions == null ) {
-				createDeletePartitions();
+				indexDeletePartitions = createDeletePartitions();
 			}
 		}
 		return indexDeletePartitions.get( threadNumber );
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
 	}
 
 	private List<AutomaticIndexingInsertPartitionState> createInsertPartitions() {

@@ -59,6 +59,22 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 		}
 	}
 
+	public int getCompanyBUInvocation() {
+		return companyBUInvocation;
+	}
+
+	public int getEmployeeInvocation() {
+		return employeeInvocation;
+	}
+
+	public int getQuestionnaireInvocation() {
+		return questionnaireInvocation;
+	}
+
+	public int getQuestionsInvocation() {
+		return questionsInvocation;
+	}
+
 	protected abstract void updateEmployeeOneTime();
 
 	protected abstract void updateQuestionnaireOneTime();
@@ -86,7 +102,7 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	private List<Integer> partitionIds() {
 		List<Integer> result = new ArrayList<>( actualIndexSize / numberOfThreads + 1 );
 		for ( int i = 0; i < actualIndexSize; i++ ) {
-			if ( i % threadNumber == 0 ) {
+			if ( i % numberOfThreads == threadNumber ) {
 				result.add( i );
 			}
 		}

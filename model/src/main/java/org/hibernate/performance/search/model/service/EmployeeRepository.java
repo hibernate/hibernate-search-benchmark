@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
+import org.hibernate.performance.search.model.entity.Manager;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
@@ -144,6 +145,15 @@ public class EmployeeRepository {
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
 				.where( builder.equal( root.get( "definition" ), questionnaireDefinition ) );
+		return entityManager.createQuery( query ).getResultList();
+	}
+
+	public List<Employee> findEmployeesWithManager() {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Employee> criteria = builder.createQuery( Employee.class );
+		Root<Employee> root = criteria.from( Employee.class );
+		CriteriaQuery<Employee> query = criteria.select( root )
+				.where( builder.isNotNull( root.get( "manager" ) ) );
 		return entityManager.createQuery( query ).getResultList();
 	}
 }

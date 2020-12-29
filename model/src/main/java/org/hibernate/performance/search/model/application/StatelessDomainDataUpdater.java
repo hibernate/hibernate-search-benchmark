@@ -38,6 +38,7 @@ public class StatelessDomainDataUpdater {
 			}
 
 			BusinessUnit businessUnit = businessUnits.get( 0 );
+			businessUnit.setOwner( newCompany );
 
 			// change the description of the existing company,
 			// these will trigger the reindex of all business units
@@ -64,22 +65,49 @@ public class StatelessDomainDataUpdater {
 			Manager oldManager = employee.getManager();
 
 			employee.setManager( newManager );
-			// remove the employee from old manager
-			oldManager.getEmployees().remove( employee );
+			if ( oldManager != null ) {
+				// remove the employee from old manager
+				oldManager.getEmployees().remove( employee );
+			}
 			// add the employee to the new manager
 			newManager.getEmployees().add( employee );
 
 			// change their names
 			employee.setName( "nameE" + invocation );
 			employee.setSurname( "surnameE" + invocation );
-			oldManager.setName( "nameOM" + invocation );
-			oldManager.setSurname( "surnameOM" + invocation );
+			if ( oldManager != null ) {
+				oldManager.setName( "nameOM" + invocation );
+				oldManager.setSurname( "surnameOM" + invocation );
+			}
 			newManager.setName( "nameNM" + invocation );
 			newManager.setSurname( "surnameNM" + invocation );
 
 			session.merge( employee );
-			session.merge( oldManager );
+			if ( oldManager != null ) {
+				session.merge( oldManager );
+			}
 			session.merge( newManager );
+		} );
+	}
+
+	public void removeManagerFromEmployee(int invocation, int employeeId) {
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			Employee employee = session.load( Employee.class, employeeId );
+
+			Manager oldManager = employee.getManager();
+
+			employee.setManager( null );
+			// remove the employee from old manager
+			oldManager.getEmployees().remove( employee );
+
+			// change their names
+			employee.setName( "nameE" + invocation );
+			employee.setSurname( "surnameE" + invocation );
+			oldManager.setName( "nameOM" + invocation );
+			oldManager.setSurname( "surnameOM" + invocation );
+
+			session.merge( employee );
+			session.merge( oldManager );
 		} );
 	}
 

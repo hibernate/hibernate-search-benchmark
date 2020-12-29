@@ -11,21 +11,17 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 
 	@Override
 	public void updateEmployeeOneTime() {
-		int managerId;
-		int employeeId;
+		boolean reverse = employeeInvocation % 2 == 1;
+		int index = ( employeeInvocation / 2 ) % actualIndexSize;
 
-		if ( employeeInvocation + 1 == actualIndexSize ) {
-			// last element
-			managerId = partitionIds.get( employeeInvocation );
-			employeeId = partitionIds.get( 0 );
-		}
-		else {
-			// with this relationship size: companyId == employeeId
-			managerId = partitionIds.get( employeeInvocation );
-			employeeId = partitionIds.get( employeeInvocation + 1 );
-		}
+		int managerId = partitionIds.get( index );
+		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
 
-		domainDataUpdater.doSomeChangesOnEmployee( employeeInvocation++, employeeId, managerId );
+		if ( reverse ) {
+			domainDataUpdater.removeManagerFromEmployee( employeeInvocation++, employeeId );
+		} else {
+			domainDataUpdater.doSomeChangesOnEmployee( employeeInvocation++, employeeId, managerId );
+		}
 	}
 
 	@Override

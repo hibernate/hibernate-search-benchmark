@@ -23,4 +23,8 @@ public class BusinessUnit extends IdEntity {
 	public Company getOwner() {
 		return owner;
 	}
+
+	public void setOwner(Company owner) {
+		this.owner = owner;
+	}
 }
