@@ -29,6 +29,11 @@ public class AutomaticIndexingState {
 		this.invocationSize = invocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
+
+		if ( RelationshipSize.SMALL.equals( relationshipSize ) && invocationSize % 2 == 1 ) {
+			// make the invocationSize even
+			invocationSize++;
+		}
 	}
 
 	public void start() {
