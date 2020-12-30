@@ -2,7 +2,6 @@ package org.hibernate.performance.search.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.Session;
@@ -32,8 +31,9 @@ public class AutomaticSmallIndexingStateIT {
 	private static final int INVOCATION_SIZE = 10;
 	private static final int NUMBER_OF_THREADS = 3;
 
-	private static final AutomaticIndexingState indexingState = new AutomaticIndexingState(
-			RelationshipSize.SMALL, INITIAL_INDEX_SIZE, INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties() );
+	private static final AutomaticIndexingState indexingState = new AutomaticIndexingState( RelationshipSize.SMALL,
+			INITIAL_INDEX_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties()
+	);
 
 	@Test
 	public void test() {

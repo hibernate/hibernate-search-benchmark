@@ -13,7 +13,9 @@ public class AutomaticIndexingState {
 
 	private final RelationshipSize relationshipSize;
 	private final int initialIndexSize;
-	private final int invocationSize;
+	private final int insertInvocationSize;
+	private final int updateInvocationSize;
+	private final int deleteInvocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
 
@@ -22,17 +24,20 @@ public class AutomaticIndexingState {
 	private List<AutomaticIndexingDeletePartitionState> indexDeletePartitions;
 	private SessionFactory sessionFactory;
 
-	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int invocationSize,
-			int numberOfThreads, Properties additionalProperties) {
+	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
+			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties) {
 		this.relationshipSize = relationshipSize;
 		this.initialIndexSize = initialIndexSize;
-		this.invocationSize = invocationSize;
+		this.insertInvocationSize = insertInvocationSize;
+		this.deleteInvocationSize = deleteInvocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
 
-		if ( RelationshipSize.SMALL.equals( relationshipSize ) && invocationSize % 2 == 1 ) {
+		if ( RelationshipSize.SMALL.equals( relationshipSize ) && updateInvocationSize % 2 == 1 ) {
 			// make the invocationSize even
-			invocationSize++;
+			this.updateInvocationSize = updateInvocationSize + 1;
+		} else {
+			this.updateInvocationSize = updateInvocationSize;
 		}
 	}
 
@@ -84,7 +89,7 @@ public class AutomaticIndexingState {
 		List<AutomaticIndexingInsertPartitionState> result = new ArrayList<>( numberOfThreads );
 		for ( int i = 0; i < numberOfThreads; i++ ) {
 			result.add( new AutomaticIndexingInsertPartitionState( sessionFactory, relationshipSize, initialIndexSize,
-					invocationSize, numberOfThreads, i
+					insertInvocationSize, numberOfThreads, i
 			) );
 		}
 
@@ -103,9 +108,9 @@ public class AutomaticIndexingState {
 
 	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int actualIndexSize, int threadNumber) {
 		return ( RelationshipSize.SMALL.equals( relationshipSize ) ) ? new AutomaticIndexingUpdateSmallPartitionState(
-				sessionFactory, actualIndexSize, numberOfThreads, threadNumber, invocationSize
+				sessionFactory, actualIndexSize, numberOfThreads, threadNumber, updateInvocationSize
 		) : new AutomaticIndexingUpdateMLPartitionState(
-				sessionFactory, relationshipSize, actualIndexSize, numberOfThreads, threadNumber, invocationSize
+				sessionFactory, relationshipSize, actualIndexSize, numberOfThreads, threadNumber, updateInvocationSize
 		);
 	}
 
@@ -116,7 +121,7 @@ public class AutomaticIndexingState {
 			int threadNumber = threadState.threadNumber();
 			result.add( new AutomaticIndexingDeletePartitionState(
 					sessionFactory, relationshipSize, actualIndexSize, numberOfThreads, threadNumber,
-					invocationSize
+					deleteInvocationSize
 			) );
 		}
 		return result;
