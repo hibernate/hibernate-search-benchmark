@@ -18,7 +18,8 @@ public class AutomaticIndexingDeletePartitionState {
 	public AutomaticIndexingDeletePartitionState(SessionFactory sessionFactory, RelationshipSize relationshipSize,
 			int actualIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
 		this.domainDataRemover = new DomainDataRemover( sessionFactory );
-		this.partitionIds = businessUnitPartitionIds( relationshipSize, actualIndexSize, numberOfThreads, threadNumber );
+		this.partitionIds = businessUnitPartitionIds(
+				relationshipSize, actualIndexSize, numberOfThreads, threadNumber );
 		this.invocationSize = invocationSize;
 	}
 
@@ -39,9 +40,22 @@ public class AutomaticIndexingDeletePartitionState {
 		int numberOfBusinessUnit = relationshipSize.getUnitsPerCompany() * actualIndexSize;
 		List<Integer> result = new ArrayList<>( numberOfBusinessUnit / numberOfThreads + 1 );
 
-		for ( int i = 0; i < numberOfBusinessUnit; i++ ) {
-			if ( i % numberOfThreads == threadNumber ) {
-				result.add( i );
+		int i = 0;
+		for ( int id : businessUnitIds( relationshipSize, actualIndexSize ) ) {
+			if ( i++ % numberOfThreads == threadNumber ) {
+				result.add( id );
+			}
+		}
+		return result;
+	}
+
+	private static List<Integer> businessUnitIds(RelationshipSize relationshipSize, int actualIndexSize) {
+		int unitsPerCompany = relationshipSize.getUnitsPerCompany();
+		List<Integer> result = new ArrayList<>( unitsPerCompany * actualIndexSize );
+
+		for ( int i = 0; i < unitsPerCompany; i++ ) {
+			for ( int j = 0; j < actualIndexSize; j++ ) {
+				result.add( unitsPerCompany - 1 - i + j * unitsPerCompany );
 			}
 		}
 		return result;
