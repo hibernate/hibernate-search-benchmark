@@ -31,39 +31,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>${version.processor.plugin}</version>
-                <executions>
-                    <!-- Run JMH annotation processor on src/main/java sources -->
-                    <execution>
-                        <id>processjmh</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <processors>
-                                <processor>org.openjdk.jmh.generators.BenchmarkProcessor</processor>
-                            </processors>
-                            <!-- Also process the source from the base project -->
-                            <appendSourceArtifacts>true</appendSourceArtifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.openjdk.jmh</groupId>
-                        <artifactId>jmh-generator-annprocess</artifactId>
-                        <version>${version.jmh}</version>
-                        <scope>compile</scope>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
