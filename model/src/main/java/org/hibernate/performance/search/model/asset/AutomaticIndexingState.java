@@ -23,6 +23,8 @@ public class AutomaticIndexingState {
 	private List<AutomaticIndexingUpdatePartitionState> indexUpdatePartitions;
 	private List<AutomaticIndexingDeletePartitionState> indexDeletePartitions;
 	private SessionFactory sessionFactory;
+	private boolean started;
+	private boolean stopped;
 
 	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
 			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties) {
@@ -41,19 +43,27 @@ public class AutomaticIndexingState {
 		}
 	}
 
-	public void start() {
+	public synchronized void start() {
+		if ( started ) {
+			return;
+		}
 		sessionFactory = HibernateORMHelper.buildSessionFactory( additionalProperties );
 		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
 		for ( int i = 0; i < initialIndexSize; i++ ) {
 			domainDataFiller.fillData( i );
 		}
 		indexInsertPartitions = createInsertPartitions();
+		started = true;
 	}
 
-	public void stop() {
+	public synchronized void stop() {
+		if ( stopped ) {
+			return;
+		}
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
+		stopped = true;
 	}
 
 	public AutomaticIndexingInsertPartitionState getInsertPartition(int threadNumber) {
