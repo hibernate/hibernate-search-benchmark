@@ -18,17 +18,26 @@ import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstanc
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
 public class SearchingPerformanceTest {
+
+	@Param({ "SMALL" })
+	private RelationshipSize relationshipSize;
+
+	@Param({ "100" })
+	private int indexSize;
 
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
@@ -40,7 +49,11 @@ public class SearchingPerformanceTest {
 
 	@Setup(Level.Trial)
 	public void setup() throws Exception {
-		new DomainDataFiller( sessionFactory ).fillData( 0 );
+		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		for ( int i = 0; i < indexSize; i++ ) {
+			domainDataFiller.fillData( i );
+		}
+
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			modelService.massIndexing( session );
 		}
@@ -54,6 +67,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void company(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
@@ -75,6 +89,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void businessUnit(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
@@ -92,6 +107,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void employee(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
@@ -108,7 +124,8 @@ public class SearchingPerformanceTest {
 
 			// range
 			employees = modelService.range( session, Employee.class, "socialSecurityNumber",
-					"socialSecurityNumber32", "socialSecurityNumber41" );
+					"socialSecurityNumber32", "socialSecurityNumber41"
+			);
 			blackhole.consume( employees );
 
 			// indexEmbedded match
@@ -130,6 +147,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void questions(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// range and order on numeric field
@@ -158,6 +176,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void answers(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// high-match count on full text field
@@ -190,6 +209,7 @@ public class SearchingPerformanceTest {
 	}
 
 	@Benchmark
+	@Threads(3)
 	public void largeLoading(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// find all bounded

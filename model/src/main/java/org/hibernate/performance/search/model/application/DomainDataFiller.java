@@ -25,10 +25,6 @@ public class DomainDataFiller {
 	private final EmployeeFactory employeeFactory;
 	private final QuestionnaireDefinitionFactory questionnaireDefinitionFactory;
 
-	public DomainDataFiller(SessionFactory sessionFactory) {
-		this( sessionFactory, RelationshipSize.LARGE );
-	}
-
 	public DomainDataFiller(SessionFactory sessionFactory, RelationshipSize relationshipSize) {
 		this.sessionFactory = sessionFactory;
 		this.companyFactory = new CompanyFactory( relationshipSize );
