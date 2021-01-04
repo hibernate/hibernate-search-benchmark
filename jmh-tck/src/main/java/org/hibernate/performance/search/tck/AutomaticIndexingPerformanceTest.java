@@ -1,12 +1,19 @@
 package org.hibernate.performance.search.tck;
 
+import org.hibernate.performance.search.model.asset.AutomaticIndexingState;
+
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 
+@Fork(1)
 @State(Scope.Thread)
-public class AutomaticIndexingPerformanceTest {
+public abstract class AutomaticIndexingPerformanceTest {
+
+	private AutomaticIndexingState automaticIndexingState;
+	private int threadIndex;
 
 	@Benchmark
 	@Threads(3)
@@ -14,4 +21,11 @@ public class AutomaticIndexingPerformanceTest {
 		Thread.sleep( 1000 );
 	}
 
+	protected void setAutomaticIndexingState(AutomaticIndexingState automaticIndexingState) {
+		this.automaticIndexingState = automaticIndexingState;
+	}
+
+	protected void setThreadIndex(int threadIndex) {
+		this.threadIndex = threadIndex;
+	}
 }
