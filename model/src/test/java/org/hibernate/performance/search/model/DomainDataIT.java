@@ -19,6 +19,7 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.model.service.EmployeeRepository;
 
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class DomainDataIT {
 	@Test
 	public void test() {
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() ) ) {
-			new DomainDataFiller( sessionFactory ).fillData( 0 );
+			new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );

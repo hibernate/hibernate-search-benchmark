@@ -21,6 +21,7 @@ import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstanc
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
+import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.tck.SearchingPerformanceTest;
 import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
@@ -45,7 +46,7 @@ public class SearchingIT {
 		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.manualProperties() );
 		modelService = TckBackendHelperFactory.getModelService();
 
-		new DomainDataFiller( sessionFactory ).fillData( 0 );
+		new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			modelService.massIndexing( session );
 		}
