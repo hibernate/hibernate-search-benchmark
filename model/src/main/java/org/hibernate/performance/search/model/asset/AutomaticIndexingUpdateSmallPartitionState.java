@@ -12,7 +12,7 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 	@Override
 	public void updateEmployeeOneTime() {
 		boolean reverse = employeeInvocation % 2 == 1;
-		int index = ( employeeInvocation / 2 ) % actualIndexSize;
+		int index = ( employeeInvocation / 2 ) % partitionIds.size();
 
 		int managerId = partitionIds.get( index );
 		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );

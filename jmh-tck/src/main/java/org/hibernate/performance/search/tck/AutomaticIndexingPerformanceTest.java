@@ -1,6 +1,8 @@
 package org.hibernate.performance.search.tck;
 
+import org.hibernate.performance.search.model.asset.AutomaticIndexingInsertPartitionState;
 import org.hibernate.performance.search.model.asset.AutomaticIndexingState;
+import org.hibernate.performance.search.model.asset.AutomaticIndexingUpdatePartitionState;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
@@ -15,27 +17,35 @@ import org.openjdk.jmh.annotations.Threads;
 @State(Scope.Thread)
 public abstract class AutomaticIndexingPerformanceTest {
 
-	private AutomaticIndexingState automaticIndexingState;
+	private AutomaticIndexingState indexingState;
 	private int threadIndex;
 
 	@Setup(Level.Iteration)
 	public void prepareIteration() {
-		automaticIndexingState.start();
+		indexingState.start();
 	}
 
 	@TearDown(Level.Iteration)
 	public void tearDownIteration() {
-		automaticIndexingState.stop();
+		indexingState.stop();
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void test() throws Exception {
-		Thread.sleep( 1000 );
+	@Threads(1)
+	public void test1_insert() throws Exception {
+		AutomaticIndexingInsertPartitionState insertPartition = indexingState.getInsertPartition( threadIndex );
+		insertPartition.executeInsert();
 	}
 
-	protected void setAutomaticIndexingState(AutomaticIndexingState automaticIndexingState) {
-		this.automaticIndexingState = automaticIndexingState;
+	@Benchmark
+	@Threads(1)
+	public void test2_update_companyBU() throws Exception {
+		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
+		updatePartition.updateCompanyBU();
+	}
+
+	protected void setIndexingState(AutomaticIndexingState indexingState) {
+		this.indexingState = indexingState;
 	}
 
 	protected void setThreadIndex(int threadIndex) {

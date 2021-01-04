@@ -38,7 +38,8 @@ public class AutomaticIndexingState {
 		if ( RelationshipSize.SMALL.equals( relationshipSize ) && updateInvocationSize % 2 == 1 ) {
 			// make the invocationSize even
 			this.updateInvocationSize = updateInvocationSize + 1;
-		} else {
+		}
+		else {
 			this.updateInvocationSize = updateInvocationSize;
 		}
 	}

@@ -91,7 +91,7 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 
 	private void updateCompanyBUOneTime() {
 		boolean reverse = companyBUInvocation % 2 == 1;
-		int companyId = partitionIds.get( ( companyBUInvocation / 2 ) % actualIndexSize );
+		int companyId = partitionId( companyBUInvocation / 2 );
 
 		int fromCompanyId = ( reverse ) ? alternativeCompanyId : companyId;
 		int toCompanyId = ( reverse ) ? companyId : alternativeCompanyId;

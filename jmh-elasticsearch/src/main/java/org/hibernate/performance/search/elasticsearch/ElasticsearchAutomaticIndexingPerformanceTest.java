@@ -13,7 +13,7 @@ public class ElasticsearchAutomaticIndexingPerformanceTest extends AutomaticInde
 
 	@Setup(Level.Trial)
 	public void setupTrial(ElasticsearchAutomaticIndexingStateHolder stateHolder, ThreadParams threadParams) {
-		setAutomaticIndexingState( stateHolder.getAutomaticIndexingState() );
+		setIndexingState( stateHolder.getAutomaticIndexingState() );
 		setThreadIndex( threadParams.getThreadIndex() );
 	}
 }

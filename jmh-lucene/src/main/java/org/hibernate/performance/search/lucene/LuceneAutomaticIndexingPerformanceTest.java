@@ -13,7 +13,7 @@ public class LuceneAutomaticIndexingPerformanceTest extends AutomaticIndexingPer
 
 	@Setup(Level.Trial)
 	public void setupTrial(LuceneAutomaticIndexingStateHolder stateHolder, ThreadParams threadParams) {
-		setAutomaticIndexingState( stateHolder.getAutomaticIndexingState() );
+		setIndexingState( stateHolder.getAutomaticIndexingState() );
 		setThreadIndex( threadParams.getThreadIndex() );
 	}
 }
