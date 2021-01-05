@@ -24,7 +24,6 @@ public class AutomaticIndexingState {
 	private List<AutomaticIndexingDeletePartitionState> indexDeletePartitions;
 	private SessionFactory sessionFactory;
 	private boolean started;
-	private boolean stopped;
 
 	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
 			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties) {
@@ -58,13 +57,16 @@ public class AutomaticIndexingState {
 	}
 
 	public synchronized void stop() {
-		if ( stopped ) {
+		if ( !started ) {
 			return;
 		}
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
-		stopped = true;
+		indexInsertPartitions = null;
+		indexUpdatePartitions = null;
+		indexDeletePartitions = null;
+		started = true;
 	}
 
 	public AutomaticIndexingInsertPartitionState getInsertPartition(int threadNumber) {
