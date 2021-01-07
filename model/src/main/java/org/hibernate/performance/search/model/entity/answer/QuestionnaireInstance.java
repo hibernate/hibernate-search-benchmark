@@ -54,7 +54,7 @@ public class QuestionnaireInstance {
 	@Cascade(CascadeType.ALL)
 	private List<OpenAnswer> openAnswers;
 
-	@Column(name = "notes", columnDefinition = "LONGTEXT")
+	@Column(name = "notes", columnDefinition = "text")
 	private String notes;
 
 	private QuestionnaireInstance() {

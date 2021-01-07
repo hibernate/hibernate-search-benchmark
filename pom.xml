@@ -26,6 +26,7 @@
         <version.hibernate.orm>5.4.24.Final</version.hibernate.orm>
         <version.hibernate.search6>6.0.0.Final</version.hibernate.search6>
         <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
+        <version.postgresql.client>42.2.2</version.postgresql.client>
         <version.jmh>1.26</version.jmh>
         <version.log4j>2.13.3</version.log4j>
         <version.junit.jupiter>5.7.0</version.junit.jupiter>
@@ -34,6 +35,9 @@
         <version.processor.plugin>4.4</version.processor.plugin>
         <version.shade.plugin>3.2.4</version.shade.plugin>
         <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
+        <version.docker.maven.plugin>0.31.0</version.docker.maven.plugin>
+
+        <postgres.image>postgres:10.5</postgres.image>
 
         <jmh.uberjar.name>benchmarks</jmh.uberjar.name>
     </properties>
@@ -64,4 +68,62 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${version.docker.maven.plugin}</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>${postgres.image}</name>
+                                <alias>postgresql</alias>
+                                <run>
+                                    <env>
+                                        <POSTGRES_USER>username</POSTGRES_USER>
+                                        <POSTGRES_PASSWORD>password</POSTGRES_PASSWORD>
+                                        <POSTGRES_DB>database</POSTGRES_DB>
+                                    </env>
+                                    <ports>
+                                        <port>5431:5432</port>
+                                    </ports>
+                                    <wait>
+                                        <tcp>
+                                            <mode>mapped</mode>
+                                            <ports>
+                                                <port>5432</port>
+                                            </ports>
+                                        </tcp>
+                                        <time>10000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                        </images>
+                        <!--Stops all postgres:10.5 images currently running, not just those we just started.
+                          Useful to stop processes still running from a previously failed integration test run -->
+                        <allContainers>true</allContainers>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>docker-start</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>stop</goal>
+                                <goal>start</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>docker-stop</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>stop</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

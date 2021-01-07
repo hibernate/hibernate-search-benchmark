@@ -199,7 +199,7 @@ public class SearchingIT {
 					session, PerformanceSummary.class, "employee.surname", "surname77", "year", 2025, "maxScore",
 					"employeeScore"
 			);
-			assertThat( projections ).containsExactly( Arrays.asList( 4480, 2333 ) );
+			assertThat( projections ).containsExactly( Arrays.asList( 4480, 2360 ) );
 		}
 	}
 

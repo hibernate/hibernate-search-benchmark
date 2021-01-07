@@ -11,10 +11,6 @@
     </parent>
     <artifactId>hibernate-search-performance-model</artifactId>
 
-    <properties>
-        <version.h2>1.4.200</version.h2>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -22,16 +18,16 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${version.h2}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${version.log4j}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.postgresql.client}</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
@@ -50,6 +46,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
