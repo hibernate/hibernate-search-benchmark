@@ -32,42 +32,42 @@ public abstract class AutomaticIndexingPerformanceTest {
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test1_insert() {
 		AutomaticIndexingInsertPartitionState insertPartition = indexingState.getInsertPartition( threadIndex );
 		insertPartition.executeInsert();
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test2_update_companyBU() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateCompanyBU();
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test3_update_employee() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateEmployee();
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test4_update_questionnaire() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestionnaire();
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test5_update_question() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestion();
 	}
 
 	@Benchmark
-	@Threads(1)
+	@Threads(3)
 	public void test6_delete() {
 		AutomaticIndexingDeletePartitionState deletePartition = indexingState.getDeletePartition( threadIndex );
 		deletePartition.executeDelete();
