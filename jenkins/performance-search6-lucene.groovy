@@ -23,7 +23,7 @@ pipeline {
                 sh """ \
 					mvn clean install \
 					-U -pl jmh-lucene -am \
-					-DskipTests \
+					-DskipTests -Ddocker.skip \
 			"""
                 dir('jmh-lucene/target') {
                     stash name: 'jar', includes: 'benchmarks.jar'
@@ -33,6 +33,7 @@ pipeline {
         stage('Performance test') {
             steps {
                 unstash name: 'jar'
+                sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sh 'mkdir -p output'
                 sh """ \
 					java \
@@ -40,6 +41,8 @@ pipeline {
 					-wi 1 -i 10 \
 					-rff output/benchmark-results-search6-lucene.csv \
 			"""
+                sh 'docker stop postgresql'
+                sh 'docker rm -f postgresql'
                 archiveArtifacts artifacts: 'output/**'
             }
         }
