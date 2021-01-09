@@ -15,6 +15,8 @@
         <version.elasticsearch.search6>7.10.0</version.elasticsearch.search6>
         <version.elasticsearch.search5>5.6.16</version.elasticsearch.search5>
         <version.elasticsearch.plugin>6.19</version.elasticsearch.plugin>
+
+        <test.elasticsearch.run.skip>false</test.elasticsearch.run.skip>
     </properties>
 
     <dependencies>
@@ -118,6 +120,7 @@
                 <artifactId>elasticsearch-maven-plugin</artifactId>
                 <version>${version.elasticsearch.plugin}</version>
                 <configuration>
+                    <skip>${test.elasticsearch.run.skip}</skip>
                     <timeout>90</timeout>
                     <autoCreateIndex>false</autoCreateIndex>
                 </configuration>
@@ -157,6 +160,11 @@
                 <dependency>
                     <groupId>org.hibernate.search</groupId>
                     <artifactId>hibernate-search-backend-elasticsearch</artifactId>
+                    <version>${version.hibernate.search6}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.hibernate.search</groupId>
+                    <artifactId>hibernate-search-backend-elasticsearch-aws</artifactId>
                     <version>${version.hibernate.search6}</version>
                 </dependency>
             </dependencies>

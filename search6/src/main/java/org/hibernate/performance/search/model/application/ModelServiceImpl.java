@@ -32,11 +32,6 @@ public class ModelServiceImpl implements ModelService {
 
 		if ( kind.isLucene() ) {
 			config.put( "hibernate.search.backend.directory.type", "local-heap" );
-		} else {
-			config.put( "hibernate.search.backend.hosts", "localhost:9200" );
-			config.put( "hibernate.search.backend.protocol", "http" );
-			config.put( "hibernate.search.backend.username", "" );
-			config.put( "hibernate.search.backend.password", "" );
 		}
 
 		if ( kind.isManual() ) {
