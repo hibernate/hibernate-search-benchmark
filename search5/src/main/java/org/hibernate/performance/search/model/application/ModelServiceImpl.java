@@ -25,9 +25,6 @@ public class ModelServiceImpl implements ModelService {
 		}
 		else {
 			properties.put( "hibernate.search.default.indexmanager", "elasticsearch" );
-			properties.put( "hibernate.search.default.elasticsearch.host", "http://127.0.0.1:9200" );
-			properties.put( "hibernate.search.default.elasticsearch.username", "" );
-			properties.put( "hibernate.search.default.elasticsearch.password", "" );
 			properties.put(
 					"hibernate.search.default.elasticsearch.index_schema_management_strategy",
 					"drop-and-create-and-drop"
