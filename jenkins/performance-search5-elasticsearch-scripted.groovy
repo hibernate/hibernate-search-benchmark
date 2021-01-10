@@ -24,7 +24,7 @@ import org.hibernate.jenkins.pipeline.helpers.job.JobHelper
 
 @Field JobHelper helper
 
-@Field EsAwsBuildEnvironment esAwsBuildEnv = new EsAwsBuildEnvironment(version: "7.1")
+@Field EsAwsBuildEnvironment esAwsBuildEnv = new EsAwsBuildEnvironment(version: "5.6")
 
 this.helper = new JobHelper(this)
 
