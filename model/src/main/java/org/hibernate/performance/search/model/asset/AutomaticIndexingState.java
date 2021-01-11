@@ -66,7 +66,7 @@ public class AutomaticIndexingState {
 		indexInsertPartitions = null;
 		indexUpdatePartitions = null;
 		indexDeletePartitions = null;
-		started = true;
+		started = false;
 	}
 
 	public AutomaticIndexingInsertPartitionState getInsertPartition(int threadNumber) {
