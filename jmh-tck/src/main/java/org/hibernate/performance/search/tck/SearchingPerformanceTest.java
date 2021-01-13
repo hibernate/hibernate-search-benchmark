@@ -1,12 +1,14 @@
 package org.hibernate.performance.search.tck;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
+import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -31,7 +33,7 @@ import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
-public class SearchingPerformanceTest {
+public abstract class SearchingPerformanceTest {
 
 	@Param({ "SMALL" })
 	private RelationshipSize relationshipSize;
@@ -43,8 +45,8 @@ public class SearchingPerformanceTest {
 	private final SessionFactory sessionFactory;
 
 	public SearchingPerformanceTest() {
-		modelService = TckBackendHelperFactory.getModelService();
-		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.manualProperties() );
+		modelService = ModelServiceFactory.create();
+		sessionFactory = HibernateORMHelper.buildSessionFactory( manualProperties( modelService ) );
 	}
 
 	@Setup(Level.Trial)
@@ -222,4 +224,6 @@ public class SearchingPerformanceTest {
 			blackhole.consume( search );
 		}
 	}
+
+	protected abstract Properties manualProperties(ModelService modelService);
 }

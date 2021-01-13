@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
+import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -23,7 +24,6 @@ import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.tck.SearchingPerformanceTest;
-import org.hibernate.performance.search.tck.TckBackendHelperFactory;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,8 +43,9 @@ public class SearchingIT {
 
 	@BeforeAll
 	public void beforeAll() throws Exception {
-		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.manualProperties() );
-		modelService = TckBackendHelperFactory.getModelService();
+		modelService = ModelServiceFactory.create();
+		sessionFactory = HibernateORMHelper.buildSessionFactory(
+				modelService.properties( ModelService.Kind.LUCENE_MANUAL_INDEXING ) );
 
 		new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
 		try ( Session session = ( sessionFactory.openSession() ) ) {

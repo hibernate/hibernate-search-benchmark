@@ -4,6 +4,8 @@ import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
+import org.hibernate.performance.search.model.application.ModelServiceFactory;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Measurement;
@@ -18,12 +20,12 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Benchmark)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class BootPerformanceTest {
+public abstract class BootPerformanceTest {
 
 	private final Properties properties;
 
 	public BootPerformanceTest() {
-		properties = TckBackendHelperFactory.autoProperties();
+		properties = autoProperties( ModelServiceFactory.create() );
 	}
 
 	@Benchmark
@@ -33,4 +35,6 @@ public class BootPerformanceTest {
 			// do nothing, we need just to close the instance
 		}
 	}
+
+	protected abstract Properties autoProperties(ModelService modelService);
 }

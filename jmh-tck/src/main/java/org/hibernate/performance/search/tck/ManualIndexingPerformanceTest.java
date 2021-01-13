@@ -1,10 +1,13 @@
 package org.hibernate.performance.search.tck;
 
+import java.util.Properties;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
+import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -14,7 +17,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 @State(Scope.Benchmark)
-public class ManualIndexingPerformanceTest {
+public abstract class ManualIndexingPerformanceTest {
 
 	@Param({ "SMALL" })
 	private RelationshipSize relationshipSize;
@@ -26,8 +29,8 @@ public class ManualIndexingPerformanceTest {
 	private final SessionFactory sessionFactory;
 
 	public ManualIndexingPerformanceTest() {
-		modelService = TckBackendHelperFactory.getModelService();
-		sessionFactory = HibernateORMHelper.buildSessionFactory( TckBackendHelperFactory.manualProperties() );
+		modelService = ModelServiceFactory.create();
+		sessionFactory = HibernateORMHelper.buildSessionFactory( manualProperties( modelService ) );
 	}
 
 	@Setup
@@ -44,4 +47,6 @@ public class ManualIndexingPerformanceTest {
 			modelService.massIndexing( session );
 		}
 	}
+
+	protected abstract Properties manualProperties(ModelService modelService);
 }
