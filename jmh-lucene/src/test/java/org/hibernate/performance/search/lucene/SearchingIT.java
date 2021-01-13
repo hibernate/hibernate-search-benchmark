@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.model.application.BackendType;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.IndexingType;
 import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
@@ -45,7 +47,7 @@ public class SearchingIT {
 	public void beforeAll() throws Exception {
 		modelService = ModelServiceFactory.create();
 		sessionFactory = HibernateORMHelper.buildSessionFactory(
-				modelService.properties( ModelService.Kind.LUCENE_MANUAL_INDEXING ) );
+				modelService.properties( BackendType.LUCENE, IndexingType.MANUAL ) );
 
 		new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
 		try ( Session session = ( sessionFactory.openSession() ) ) {

@@ -17,10 +17,10 @@ import org.apache.lucene.search.Query;
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties(Kind kind) {
+	public Properties properties(BackendType backend, IndexingType indexing) {
 		Properties properties = new Properties();
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
-		if ( kind.isLucene() ) {
+		if ( BackendType.LUCENE.equals( backend ) ) {
 			properties.put( "hibernate.search.default.directory_provider", "local-heap" );
 		}
 		else {
@@ -31,7 +31,7 @@ public class ModelServiceImpl implements ModelService {
 			);
 		}
 
-		if ( kind.isManual() ) {
+		if ( IndexingType.MANUAL.equals( indexing ) ) {
 			properties.put( "hibernate.search.indexing_strategy", "manual" );
 		}
 

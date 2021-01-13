@@ -22,7 +22,7 @@ import org.hibernate.search.util.common.data.RangeBoundInclusion;
 public class ModelServiceImpl implements ModelService {
 
 	@Override
-	public Properties properties(Kind kind) {
+	public Properties properties(BackendType backend, IndexingType indexing) {
 		Properties config = new Properties();
 		config.put( HibernateOrmMapperSettings.SCHEMA_MANAGEMENT_STRATEGY,
 				SchemaManagementStrategyName.DROP_AND_CREATE_AND_DROP );
@@ -30,11 +30,11 @@ public class ModelServiceImpl implements ModelService {
 		config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
 
-		if ( kind.isLucene() ) {
+		if ( BackendType.LUCENE.equals( backend ) ) {
 			config.put( "hibernate.search.backend.directory.type", "local-heap" );
 		}
 
-		if ( kind.isManual() ) {
+		if ( IndexingType.MANUAL.equals( indexing ) ) {
 			config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
 		}
 
