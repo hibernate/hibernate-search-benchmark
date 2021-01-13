@@ -1,62 +1,135 @@
-pipeline {
-    agent any
-    tools {
-        maven "Apache Maven 3.6"
-        jdk "OpenJDK 11 Latest"
-    }
-    stages {
-        stage('Initialize') {
-            steps {
-                // I don't find ES_AWS_71_ENDPOINT in the env, so I'm using the 78
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                    echo "ES_AWS_78_ENDPOINT = ${ES_AWS_78_ENDPOINT}"
-                    echo "ES_AWS_REGION" = ${ES_AWS_REGION}
-                '''
-            }
-        }
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Build') {
-            steps {
-                sh """ \
+/**
+ * Pipeline inspired from https://github.com/hibernate/hibernate-search jenkins/performance-elasticsearch.groovy
+ */
+import groovy.transform.Field
+
+/*
+ * See https://github.com/hibernate/hibernate-jenkins-pipeline-helpers
+ */
+@Library('hibernate-jenkins-pipeline-helpers@1.2')
+import org.hibernate.jenkins.pipeline.helpers.job.JobHelper
+
+@Field final String MAVEN_TOOL = 'Apache Maven 3.6'
+@Field final String JDK_TOOL = 'OpenJDK 11 Latest'
+
+// Performance node pattern, to be used for stages involving performance tests.
+@Field final String PERFORMANCE_NODE_PATTERN = 'Performance'
+// Quick-use node pattern, to be used for very light, quick, and environment-independent stages,
+// such as sending a notification. May include the master node in particular.
+@Field final String QUICK_USE_NODE_PATTERN = 'Master||Slave||Performance'
+
+@Field JobHelper helper
+
+@Field EsAwsBuildEnvironment esAwsBuildEnv = new EsAwsBuildEnvironment(version: "7.8")
+
+this.helper = new JobHelper(this)
+
+helper.runWithNotification {
+
+stage('Configure') {
+	helper.configure {
+		configurationNodePattern QUICK_USE_NODE_PATTERN
+		file 'job-configuration.yaml'
+		jdk {
+			defaultTool JDK_TOOL
+		}
+		maven {
+			defaultTool MAVEN_TOOL
+			producedArtifactPattern "org/hibernate/search/*"
+		}
+	}
+
+	properties([
+			pipelineTriggers(
+					[
+							issueCommentTrigger('.*test Elasticsearch performance please.*')
+					]
+			),
+			helper.generateNotificationProperty()
+	])
+
+	esAwsBuildEnv.endpointUris = env.getProperty(esAwsBuildEnv.endpointVariableName)
+	if (!esAwsBuildEnv.endpointUris) {
+		throw new IllegalStateException(
+				"Cannot run performance test because environment variable '$esAwsBuildEnv.endpointVariableName' is not defined."
+		)
+	}
+	esAwsBuildEnv.awsRegion = env.ES_AWS_REGION
+	if (!esAwsBuildEnv.awsRegion) {
+		throw new IllegalStateException(
+				"Cannot run performance test because environment variable 'ES_AWS_REGION' is not defined."
+		)
+	}
+}
+
+lock(label: esAwsBuildEnv.lockedResourcesLabel) {
+	node ('Performance') {
+		stage ('Checkout') {
+			checkout scm
+		}
+
+		stage ('Build') {
+			helper.withMavenWorkspace {
+				sh """ \
 					mvn clean install \
 					-U -pl jmh-elasticsearch -am \
 					-DskipTests -Ddocker.skip -Dtest.elasticsearch.run.skip=true \
 			"""
-                dir('jmh-elasticsearch/target') {
-                    stash name: 'jar', includes: 'benchmarks.jar'
-                }
-            }
-        }
-        stage('Performance test') {
-            steps {
-                lock(resource: 'es-aws-78') {
-                    unstash name: 'jar'
-                    sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
-                    sh 'mkdir -p output'
-                    sh """ \
-					java \
-					-jar benchmarks.jar \
-					-jvmArgsAppend -Dhosts=vpc-ci-elasticsearch-78-r5-membawptnueqlpmzkr677lwzoa.us-east-1.es.amazonaws.com \
-                    -jvmArgsAppend -Dprotocol=https \
-                    -jvmArgsAppend -Daws.signing.enabled=true \
-                    -jvmArgsAppend -Daws.region=$ES_AWS_REGION \
-                    -jvmArgsAppend -Daws.credentials.type=static \
-                    -jvmArgsAppend -Daws.credentials.access_key_id=$AWS_ACCESS_KEY_ID \
-                    -jvmArgsAppend -Daws.credentials.secret_access_key=$AWS_SECRET_ACCESS_KEY \
-					-wi 1 -i 10 \
-					-rff output/benchmark-results-search6-elasticsearch.csv \
-			"""
-                    sh 'docker stop postgresql'
-                    sh 'docker rm -f postgresql'
-                    archiveArtifacts artifacts: 'output/**'
-                }
-            }
-        }
-    }
+				dir ('jmh-elasticsearch/target') {
+					stash name:'jar', includes:'benchmarks.jar'
+				}
+			}
+		}
+
+		stage ('Performance test') {
+			def awsCredentialsId = helper.configuration.file?.aws?.credentials
+			if (!awsCredentialsId) {
+				throw new IllegalStateException("Missing AWS credentials")
+			}
+			withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+							  credentialsId   : awsCredentialsId,
+							  usernameVariable: 'AWS_ACCESS_KEY_ID',
+							  passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+			]]) {
+				helper.withMavenWorkspace { // Mainly to set the default JDK
+					unstash name:'jar'
+					sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
+					sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
+					sh 'mkdir output'
+					sh """ \
+							java \
+							-jar benchmarks.jar \
+							-jvmArgsAppend -Duris=$esAwsBuildEnv.endpointUris \
+							-jvmArgsAppend -Daws.signing.enabled=true \
+							-jvmArgsAppend -Daws.region=$esAwsBuildEnv.awsRegion \
+							-jvmArgsAppend -Daws.credentials.type=static \
+							-jvmArgsAppend -Daws.credentials.access_key_id=$AWS_ACCESS_KEY_ID \
+							-jvmArgsAppend -Daws.credentials.secret_access_key=$AWS_SECRET_ACCESS_KEY \
+							-wi 1 -i 10 \
+							-rff output/benchmark-results-search6-elasticsearch.csv \
+					"""
+				}
+			}
+			sh 'docker stop postgresql'
+			sh 'docker rm -f postgresql'
+			archiveArtifacts artifacts: 'output/**'
+		}
+	}
+}
+
+} // End of helper.runWithNotification
+
+class EsAwsBuildEnvironment {
+	String version
+	String endpointUris = null
+	String awsRegion = null
+	String getNameEmbeddableVersion() {
+		version.replaceAll('\\.', '')
+	}
+	String getEndpointVariableName() {
+		"ES_AWS_${nameEmbeddableVersion}_ENDPOINT"
+	}
+	String getLockedResourcesLabel() {
+		"es-aws-${nameEmbeddableVersion}"
+	}
 }
