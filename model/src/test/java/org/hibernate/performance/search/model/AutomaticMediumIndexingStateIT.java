@@ -22,6 +22,7 @@ import org.hibernate.performance.search.model.entity.question.QuestionnaireDefin
 import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.model.service.EmployeeRepository;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 public class AutomaticMediumIndexingStateIT {
@@ -39,12 +40,12 @@ public class AutomaticMediumIndexingStateIT {
 
 	private static final AutomaticIndexingState indexingState = new AutomaticIndexingState(
 			RelationshipSize.MEDIUM, INITIAL_INDEX_SIZE, INSERT_INVOCATION_SIZE, UPDATE_INVOCATION_SIZE,
-			DELETE_INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties()
+			DELETE_INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties(), null
 	);
 
 	@Test
 	public void test() {
-		indexingState.start();
+		indexingState.startTrial();
 		checkTheSize( BEFORE_INSERT_SIZES );
 
 		int expectedIndexSize = INITIAL_INDEX_SIZE + INSERT_INVOCATION_SIZE * NUMBER_OF_THREADS;
@@ -80,6 +81,11 @@ public class AutomaticMediumIndexingStateIT {
 		}
 
 		checkTheSize( AFTER_DELETE_SIZES );
+	}
+
+	@AfterAll
+	public static void afterAll() {
+		indexingState.stopTrial();
 	}
 
 	private void checkTheSize(int[] sizes) {

@@ -32,12 +32,13 @@ public class AutomaticSmallIndexingStateIT {
 	private static final int NUMBER_OF_THREADS = 3;
 
 	private static final AutomaticIndexingState indexingState = new AutomaticIndexingState( RelationshipSize.SMALL,
-			INITIAL_INDEX_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties()
+			INITIAL_INDEX_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, INVOCATION_SIZE, NUMBER_OF_THREADS, new Properties(),
+			null
 	);
 
 	@Test
 	public void test() {
-		indexingState.start();
+		indexingState.startTrial();
 
 		checkTheSize( INITIAL_INDEX_SIZE, INITIAL_INDEX_SIZE, INITIAL_INDEX_SIZE );
 
@@ -80,6 +81,11 @@ public class AutomaticSmallIndexingStateIT {
 		);
 	}
 
+	@AfterAll
+	public static void afterAll() {
+		indexingState.stopTrial();
+	}
+
 	private void checkTheSize(int companySize, int questionSize, int otherSize) {
 		try ( Session session = indexingState.getSessionFactory().openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
@@ -99,11 +105,6 @@ public class AutomaticSmallIndexingStateIT {
 			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( otherSize );
 			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( otherSize );
 		}
-	}
-
-	@AfterAll
-	public static void afterAll() {
-		indexingState.stop();
 	}
 
 }

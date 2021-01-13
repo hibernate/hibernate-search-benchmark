@@ -21,14 +21,24 @@ public abstract class AutomaticIndexingPerformanceTest {
 	private AutomaticIndexingState indexingState;
 	private int threadIndex;
 
+	@Setup(Level.Trial)
+	public void prepareTrial() {
+		indexingState.startTrial();
+	}
+
+	@TearDown(Level.Trial)
+	public void tearDownTrial() {
+		indexingState.stopTrial();
+	}
+
 	@Setup(Level.Iteration)
 	public void prepareIteration() {
-		indexingState.start();
+		indexingState.startIteration();
 	}
 
 	@TearDown(Level.Iteration)
 	public void tearDownIteration() {
-		indexingState.stop();
+		indexingState.stopIteration();
 	}
 
 	@Benchmark

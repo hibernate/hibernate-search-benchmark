@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public class AutomaticIndexingState {
@@ -18,6 +21,7 @@ public class AutomaticIndexingState {
 	private final int deleteInvocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
+	private final ModelService modelService;
 
 	private List<AutomaticIndexingInsertPartitionState> indexInsertPartitions;
 	private List<AutomaticIndexingUpdatePartitionState> indexUpdatePartitions;
@@ -26,13 +30,15 @@ public class AutomaticIndexingState {
 	private boolean started;
 
 	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
-			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties) {
+			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties,
+			ModelService modelService) {
 		this.relationshipSize = relationshipSize;
 		this.initialIndexSize = initialIndexSize;
 		this.insertInvocationSize = insertInvocationSize;
 		this.deleteInvocationSize = deleteInvocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
+		this.modelService = modelService;
 
 		if ( RelationshipSize.SMALL.equals( relationshipSize ) && updateInvocationSize % 2 == 1 ) {
 			// make the invocationSize even
@@ -43,30 +49,42 @@ public class AutomaticIndexingState {
 		}
 	}
 
-	public synchronized void start() {
+	public synchronized void startTrial() {
 		if ( started ) {
 			return;
 		}
 		sessionFactory = HibernateORMHelper.buildSessionFactory( additionalProperties );
-		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
-		for ( int i = 0; i < initialIndexSize; i++ ) {
-			domainDataFiller.fillData( i );
-		}
-		indexInsertPartitions = createInsertPartitions();
-		started = true;
+		start();
 	}
 
-	public synchronized void stop() {
+	public synchronized void stopTrial() {
 		if ( !started ) {
 			return;
 		}
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
-		indexInsertPartitions = null;
-		indexUpdatePartitions = null;
-		indexDeletePartitions = null;
-		started = false;
+		stop();
+	}
+
+	public synchronized void startIteration() {
+		if ( started ) {
+			return;
+		}
+		start();
+	}
+
+	public synchronized void stopIteration() {
+		if ( !started ) {
+			return;
+		}
+		new DomainDataRemover( sessionFactory ).truncateAll();
+		if ( modelService != null ) {
+			try ( Session session = sessionFactory.openSession() ) {
+				modelService.purgeAllIndexes( session );
+			}
+		}
+		stop();
 	}
 
 	public AutomaticIndexingInsertPartitionState getInsertPartition(int threadNumber) {
@@ -96,6 +114,22 @@ public class AutomaticIndexingState {
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
+	}
+
+	private void start() {
+		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		for ( int i = 0; i < initialIndexSize; i++ ) {
+			domainDataFiller.fillData( i );
+		}
+		indexInsertPartitions = createInsertPartitions();
+		started = true;
+	}
+
+	private void stop() {
+		indexInsertPartitions = null;
+		indexUpdatePartitions = null;
+		indexDeletePartitions = null;
+		started = false;
 	}
 
 	private List<AutomaticIndexingInsertPartitionState> createInsertPartitions() {

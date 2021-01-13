@@ -41,7 +41,7 @@ public abstract class AutomaticIndexingStateHolder {
 
 		automaticIndexingState = new AutomaticIndexingState(
 				RelationshipSize.SMALL, initialIndexSize, insertInvocationSize, updateInvocationSize,
-				deleteInvocationSize, threadParams.getThreadCount(), properties
+				deleteInvocationSize, threadParams.getThreadCount(), properties, modelService
 		);
 	}
 
