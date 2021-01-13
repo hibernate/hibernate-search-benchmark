@@ -2,6 +2,7 @@ package org.hibernate.performance.search.tck;
 
 import java.util.Properties;
 
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.asset.AutomaticIndexingState;
 import org.hibernate.performance.search.model.param.RelationshipSize;
@@ -35,7 +36,8 @@ public abstract class AutomaticIndexingStateHolder {
 
 	@Setup(Level.Trial)
 	public void setup(ThreadParams threadParams) {
-		Properties properties = ModelServiceFactory.create().properties( backendHelper().automatic() );
+		ModelService modelService = ModelServiceFactory.create();
+		Properties properties = autoProperties( modelService );
 
 		automaticIndexingState = new AutomaticIndexingState(
 				RelationshipSize.SMALL, initialIndexSize, insertInvocationSize, updateInvocationSize,
@@ -47,6 +49,6 @@ public abstract class AutomaticIndexingStateHolder {
 		return automaticIndexingState;
 	}
 
-	protected abstract TckBackendHelper backendHelper();
+	protected abstract Properties autoProperties(ModelService modelService);
 
 }
