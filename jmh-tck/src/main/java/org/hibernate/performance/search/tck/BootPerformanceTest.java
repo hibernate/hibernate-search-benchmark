@@ -8,7 +8,9 @@ import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.application.ModelServiceFactory;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
@@ -20,6 +22,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Benchmark)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
+@BenchmarkMode(Mode.SingleShotTime)
 public abstract class BootPerformanceTest {
 
 	private final Properties properties;
