@@ -10,7 +10,7 @@ import org.hibernate.annotations.NaturalId;
 @Entity
 public class Employee extends IdEntity {
 
-	protected String name;
+	protected String firstName;
 	protected String surname;
 
 	@NaturalId
@@ -35,7 +35,7 @@ public class Employee extends IdEntity {
 	public Employee(Manager manager, int id) {
 		super( id );
 
-		this.name = "name"+id;
+		this.firstName = "name"+id;
 		this.surname = "surname"+id;
 		this.socialSecurityNumber = "socialSecurityNumber"+id;
 		this.manager = manager;
@@ -43,12 +43,12 @@ public class Employee extends IdEntity {
 		this.company = businessUnit.getOwner();
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getSurname() {

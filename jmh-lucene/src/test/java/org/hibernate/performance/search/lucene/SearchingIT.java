@@ -103,11 +103,11 @@ public class SearchingIT {
 	public void employee() {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			// match
-			List<Employee> employees = modelService.search( session, Employee.class, "name", "name77" );
+			List<Employee> employees = modelService.search( session, Employee.class, "firstName", "name77" );
 			assertThat( employees ).hasSize( 1 );
 
 			// no match
-			employees = modelService.search( session, Employee.class, "name", "nameX" );
+			employees = modelService.search( session, Employee.class, "firstName", "nameX" );
 			assertThat( employees ).isEmpty();
 
 			// count
@@ -130,7 +130,7 @@ public class SearchingIT {
 			assertThat( ids ).containsExactlyInAnyOrder( 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 );
 
 			// traverse the tree up
-			employees = modelService.search( session, Employee.class, "manager.manager.manager.manager.name", "name0" );
+			employees = modelService.search( session, Employee.class, "manager.manager.manager.manager.firstName", "name0" );
 			assertThat( employees ).extracting( "id" ).containsExactlyInAnyOrder(
 					71, 72, 73, 74, 75, 76, 77, 78, 79,
 					81, 82, 83, 84, 85, 86, 87, 88, 89,
@@ -138,7 +138,7 @@ public class SearchingIT {
 			);
 
 			// traverse the tree down
-			List<Manager> managers = modelService.search( session, Manager.class, "employees.name", "name77" );
+			List<Manager> managers = modelService.search( session, Manager.class, "employees.firstName", "name77" );
 			assertThat( managers ).extracting( "id" ).containsExactlyInAnyOrder( 70 );
 		}
 	}

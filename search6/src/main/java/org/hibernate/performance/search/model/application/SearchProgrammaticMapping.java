@@ -41,7 +41,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep employee = mapping.type( Employee.class );
 		employee.indexed();
-		employee.property( "name" ).fullTextField().analyzer( "default" );
+		employee.property( "firstName" ).fullTextField().analyzer( "default" );
 		employee.property( "surname" ).fullTextField().analyzer( "default" );
 		employee.property( "socialSecurityNumber" ).keywordField();
 		employee.property( "company" ).indexedEmbedded().indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );

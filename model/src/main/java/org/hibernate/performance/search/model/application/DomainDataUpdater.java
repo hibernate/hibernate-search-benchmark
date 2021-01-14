@@ -76,11 +76,11 @@ public class DomainDataUpdater {
 			newManager.getEmployees().add( employee );
 
 			// change their names
-			employee.setName( "nameE" + iteration );
+			employee.setFirstName( "nameE" + iteration );
 			employee.setSurname( "surnameE" + iteration );
-			oldManager.setName( "nameOM" + iteration );
+			oldManager.setFirstName( "nameOM" + iteration );
 			oldManager.setSurname( "surnameOM" + iteration );
-			newManager.setName( "nameNM" + iteration );
+			newManager.setFirstName( "nameNM" + iteration );
 			newManager.setSurname( "surnameNM" + iteration );
 
 			session.merge( employee );

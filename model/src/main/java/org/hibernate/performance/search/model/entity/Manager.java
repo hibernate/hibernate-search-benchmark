@@ -19,7 +19,7 @@ public class Manager extends Employee {
 
 	public Manager(BusinessUnit businessUnit, int baseId) {
 		super( baseId );
-		this.name = "name"+id;
+		this.firstName = "name"+id;
 		this.surname = "surname"+id;
 		this.socialSecurityNumber = "socialSecurityNumber"+id;
 		this.company = businessUnit.getOwner();

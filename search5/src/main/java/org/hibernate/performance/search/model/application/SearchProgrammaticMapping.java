@@ -48,7 +48,7 @@ public final class SearchProgrammaticMapping {
 		// Employee
 		IndexedMapping employee = mapping.entity( Employee.class ).indexed();
 		employee
-				.property( "name", ElementType.FIELD ).field()
+				.property( "firstName", ElementType.FIELD ).field()
 				.property( "surname", ElementType.FIELD ).field()
 				.property( "socialSecurityNumber", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "company", ElementType.FIELD ).indexEmbedded()

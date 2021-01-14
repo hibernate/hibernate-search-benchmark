@@ -73,13 +73,13 @@ public class StatelessDomainDataUpdater {
 			newManager.getEmployees().add( employee );
 
 			// change their names
-			employee.setName( "nameE" + invocation );
+			employee.setFirstName( "nameE" + invocation );
 			employee.setSurname( "surnameE" + invocation );
 			if ( oldManager != null ) {
-				oldManager.setName( "nameOM" + invocation );
+				oldManager.setFirstName( "nameOM" + invocation );
 				oldManager.setSurname( "surnameOM" + invocation );
 			}
-			newManager.setName( "nameNM" + invocation );
+			newManager.setFirstName( "nameNM" + invocation );
 			newManager.setSurname( "surnameNM" + invocation );
 
 			session.merge( employee );
@@ -101,9 +101,9 @@ public class StatelessDomainDataUpdater {
 			oldManager.getEmployees().remove( employee );
 
 			// change their names
-			employee.setName( "nameE" + invocation );
+			employee.setFirstName( "nameE" + invocation );
 			employee.setSurname( "surnameE" + invocation );
-			oldManager.setName( "nameOM" + invocation );
+			oldManager.setFirstName( "nameOM" + invocation );
 			oldManager.setSurname( "surnameOM" + invocation );
 
 			session.merge( employee );
