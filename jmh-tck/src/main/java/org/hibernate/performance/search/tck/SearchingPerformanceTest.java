@@ -13,7 +13,6 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
-import org.hibernate.performance.search.model.entity.answer.Answer;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
@@ -39,7 +38,7 @@ public abstract class SearchingPerformanceTest {
 	private RelationshipSize relationshipSize;
 
 	@Param({ "100" })
-	private int indexSize;
+	private int initialCompanyCount;
 
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
@@ -52,7 +51,7 @@ public abstract class SearchingPerformanceTest {
 	@Setup(Level.Trial)
 	public void setup() throws Exception {
 		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
-		for ( int i = 0; i < indexSize; i++ ) {
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			domainDataFiller.fillData( i );
 		}
 
@@ -207,21 +206,6 @@ public abstract class SearchingPerformanceTest {
 					"employeeScore"
 			);
 			blackhole.consume( projections );
-		}
-	}
-
-	@Benchmark
-	@Threads(3)
-	public void largeLoading(Blackhole blackhole) {
-		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// find all bounded
-			List<QuestionnaireInstance> questionnaires = modelService
-					.search( session, QuestionnaireInstance.class, 12080 );
-			blackhole.consume( questionnaires );
-
-			// find unbounded
-			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
-			blackhole.consume( search );
 		}
 	}
 

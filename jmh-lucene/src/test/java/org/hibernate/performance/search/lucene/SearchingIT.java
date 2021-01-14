@@ -17,7 +17,6 @@ import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.Manager;
-import org.hibernate.performance.search.model.entity.answer.Answer;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
@@ -203,20 +202,6 @@ public class SearchingIT {
 					"employeeScore"
 			);
 			assertThat( projections ).containsExactly( Arrays.asList( 4480, 2360 ) );
-		}
-	}
-
-	@Test
-	public void largeLoading() {
-		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// find all bounded
-			List<QuestionnaireInstance> questionnaires = modelService
-					.search( session, QuestionnaireInstance.class, 12080 );
-			assertThat( questionnaires ).hasSize( 11880 );
-
-			// find unbounded
-			List<Answer> search = modelService.search( session, Answer.class, Integer.MAX_VALUE );
-			assertThat( search ).hasSize( 237600 );
 		}
 	}
 }
