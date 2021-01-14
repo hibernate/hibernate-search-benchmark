@@ -22,8 +22,8 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 	public void updateEmployeeOneTime() {
 		int employeePerCompany = relationshipSize.getEmployeesPerBusinessUnit() * relationshipSize.getUnitsPerCompany();
 
-		boolean reverse = companyBUInvocation % 2 == 1;
-		int companyId = partitionId( companyBUInvocation / 2 );
+		boolean reverse = employeeInvocation % 2 == 1;
+		int companyId = partitionId( employeeInvocation / 2 );
 		int baseEmployeeId = companyId * employeePerCompany;
 
 		int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
