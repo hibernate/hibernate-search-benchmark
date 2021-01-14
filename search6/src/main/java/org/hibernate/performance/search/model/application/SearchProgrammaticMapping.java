@@ -9,7 +9,6 @@ import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.ClosedQuestion;
-import org.hibernate.performance.search.model.entity.question.OpenQuestion;
 import org.hibernate.performance.search.model.entity.question.Question;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.search.engine.backend.analysis.AnalyzerNames;
@@ -29,24 +28,21 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep company = mapping.type( Company.class );
 		company.indexed();
-		company.property( "id" ).genericField();
-		company.property( "legalName" ).keywordField();
+		company.property( "legalName" ).fullTextField().analyzer( "default" );
 		company.property( "description" ).fullTextField().analyzer( "default" );
 		company.property( "businessUnits" ).indexedEmbedded()
 				.includeDepth( 1 );
 
 		TypeMappingStep businessUnit = mapping.type( BusinessUnit.class );
 		businessUnit.indexed();
-		businessUnit.property( "id" ).genericField();
-		businessUnit.property( "name" ).keywordField();
+		businessUnit.property( "name" ).fullTextField().analyzer( "default" );
 		businessUnit.property( "owner" ).indexedEmbedded()
 				.includeDepth( 1 );
 
 		TypeMappingStep employee = mapping.type( Employee.class );
 		employee.indexed();
-		employee.property( "id" ).genericField();
-		employee.property( "name" ).keywordField();
-		employee.property( "surname" ).keywordField();
+		employee.property( "name" ).fullTextField().analyzer( "default" );
+		employee.property( "surname" ).fullTextField().analyzer( "default" );
 		employee.property( "socialSecurityNumber" ).keywordField();
 		employee.property( "company" ).indexedEmbedded().indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		employee.property( "businessUnit" ).indexedEmbedded().indexingDependency().reindexOnUpdate(
@@ -63,7 +59,6 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep questionnaireDefinition = mapping.type( QuestionnaireDefinition.class );
 		questionnaireDefinition.indexed();
-		questionnaireDefinition.property( "id" ).genericField();
 		questionnaireDefinition.property( "title" ).fullTextField().analyzer( "default" );
 		questionnaireDefinition.property( "description" ).fullTextField().analyzer( "default" );
 		questionnaireDefinition.property( "year" ).genericField().sortable( Sortable.YES );
@@ -74,21 +69,15 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep question = mapping.type( Question.class );
 		question.indexed();
-		question.property( "id" ).genericField();
 		question.property( "questionnaire" ).indexedEmbedded()
 				.includeDepth( 1 );
 		question.property( "text" ).fullTextField().analyzer( "default" );
 
-		TypeMappingStep openQuestion = mapping.type( OpenQuestion.class );
-		openQuestion.indexed();
-
 		TypeMappingStep closedQuestion = mapping.type( ClosedQuestion.class );
-		closedQuestion.indexed();
 		closedQuestion.property( "weight" ).genericField();
 
 		TypeMappingStep questionnaireInstance = mapping.type( QuestionnaireInstance.class );
 		questionnaireInstance.indexed();
-		questionnaireInstance.property( "id" ).genericField();
 		questionnaireInstance.property( "uniqueCode" ).genericField();
 		questionnaireInstance.property( "openAnswers" ).indexedEmbedded().includeDepth( 1 );
 		questionnaireInstance.property( "closedAnswers" ).indexedEmbedded().includeDepth( 1 );
@@ -102,7 +91,6 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
 		openAnswer.indexed();
-		openAnswer.property( "id" ).genericField();
 		openAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 );
 		openAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
@@ -110,7 +98,6 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep closedAnswer = mapping.type( ClosedAnswer.class );
 		closedAnswer.indexed();
-		closedAnswer.property( "id" ).genericField();
 		closedAnswer.property( "questionnaire" ).indexedEmbedded().includeDepth( 1 );
 		closedAnswer.property( "question" ).indexedEmbedded().includeDepth( 2 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
@@ -118,7 +105,6 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 
 		TypeMappingStep performanceSummary = mapping.type( PerformanceSummary.class );
 		performanceSummary.indexed();
-		performanceSummary.property( "id" ).genericField();
 		performanceSummary.property( "employee" ).indexedEmbedded().includeDepth( 3 )
 				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
 		performanceSummary.property( "year" ).genericField();

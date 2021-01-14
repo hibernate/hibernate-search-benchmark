@@ -30,8 +30,7 @@ public final class SearchProgrammaticMapping {
 
 		// Company
 		IndexedMapping company = mapping.entity( Company.class ).indexed();
-		company.property( "id", ElementType.FIELD ).documentId();
-		company.property( "legalName", ElementType.FIELD ).field().analyze( Analyze.NO );
+		company.property( "legalName", ElementType.FIELD ).field();
 		company.property( "description", ElementType.FIELD ).field();
 
 		PropertyMapping businessUnits = company.property( "businessUnits", ElementType.FIELD );
@@ -40,8 +39,7 @@ public final class SearchProgrammaticMapping {
 
 		// BusinessUnit
 		IndexedMapping businessUnit = mapping.entity( BusinessUnit.class ).indexed();
-		businessUnit.property( "id", ElementType.FIELD ).documentId();
-		businessUnit.property( "name", ElementType.FIELD ).field().analyze( Analyze.NO );
+		businessUnit.property( "name", ElementType.FIELD ).field();
 
 		PropertyMapping owner = businessUnit.property( "owner", ElementType.FIELD );
 		owner.indexEmbedded().depth( 1 );
@@ -50,9 +48,8 @@ public final class SearchProgrammaticMapping {
 		// Employee
 		IndexedMapping employee = mapping.entity( Employee.class ).indexed();
 		employee
-				.property( "id", ElementType.FIELD ).documentId()
-				.property( "name", ElementType.FIELD ).field().analyze( Analyze.NO )
-				.property( "surname", ElementType.FIELD ).field().analyze( Analyze.NO )
+				.property( "name", ElementType.FIELD ).field()
+				.property( "surname", ElementType.FIELD ).field()
 				.property( "socialSecurityNumber", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "company", ElementType.FIELD ).indexEmbedded()
 				.property( "businessUnit", ElementType.FIELD ).indexEmbedded();
@@ -71,7 +68,6 @@ public final class SearchProgrammaticMapping {
 
 		// QuestionnaireDefinition
 		IndexedMapping questionnaireDefinition = mapping.entity( QuestionnaireDefinition.class ).indexed();
-		questionnaireDefinition.property( "id", ElementType.FIELD ).documentId();
 		questionnaireDefinition.property( "title", ElementType.FIELD ).field();
 		questionnaireDefinition.property( "description", ElementType.FIELD ).field();
 		questionnaireDefinition.property( "year", ElementType.FIELD ).field().numericField().sortableField();
@@ -83,7 +79,6 @@ public final class SearchProgrammaticMapping {
 
 		// Question
 		IndexedMapping question = mapping.entity( Question.class ).indexed();
-		question.property( "id", ElementType.FIELD ).documentId();
 		question.property( "text", ElementType.FIELD ).field();
 
 		PropertyMapping questionnaire = question.property( "questionnaire", ElementType.FIELD );
@@ -100,7 +95,6 @@ public final class SearchProgrammaticMapping {
 		// QuestionnaireInstance
 		IndexedMapping questionnaireInstance = mapping.entity( QuestionnaireInstance.class ).indexed();
 		questionnaireInstance
-				.property( "id", ElementType.FIELD ).documentId()
 				.property( "uniqueCode", ElementType.FIELD ).field().analyze( Analyze.NO )
 				.property( "definition", ElementType.FIELD ).indexEmbedded()
 				.property( "approval", ElementType.FIELD ).indexEmbedded()
@@ -117,7 +111,6 @@ public final class SearchProgrammaticMapping {
 
 		// OpenAnswer
 		IndexedMapping openAnswer = mapping.entity( OpenAnswer.class ).indexed();
-		openAnswer.property( "id", ElementType.FIELD ).documentId();
 		openAnswer.property( "text", ElementType.FIELD ).field();
 		openAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
 
@@ -127,7 +120,6 @@ public final class SearchProgrammaticMapping {
 
 		// ClosedAnswer
 		IndexedMapping closedAnswer = mapping.entity( ClosedAnswer.class ).indexed();
-		closedAnswer.property( "id", ElementType.FIELD ).documentId();
 		closedAnswer.property( "choice", ElementType.FIELD ).field().numericField();
 		closedAnswer.property( "question", ElementType.FIELD ).indexEmbedded().depth( 2 );
 
@@ -138,7 +130,6 @@ public final class SearchProgrammaticMapping {
 		// PerformanceSummary
 		IndexedMapping performanceSummary = mapping.entity( PerformanceSummary.class ).indexed();
 		performanceSummary
-				.property( "id", ElementType.FIELD ).documentId()
 				.property( "employee", ElementType.FIELD ).indexEmbedded().depth( 3 )
 				.property( "year", ElementType.FIELD ).field().numericField()
 				.property( "maxScore", ElementType.FIELD ).field().numericField().store( Store.YES )
