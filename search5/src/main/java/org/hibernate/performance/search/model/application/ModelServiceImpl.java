@@ -180,4 +180,10 @@ public class ModelServiceImpl implements ModelService {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 		fullTextSession.createIndexer().startAndWait();
 	}
+
+	@Override
+	public void purgeAllIndexes(Session session) {
+		FullTextSession fullTextSession = Search.getFullTextSession(session);
+		fullTextSession.purgeAll( Object.class );
+	}
 }

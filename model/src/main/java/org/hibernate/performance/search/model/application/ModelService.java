@@ -31,4 +31,5 @@ public interface ModelService {
 
 	void massIndexing(Session session) throws InterruptedException;
 
+	void purgeAllIndexes(Session session);
 }

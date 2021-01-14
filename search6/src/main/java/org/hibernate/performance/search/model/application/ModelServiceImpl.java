@@ -15,6 +15,7 @@ import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexi
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
 import org.hibernate.search.mapper.orm.common.EntityReference;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
+import org.hibernate.search.mapper.orm.schema.management.SearchSchemaManager;
 import org.hibernate.search.mapper.orm.scope.SearchScope;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.hibernate.search.util.common.data.RangeBoundInclusion;
@@ -111,5 +112,12 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public void massIndexing(Session session) throws InterruptedException {
 		Search.session( session ).massIndexer().startAndWait();
+	}
+
+	@Override
+	public void purgeAllIndexes(Session session) {
+		SearchSession searchSession = Search.session( session );
+		SearchSchemaManager schemaManager = searchSession.schemaManager();
+		schemaManager.dropAndCreate();
 	}
 }
