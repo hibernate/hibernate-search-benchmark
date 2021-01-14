@@ -32,8 +32,8 @@ public class Employee extends IdEntity {
 		super( id );
 	}
 
-	public Employee(Manager manager, int index) {
-		super( index );
+	public Employee(Manager manager, int id) {
+		super( id );
 
 		this.name = "name"+id;
 		this.surname = "surname"+id;

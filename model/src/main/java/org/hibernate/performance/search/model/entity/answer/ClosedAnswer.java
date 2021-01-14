@@ -23,6 +23,7 @@ public class ClosedAnswer extends Answer {
 		this.question = question;
 	}
 
+	@Override
 	public QuestionnaireInstance getQuestionnaire() {
 		return questionnaire;
 	}
