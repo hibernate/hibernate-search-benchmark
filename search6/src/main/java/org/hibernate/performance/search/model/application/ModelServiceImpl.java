@@ -54,6 +54,12 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> searchById(Session session, Class<E> entityClass, String fieldName, Object value) {
+		return Search.session( session ).search( entityClass ).where(
+				f -> f.id().matching( value ) ).fetchHits( DEFAULT_LIMIT );
+	}
+
+	@Override
 	public <E> List<E> searchAnd(Session session, Class<E> entityClass, String fieldName1, Object value1,
 			String fieldName2, Object value2) {
 		return Search.session( session ).search( entityClass )

@@ -15,6 +15,8 @@ public interface ModelService {
 
 	<E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value);
 
+	<E> List<E> searchById(Session session, Class<E> entityClass, String fieldName, Object value);
+
 	<E> List<E> searchAnd(Session session, Class<E> entityClass, String fieldName1, Object value1,
 			String fieldName2, Object value2);
 

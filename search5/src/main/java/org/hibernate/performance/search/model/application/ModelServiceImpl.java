@@ -67,6 +67,11 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public <E> List<E> searchById(Session session, Class<E> entityClass, String fieldName, Object value) {
+		return search( session, entityClass, fieldName, value );
+	}
+
+	@Override
 	public <E> List<E> searchAnd(Session session, Class<E> entityClass, String fieldName1, Object value1,
 			String fieldName2, Object value2) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
@@ -183,7 +188,7 @@ public class ModelServiceImpl implements ModelService {
 
 	@Override
 	public void purgeAllIndexes(Session session) {
-		FullTextSession fullTextSession = Search.getFullTextSession(session);
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
 		fullTextSession.purgeAll( Object.class );
 	}
 }

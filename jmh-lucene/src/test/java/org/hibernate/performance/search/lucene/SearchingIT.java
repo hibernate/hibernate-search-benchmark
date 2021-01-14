@@ -77,7 +77,7 @@ public class SearchingIT {
 			assertThat( companies ).hasSize( 1 );
 
 			// search by id
-			companies = modelService.search( session, Company.class, "id", 0 );
+			companies = modelService.searchById( session, Company.class, "id", 0 );
 			assertThat( companies ).hasSize( 1 );
 		}
 	}

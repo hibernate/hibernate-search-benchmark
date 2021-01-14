@@ -84,7 +84,7 @@ public abstract class SearchingPerformanceTest {
 			blackhole.consume( companies );
 
 			// search by id
-			companies = modelService.search( session, Company.class, "id", 0 );
+			companies = modelService.searchById( session, Company.class, "id", 0 );
 			blackhole.consume( companies );
 		}
 	}
