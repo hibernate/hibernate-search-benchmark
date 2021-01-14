@@ -1,5 +1,6 @@
 package org.hibernate.performance.search.model.application;
 
+import java.sql.Statement;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -28,7 +29,8 @@ public class DomainDataRemover {
 				if ( employee instanceof Manager ) {
 					// process the manager for last
 					manager = (Manager) employee;
-				} else {
+				}
+				else {
 					deleteData( employee );
 				}
 			}
@@ -64,6 +66,30 @@ public class DomainDataRemover {
 			}
 
 			session.delete( employee );
+		} );
+	}
+
+	public void truncateAll() {
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			session.doWork( connection -> {
+				try ( Statement statement = connection.createStatement() ) {
+					statement.executeUpdate(
+							" DO $$ " +
+								" BEGIN " +
+									"       TRUNCATE PerformanceSummary CASCADE; " +
+									" 		TRUNCATE ClosedAnswer CASCADE; " +
+									" 		TRUNCATE OpenAnswer CASCADE; " +
+									" 		TRUNCATE QuestionnaireInstance CASCADE; " +
+									" 		TRUNCATE Question CASCADE; " +
+									" 		TRUNCATE QuestionnaireDefinition CASCADE; " +
+									" 		TRUNCATE Employee CASCADE; " +
+									" 		TRUNCATE BusinessUnit CASCADE; " +
+									" 		TRUNCATE Company CASCADE; " +
+								" END " +
+							" $$; "
+					);
+				}
+			} );
 		} );
 	}
 }
