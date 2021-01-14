@@ -5,9 +5,9 @@ import java.util.Properties;
 import org.hibernate.performance.search.model.application.BackendType;
 import org.hibernate.performance.search.model.application.IndexingType;
 import org.hibernate.performance.search.model.application.ModelService;
-import org.hibernate.performance.search.tck.ManualIndexingPerformanceTest;
+import org.hibernate.performance.search.tck.MassIndexingPerformanceTest;
 
-public class LuceneManualIndexingPerformanceTest extends ManualIndexingPerformanceTest {
+public class LuceneMassIndexingPerformanceTest extends MassIndexingPerformanceTest {
 
 	@Override
 	protected Properties manualProperties(ModelService modelService) {

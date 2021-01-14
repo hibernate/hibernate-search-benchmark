@@ -17,18 +17,18 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 @State(Scope.Benchmark)
-public abstract class ManualIndexingPerformanceTest {
+public abstract class MassIndexingPerformanceTest {
 
 	@Param({ "SMALL" })
 	private RelationshipSize relationshipSize;
 
 	@Param({ "100" })
-	private int indexSize;
+	private int initialCompanyCount;
 
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 
-	public ManualIndexingPerformanceTest() {
+	public MassIndexingPerformanceTest() {
 		modelService = ModelServiceFactory.create();
 		sessionFactory = HibernateORMHelper.buildSessionFactory( manualProperties( modelService ) );
 	}
@@ -36,7 +36,7 @@ public abstract class ManualIndexingPerformanceTest {
 	@Setup
 	public void init() {
 		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
-		for ( int i = 0; i < indexSize; i++ ) {
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			domainDataFiller.fillData( i );
 		}
 	}
