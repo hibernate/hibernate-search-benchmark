@@ -21,7 +21,7 @@ public class ModelServiceImpl implements ModelService {
 		Properties properties = new Properties();
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
 		if ( BackendType.LUCENE.equals( backend ) ) {
-			properties.put( "hibernate.search.default.directory_provider", "local-heap" );
+			properties.put( "hibernate.search.default.directory_provider", "filesystem" );
 		}
 		else {
 			properties.put( "hibernate.search.default.indexmanager", "elasticsearch" );

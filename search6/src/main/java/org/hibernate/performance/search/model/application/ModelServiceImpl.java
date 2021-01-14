@@ -32,7 +32,7 @@ public class ModelServiceImpl implements ModelService {
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
 
 		if ( BackendType.LUCENE.equals( backend ) ) {
-			config.put( "hibernate.search.backend.directory.type", "local-heap" );
+			config.put( "hibernate.search.backend.directory.type", "local-filesystem" );
 		}
 
 		if ( IndexingType.MANUAL.equals( indexing ) ) {
