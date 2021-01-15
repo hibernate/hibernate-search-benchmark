@@ -19,6 +19,7 @@ public class ModelServiceImpl implements ModelService {
 	@Override
 	public Properties properties(BackendType backend, IndexingType indexing) {
 		Properties properties = new Properties();
+		properties.putAll( System.getProperties() );
 		properties.put( Environment.MODEL_MAPPING, SearchProgrammaticMapping.create() );
 		if ( BackendType.LUCENE.equals( backend ) ) {
 			properties.put( "hibernate.search.default.directory_provider", "filesystem" );

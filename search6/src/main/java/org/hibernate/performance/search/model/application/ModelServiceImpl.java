@@ -2,44 +2,37 @@ package org.hibernate.performance.search.model.application;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.hibernate.Session;
-import org.hibernate.search.engine.search.predicate.SearchPredicate;
-import org.hibernate.search.engine.search.predicate.dsl.MatchPredicateOptionsStep;
-import org.hibernate.search.engine.search.projection.SearchProjection;
-import org.hibernate.search.engine.search.projection.dsl.FieldProjectionValueStep;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.automaticindexing.AutomaticIndexingStrategyName;
 import org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategyNames;
 import org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings;
-import org.hibernate.search.mapper.orm.common.EntityReference;
 import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrategyName;
 import org.hibernate.search.mapper.orm.schema.management.SearchSchemaManager;
-import org.hibernate.search.mapper.orm.scope.SearchScope;
 import org.hibernate.search.mapper.orm.session.SearchSession;
-import org.hibernate.search.util.common.data.RangeBoundInclusion;
 
 public class ModelServiceImpl implements ModelService {
 
 	@Override
 	public Properties properties(BackendType backend, IndexingType indexing) {
-		Properties config = new Properties();
-		config.put( HibernateOrmMapperSettings.SCHEMA_MANAGEMENT_STRATEGY,
+		Properties properties = new Properties();
+		properties.putAll( System.getProperties() );
+		properties.put( HibernateOrmMapperSettings.SCHEMA_MANAGEMENT_STRATEGY,
 				SchemaManagementStrategyName.DROP_AND_CREATE_AND_DROP );
-		config.put( HibernateOrmMapperSettings.MAPPING_CONFIGURER, new SearchProgrammaticMapping() );
-		config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
+		properties.put( HibernateOrmMapperSettings.MAPPING_CONFIGURER, new SearchProgrammaticMapping() );
+		properties.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_SYNCHRONIZATION_STRATEGY,
 				AutomaticIndexingSynchronizationStrategyNames.WRITE_SYNC );
 
 		if ( BackendType.LUCENE.equals( backend ) ) {
-			config.put( "hibernate.search.backend.directory.type", "local-filesystem" );
+			properties.put( "hibernate.search.backend.directory.type", "local-filesystem" );
 		}
 
 		if ( IndexingType.MANUAL.equals( indexing ) ) {
-			config.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
+			properties.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
 		}
 
-		return config;
+		return properties;
 	}
 
 	@Override
