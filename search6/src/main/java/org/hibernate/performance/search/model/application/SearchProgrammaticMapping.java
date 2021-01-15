@@ -50,6 +50,8 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		employee.property( "manager" ).indexedEmbedded()
 				// index 4 managers up to the hierarchy
 				.includeDepth( 4 );
+		employee.property( "questionnaires" ).indexedEmbedded().includeDepth( 1 );
+		employee.property( "performanceSummaries" ).indexedEmbedded().includeDepth( 1 );
 
 		TypeMappingStep manager = mapping.type( Manager.class );
 		manager.indexed();
@@ -85,8 +87,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 				.reindexOnUpdate( ReindexOnUpdate.NO );
 		questionnaireInstance.property( "approval" ).indexedEmbedded().indexingDependency()
 				.reindexOnUpdate( ReindexOnUpdate.NO );
-		questionnaireInstance.property( "subject" ).indexedEmbedded().indexingDependency()
-				.reindexOnUpdate( ReindexOnUpdate.NO );
+		questionnaireInstance.property( "subject" ).indexedEmbedded().indexingDependency();
 		questionnaireInstance.property( "notes" ).fullTextField().analyzer( AnalyzerNames.DEFAULT );
 
 		TypeMappingStep openAnswer = mapping.type( OpenAnswer.class );
@@ -106,7 +107,7 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		TypeMappingStep performanceSummary = mapping.type( PerformanceSummary.class );
 		performanceSummary.indexed();
 		performanceSummary.property( "employee" ).indexedEmbedded().includeDepth( 3 )
-				.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
+				.indexingDependency();
 		performanceSummary.property( "year" ).genericField();
 		performanceSummary.property( "maxScore" ).genericField().projectable( Projectable.YES );
 		performanceSummary.property( "employeeScore" ).genericField().projectable( Projectable.YES );

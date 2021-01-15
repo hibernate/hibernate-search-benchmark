@@ -54,6 +54,14 @@ public final class SearchProgrammaticMapping {
 				.property( "company", ElementType.FIELD ).indexEmbedded()
 				.property( "businessUnit", ElementType.FIELD ).indexEmbedded();
 
+		PropertyMapping questionnairesProperty = employee.property( "questionnaires", ElementType.FIELD );
+		questionnairesProperty.indexEmbedded().depth( 1 );
+		questionnairesProperty.containedIn();
+
+		PropertyMapping performanceSummariesProperty = employee.property( "performanceSummaries", ElementType.FIELD );
+		performanceSummariesProperty.indexEmbedded().depth( 1 );
+		performanceSummariesProperty.containedIn();
+
 		PropertyMapping managerProperty = employee.property( "manager", ElementType.FIELD );
 		// index 4 managers up to the hierarchy
 		managerProperty.indexEmbedded().depth( 4 );
