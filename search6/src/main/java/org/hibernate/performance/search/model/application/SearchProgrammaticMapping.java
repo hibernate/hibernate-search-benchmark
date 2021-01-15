@@ -50,8 +50,10 @@ public class SearchProgrammaticMapping implements HibernateOrmSearchMappingConfi
 		employee.property( "manager" ).indexedEmbedded()
 				// index 4 managers up to the hierarchy
 				.includeDepth( 4 );
-		employee.property( "questionnaires" ).indexedEmbedded().includeDepth( 1 );
-		employee.property( "performanceSummaries" ).indexedEmbedded().includeDepth( 1 );
+		employee.property( "questionnaires" ).indexedEmbedded()
+				.includePaths( "approval.surname", "subject.surname" );
+		employee.property( "performanceSummaries" ).indexedEmbedded()
+				.includePaths( "employeeScore" );
 
 		TypeMappingStep manager = mapping.type( Manager.class );
 		manager.indexed();

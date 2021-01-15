@@ -55,11 +55,11 @@ public final class SearchProgrammaticMapping {
 				.property( "businessUnit", ElementType.FIELD ).indexEmbedded();
 
 		PropertyMapping questionnairesProperty = employee.property( "questionnaires", ElementType.FIELD );
-		questionnairesProperty.indexEmbedded().depth( 1 );
+		questionnairesProperty.indexEmbedded().includePaths( "approval.surname", "subject.surname" );
 		questionnairesProperty.containedIn();
 
 		PropertyMapping performanceSummariesProperty = employee.property( "performanceSummaries", ElementType.FIELD );
-		performanceSummariesProperty.indexEmbedded().depth( 1 );
+		performanceSummariesProperty.indexEmbedded().includePaths( "employeeScore" );
 		performanceSummariesProperty.containedIn();
 
 		PropertyMapping managerProperty = employee.property( "manager", ElementType.FIELD );
