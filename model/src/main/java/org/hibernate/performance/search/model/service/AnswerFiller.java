@@ -39,15 +39,15 @@ public class AnswerFiller {
 		this.random = new Random( 739 ); // fixed seed so all the tests will have the same results
 	}
 
-	public void fillAllAnswers() {
+	public void fillAllAnswers(Integer companyId) {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			batch(
-					repository.findAllClosedAnswersInNaturalOrder(),
+					repository.findAllClosedAnswersInNaturalOrder( companyId ),
 					(answer) -> answer.setChoice( random.nextInt( 8 ) )
 			);
 			batch(
-					repository.findAllOpenAnswersInNaturalOrder(),
+					repository.findAllOpenAnswersInNaturalOrder( companyId ),
 					(answer) -> answer.setText( OPEN_ANSWER_RESPONSE_TYPES[random.nextInt( 8 )] )
 			);
 		}

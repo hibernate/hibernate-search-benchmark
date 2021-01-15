@@ -76,7 +76,7 @@ public class DomainDataFiller {
 		} );
 
 		// Phase 5: simulate the employees filling the questionnaires
-		new AnswerFiller( sessionFactory ).fillAllAnswers();
+		new AnswerFiller( sessionFactory ).fillAllAnswers( companyReference.get().getId() );
 
 		// Phase 6: evaluate the performances based on the outputs of the questionnaires
 		new Scorer( sessionFactory ).generateScoreForQuestionnaires( companyReference.get() );

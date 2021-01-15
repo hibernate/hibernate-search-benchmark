@@ -5,12 +5,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
-import org.hibernate.performance.search.model.entity.Manager;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
@@ -59,29 +59,35 @@ public class EmployeeRepository {
 		return entityManager.createQuery( criteria ).getSingleResult();
 	}
 
-	public List<OpenAnswer> findAllOpenAnswersInNaturalOrder() {
+	public List<OpenAnswer> findAllOpenAnswersInNaturalOrder(Integer companyId) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<OpenAnswer> criteria = builder.createQuery( OpenAnswer.class );
 
 		Root<OpenAnswer> root = criteria.from( OpenAnswer.class );
+		Path<Object> companyIdPath = root.get( "question" ).get( "questionnaire" ).get( "company" ).get( "id" );
 		Order questionnaireUniqueCode = builder.asc( root.get( "questionnaire" ).<String>get( "uniqueCode" ) );
 		Order questionId = builder.asc( root.get( "question" ).<String>get( "id" ) );
 
-		CriteriaQuery<OpenAnswer> query = criteria.select( root ).orderBy( questionnaireUniqueCode, questionId );;
+		CriteriaQuery<OpenAnswer> query = criteria.select( root )
+				.where( builder.equal( companyIdPath, companyId ) )
+				.orderBy( questionnaireUniqueCode, questionId );
 		return entityManager.createQuery( query ).getResultList();
 	}
 
-	public List<ClosedAnswer> findAllClosedAnswersInNaturalOrder() {
+	public List<ClosedAnswer> findAllClosedAnswersInNaturalOrder(Integer companyId) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<ClosedAnswer> criteria = builder.createQuery( ClosedAnswer.class );
 
 		Root<ClosedAnswer> root = criteria.from( ClosedAnswer.class );
+		Path<Object> companyIdPath = root.get( "question" ).get( "questionnaire" ).get( "company" ).get( "id" );
 		Order questionnaireUniqueCode = builder.asc( root.get( "questionnaire" ).<String>get( "uniqueCode" ) );
 		Order questionId = builder.asc( root.get( "question" ).<String>get( "id" ) );
 
-		CriteriaQuery<ClosedAnswer> query = criteria.select( root ).orderBy( questionnaireUniqueCode, questionId );
+		CriteriaQuery<ClosedAnswer> query = criteria.select( root )
+				.where( builder.equal( companyIdPath, companyId ) )
+				.orderBy( questionnaireUniqueCode, questionId );
 		return entityManager.createQuery( query ).getResultList();
 	}
 
