@@ -1,7 +1,6 @@
 package org.hibernate.performance.search.model.application;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
@@ -18,41 +17,39 @@ import org.hibernate.performance.search.model.service.EmployeeRepository;
 public class DomainDataUpdater {
 
 	private final SessionFactory sessionFactory;
-	private final AtomicInteger counter = new AtomicInteger();
-
-	private Company oldCompany;
-	private Manager oldManager;
 
 	public DomainDataUpdater(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void doSomeChangesOnCompanyAndBusinessUnit(int businessUnitId, int newCompanyId) {
-		int iteration = counter.getAndIncrement();
-
+	public void doSomeChangesOnCompanyAndBusinessUnit(int invocation, int oldCompanyId, int newCompanyId) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
-			Company newCompany;
-			if ( oldCompany == null ) {
+			Company newCompany = session.get( Company.class, newCompanyId );
+			if ( newCompany == null ) {
 				newCompany = new Company( newCompanyId, "Company" + newCompanyId );
 				session.persist( newCompany );
 			}
-			else {
-				newCompany = oldCompany;
+
+			Company oldCompany = session.load( Company.class, oldCompanyId );
+			List<BusinessUnit> businessUnits = oldCompany.getBusinessUnits();
+			if ( businessUnits.isEmpty() ) {
+				throw new IllegalStateException(
+						"Company " + oldCompany + " is supposed to have at least one business unit to transfer to " + newCompany );
 			}
 
-			BusinessUnit businessUnit = session.load( BusinessUnit.class, businessUnitId );
-			oldCompany = businessUnit.getOwner();
+			BusinessUnit businessUnit = businessUnits.get( 0 );
+			businessUnit.setOwner( newCompany );
 
 			// change the description of the existing company,
 			// these will trigger the reindex of all business units
 			oldCompany.setDescription(
-					"Let's change the description of " + oldCompany.getLegalName() + "! (" + iteration + ")" );
+					"Let's change the description of " + oldCompany.getLegalName() + "! (" + invocation + ")" );
 			newCompany.setDescription(
-					"Let's change the description of " + newCompany.getLegalName() + "! (" + iteration + ")" );
+					"Let's change the description of " + newCompany.getLegalName() + "! (" + invocation + ")" );
 
 			// move the business unit to the new company,
 			// this will trigger the reindex of the 2 companies
-			oldCompany.getBusinessUnits().remove( businessUnit );
+			businessUnits.remove( businessUnit );
 			newCompany.getBusinessUnits().add( businessUnit );
 
 			session.merge( oldCompany );
@@ -60,66 +57,87 @@ public class DomainDataUpdater {
 		} );
 	}
 
-	public void doSomeChangesOnEmployee(int employeeId, int managerId) {
-		int iteration = counter.getAndIncrement();
-
+	public void doSomeChangesOnEmployee(int invocation, int employeeId, int managerId) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
 			Employee employee = session.load( Employee.class, employeeId );
 
-			Manager newManager = ( oldManager == null ) ? session.load( Manager.class, managerId ) : oldManager;
-			oldManager = employee.getManager();
+			Manager newManager = session.load( Manager.class, managerId );
+			Manager oldManager = employee.getManager();
 
 			employee.setManager( newManager );
-			// remove the employee from old manager
-			oldManager.getEmployees().remove( employee );
+			if ( oldManager != null ) {
+				// remove the employee from old manager
+				oldManager.getEmployees().remove( employee );
+			}
 			// add the employee to the new manager
 			newManager.getEmployees().add( employee );
 
 			// change their names
-			employee.setFirstName( "nameE" + iteration );
-			employee.setSurname( "surnameE" + iteration );
-			oldManager.setFirstName( "nameOM" + iteration );
-			oldManager.setSurname( "surnameOM" + iteration );
-			newManager.setFirstName( "nameNM" + iteration );
-			newManager.setSurname( "surnameNM" + iteration );
+			employee.setFirstName( "nameE" + invocation );
+			employee.setSurname( "surnameE" + invocation );
+			if ( oldManager != null ) {
+				oldManager.setFirstName( "nameOM" + invocation );
+				oldManager.setSurname( "surnameOM" + invocation );
+			}
+			newManager.setFirstName( "nameNM" + invocation );
+			newManager.setSurname( "surnameNM" + invocation );
 
 			session.merge( employee );
-			session.merge( oldManager );
+			if ( oldManager != null ) {
+				session.merge( oldManager );
+			}
 			session.merge( newManager );
 		} );
 	}
 
-	public void updateQuestionnaire(int questionnaireDefinitionId) {
-		int iteration = counter.getAndIncrement();
+	public void removeManagerFromEmployee(int invocation, int employeeId) {
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			Employee employee = session.load( Employee.class, employeeId );
 
+			Manager oldManager = employee.getManager();
+
+			employee.setManager( null );
+			// remove the employee from old manager
+			oldManager.getEmployees().remove( employee );
+
+			// change their names
+			employee.setFirstName( "nameE" + invocation );
+			employee.setSurname( "surnameE" + invocation );
+			oldManager.setFirstName( "nameOM" + invocation );
+			oldManager.setSurname( "surnameOM" + invocation );
+
+			session.merge( employee );
+			session.merge( oldManager );
+		} );
+	}
+
+	public void updateQuestionnaire(int invocation, int questionnaireDefinitionId) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
 			QuestionnaireDefinition definition = session.load(
 					QuestionnaireDefinition.class, questionnaireDefinitionId );
 			definition.setDescription(
-					"This is the description for questionnaire definition #" + questionnaireDefinitionId + " - iteration #" + iteration + "." );
+					"This is the description for questionnaire definition #" + questionnaireDefinitionId + " - invocation #" + invocation + "." );
 
 			session.merge( definition );
 
 			List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
 			for ( QuestionnaireInstance instance : instances ) {
 				instance.setNotes( "This is a note for questionnaire instance #" + instance
-						.getId() + " - iteration #" + iteration + "." );
+						.getId() + " - invocation #" + invocation + "." );
 
 				session.merge( instance );
 			}
 		} );
 	}
 
-	public void updateQuestionsAndAnswers(int questionnaireDefinitionId) {
-		int iteration = counter.getAndIncrement();
-
+	public void updateQuestionsAndAnswers(int invocation, int questionnaireDefinitionId) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
 			QuestionnaireDefinition definition = session.load(
 					QuestionnaireDefinition.class, questionnaireDefinitionId );
 			List<Question> questions = definition.getQuestions();
 			for ( Question question : questions ) {
 				question.setText(
-						"This is the text for question #" + question.getId() + " - iteration #" + iteration + "." );
+						"This is the text for question #" + question.getId() + " - invocation #" + invocation + "." );
 
 				session.merge( question );
 			}
@@ -127,12 +145,12 @@ public class DomainDataUpdater {
 			List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
 			for ( QuestionnaireInstance instance : instances ) {
 				for ( ClosedAnswer answer : instance.getClosedAnswers() ) {
-					answer.setChoice( iteration % 8 );
+					answer.setChoice( invocation % 8 );
 					session.merge( answer );
 				}
 				for ( OpenAnswer answer : instance.getOpenAnswers() ) {
 					answer.setText( "This is a response to the open answer " + answer
-							.getId() + " - iteration #" + iteration + "." );
+							.getId() + " - invocation #" + invocation + "." );
 					session.merge( answer );
 				}
 			}

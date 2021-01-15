@@ -8,8 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataFiller;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
-import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -65,7 +65,7 @@ public class DomainDataIT {
 			}
 
 			DomainDataUpdater updater = new DomainDataUpdater( sessionFactory );
-			updater.doSomeChangesOnCompanyAndBusinessUnit( 7, 1 );
+			updater.doSomeChangesOnCompanyAndBusinessUnit( 0, 0, 1 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );
@@ -81,7 +81,7 @@ public class DomainDataIT {
 				assertThat( manager.getId() ).isEqualTo( 30 );
 			}
 
-			updater.doSomeChangesOnEmployee( 70, 0 );
+			updater.doSomeChangesOnEmployee( 0, 70, 0 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				Employee employee = session.load( Employee.class, 70 );
@@ -90,8 +90,8 @@ public class DomainDataIT {
 				assertThat( manager.getId() ).isEqualTo( 0 );
 			}
 
-			updater.updateQuestionnaire( 7 );
-			updater.updateQuestionsAndAnswers( 9 );
+			updater.updateQuestionnaire( 0, 7 );
+			updater.updateQuestionsAndAnswers( 0, 9 );
 		}
 	}
 }

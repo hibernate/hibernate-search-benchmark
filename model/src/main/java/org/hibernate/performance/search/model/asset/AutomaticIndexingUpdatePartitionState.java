@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.StatelessDomainDataUpdater;
+import org.hibernate.performance.search.model.application.DomainDataUpdater;
 
 public abstract class AutomaticIndexingUpdatePartitionState {
 
-	protected final StatelessDomainDataUpdater domainDataUpdater;
+	protected final DomainDataUpdater domainDataUpdater;
 	protected final int actualIndexSize;
 	private final int numberOfThreads;
 	private final int threadNumber;
@@ -25,7 +25,7 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 
 	public AutomaticIndexingUpdatePartitionState(SessionFactory sessionFactory,
 			int actualIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
-		this.domainDataUpdater = new StatelessDomainDataUpdater( sessionFactory );
+		this.domainDataUpdater = new DomainDataUpdater( sessionFactory );
 		this.actualIndexSize = actualIndexSize;
 		this.numberOfThreads = numberOfThreads;
 		this.threadNumber = threadNumber;
