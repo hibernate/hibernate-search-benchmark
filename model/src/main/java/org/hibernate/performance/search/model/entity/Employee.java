@@ -4,8 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
+import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 
 @Entity
 public class Employee extends IdEntity {
@@ -24,6 +29,14 @@ public class Employee extends IdEntity {
 
 	@ManyToOne
 	private Manager manager;
+
+	@OneToMany(mappedBy = "subject")
+	@Cascade(CascadeType.PERSIST)
+	private List<QuestionnaireInstance> questionnaires;
+
+	@OneToMany(mappedBy = "employee")
+	@Cascade(CascadeType.PERSIST)
+	private List<PerformanceSummary> performanceSummaries;
 
 	protected Employee() {
 	}
@@ -81,6 +94,14 @@ public class Employee extends IdEntity {
 		}
 
 		return manager.getCollaborators();
+	}
+
+	public List<QuestionnaireInstance> getQuestionnaires() {
+		return questionnaires;
+	}
+
+	public List<PerformanceSummary> getPerformanceSummaries() {
+		return performanceSummaries;
 	}
 
 	@Override
