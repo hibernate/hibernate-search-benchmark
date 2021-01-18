@@ -1,7 +1,6 @@
 package org.hibernate.performance.search.model.application;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.entity.Company;
@@ -33,35 +32,26 @@ public class DomainDataFiller {
 	}
 
 	public void fillData(int companyId) {
-		// atomicity is not used here
-		AtomicReference<Company> companyReference = new AtomicReference<>();
-
-		// Phase 1: create the company and its business units
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			// Phase 1: create the company and its business units
 			Company company = companyFactory.createCompanyAndUnits( companyId );
 			session.persist( company );
-			companyReference.set( company );
-		} );
 
-		// Phase 2: create the employees' organization chart
-		HibernateORMHelper.inTransaction( sessionFactory, session -> {
-			Manager ceo = employeeFactory.createEmployeeTree( companyReference.get() );
+			// Phase 2: create the employees' organization chart
+			Manager ceo = employeeFactory.createEmployeeTree( company );
 			session.persist( ceo );
-		} );
 
-		// Phase 3: define the questionnaires
-		List<QuestionnaireDefinition> questionnaireDefinitions = questionnaireDefinitionFactory
-				.createQuestionnaireDefinitions( companyReference.get() );
-		for ( QuestionnaireDefinition questionnaire : questionnaireDefinitions ) {
-			HibernateORMHelper.inTransaction( sessionFactory, session -> session.persist( questionnaire ) );
-		}
+			// Phase 3: define the questionnaires
+			List<QuestionnaireDefinition> questionnaireDefinitions = questionnaireDefinitionFactory
+					.createQuestionnaireDefinitions( company );
+			for ( QuestionnaireDefinition questionnaire : questionnaireDefinitions ) {
+				session.persist( questionnaire );
+			}
 
-		// Phase 4: instantiate questionnaires for the employees
-		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			// Phase 4: instantiate questionnaires for the employees
 			EmployeeRepository repository = new EmployeeRepository( session );
-			List<Employee> employees = repository.getEmployees( companyReference.get() );
-			List<QuestionnaireDefinition> definitions = repository.getQuestionnaireDefinitions(
-					companyReference.get() );
+			List<Employee> employees = repository.getEmployees( company );
+			List<QuestionnaireDefinition> definitions = repository.getQuestionnaireDefinitions( company );
 
 			for ( Employee employee : employees ) {
 				for ( QuestionnaireDefinition definition : definitions ) {
@@ -76,10 +66,10 @@ public class DomainDataFiller {
 		} );
 
 		// Phase 5: simulate the employees filling the questionnaires
-		new AnswerFiller( sessionFactory ).fillAllAnswers( companyReference.get().getId() );
+		new AnswerFiller( sessionFactory ).fillAllAnswers( companyId );
 
 		// Phase 6: evaluate the performances based on the outputs of the questionnaires
-		new Scorer( sessionFactory ).generateScoreForQuestionnaires( companyReference.get() );
+		new Scorer( sessionFactory ).generateScoreForQuestionnaires( companyId );
 	}
 
 }

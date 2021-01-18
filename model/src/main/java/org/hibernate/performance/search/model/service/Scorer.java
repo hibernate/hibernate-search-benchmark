@@ -20,9 +20,11 @@ public class Scorer {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void generateScoreForQuestionnaires(Company company) {
+	public void generateScoreForQuestionnaires(Integer companyId) {
+		Company company;
 		List<Employee> employees;
 		try ( Session session = sessionFactory.openSession() ) {
+			company = session.load( Company.class, companyId );
 			employees = new EmployeeRepository( session ).getEmployees( company );
 		}
 
