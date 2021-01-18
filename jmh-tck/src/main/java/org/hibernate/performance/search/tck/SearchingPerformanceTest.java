@@ -22,13 +22,13 @@ import org.hibernate.performance.search.model.entity.question.QuestionnaireDefin
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Group;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
@@ -68,139 +68,254 @@ public abstract class SearchingPerformanceTest {
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void company(Blackhole blackhole) {
+	@Group("company")
+	public void company_match(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// match
 			List<Company> companies = modelService.search( session, Company.class, "legalName", "Company0" );
 			blackhole.consume( companies );
+		}
+	}
 
-			// no match
-			companies = modelService.search( session, Company.class, "legalName", "CompanyX" );
-			blackhole.consume( companies );
-
-			// indexEmbedded match
-			companies = modelService.search( session, Company.class, "businessUnits.name", "Unit7" );
-			blackhole.consume( companies );
-
-			// search by id
-			companies = modelService.searchById( session, Company.class, "id", 0 );
+	@Benchmark
+	@Group("company")
+	public void company_noMatch(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Company> companies = modelService.search( session, Company.class, "legalName", "CompanyX" );
 			blackhole.consume( companies );
 		}
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void businessUnit(Blackhole blackhole) {
+	@Group("company")
+	public void company_indexEmbedded(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// match
+			List<Company> companies = modelService.search( session, Company.class, "businessUnits.name", "Unit7" );
+			blackhole.consume( companies );
+		}
+	}
+
+	@Benchmark
+	@Group("company")
+	public void company_searchById(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Company> companies = modelService.searchById( session, Company.class, "id", 0 );
+			blackhole.consume( companies );
+		}
+	}
+
+	@Benchmark
+	@Group("businessUnit")
+	public void businessUnit_match(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<BusinessUnit> businessUnits = modelService.search( session, BusinessUnit.class, "name", "Unit7" );
 			blackhole.consume( businessUnits );
+		}
+	}
 
-			// no match
-			businessUnits = modelService.search( session, BusinessUnit.class, "name", "UnitX" );
-			blackhole.consume( businessUnits );
-
-			// indexEmbedded match
-			businessUnits = modelService.search( session, BusinessUnit.class, "owner.legalName", "Company0" );
+	@Benchmark
+	@Group("businessUnit")
+	public void businessUnit_noMatch(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<BusinessUnit> businessUnits = modelService.search( session, BusinessUnit.class, "name", "UnitX" );
 			blackhole.consume( businessUnits );
 		}
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void employee(Blackhole blackhole) {
+	@Group("businessUnit")
+	public void businessUnit_indexEmbedded(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// match
+			List<BusinessUnit> businessUnits = modelService.search(
+					session, BusinessUnit.class, "owner.legalName", "Company0" );
+			blackhole.consume( businessUnits );
+		}
+	}
+
+	@Benchmark
+	@Group("employee_g1")
+	public void employee_match(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<Employee> employees = modelService.search( session, Employee.class, "firstName", "name77" );
 			blackhole.consume( employees );
+		}
+	}
 
-			// no match
-			employees = modelService.search( session, Employee.class, "firstName", "nameX" );
+	@Benchmark
+	@Group("employee_g1")
+	public void employee_noMatch(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Employee> employees = modelService.search( session, Employee.class, "firstName", "nameX" );
 			blackhole.consume( employees );
+		}
+	}
 
-			// count
+	@Benchmark
+	@Group("employee_g1")
+	public void employee_count(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			long count = modelService.count( session, Employee.class, "surname", "surname77" );
 			blackhole.consume( count );
+		}
+	}
 
-			// range
-			employees = modelService.range( session, Employee.class, "socialSecurityNumber",
+	@Benchmark
+	@Group("employee_g1")
+	public void employee_range(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Employee> employees = modelService.range( session, Employee.class, "socialSecurityNumber",
 					"socialSecurityNumber32", "socialSecurityNumber41"
 			);
 			blackhole.consume( employees );
+		}
+	}
 
-			// indexEmbedded match
-			count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
+	@Benchmark
+	@Group("employee_g2")
+	public void employee_indexEmbedded(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			long count = modelService.count( session, Employee.class, "company.legalName", "Company0" );
 			blackhole.consume( count );
+		}
+	}
 
-			// projection
+	@Benchmark
+	@Group("employee_g2")
+	public void employee_projection(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<Object> ids = modelService.projectId( session, Employee.class, "businessUnit.name", "Unit7" );
 			blackhole.consume( ids );
+		}
+	}
 
-			// traverse the tree up
-			employees = modelService.search( session, Employee.class, "manager.manager.manager.manager.firstName", "name0" );
+	@Benchmark
+	@Group("employee_g2")
+	public void employee_traverseTreeUp(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<Employee> employees = modelService.search(
+					session, Employee.class, "manager.manager.manager.manager.firstName", "name0" );
 			blackhole.consume( employees );
+		}
+	}
 
-			// traverse the tree down
+	@Benchmark
+	@Group("employee_g2")
+	public void employee_traverseTreeDown(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<Manager> managers = modelService.search( session, Manager.class, "employees.firstName", "name77" );
 			blackhole.consume( managers );
 		}
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void questions(Blackhole blackhole) {
+	@Group("questions_g1")
+	public void questions_rangeOrderOnNumeric(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// range and order on numeric field
 			List<QuestionnaireDefinition> questionnaires = modelService.rangeOrderBy(
 					session, QuestionnaireDefinition.class, "year", 2021, 2025 );
 			blackhole.consume( questionnaires );
+		}
+	}
 
-			// full text search
-			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "title", "2023" );
+	@Benchmark
+	@Group("questions_g1")
+	public void questions_fullTextSearch_title(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<QuestionnaireDefinition> questionnaires = modelService.search(
+					session, QuestionnaireDefinition.class, "title", "2023" );
 			blackhole.consume( questionnaires );
-			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "description", "2025" );
-			blackhole.consume( questionnaires );
+		}
+	}
 
-			// indexEmbedded match
+	@Benchmark
+	@Group("questions_g1")
+	public void questions_fullTextSearch_description(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<QuestionnaireDefinition> questionnaires = modelService.search(
+					session, QuestionnaireDefinition.class, "description", "2025" );
+			blackhole.consume( questionnaires );
+		}
+	}
+
+	@Benchmark
+	@Group("questions_g2")
+	public void questions_indexEmbedded(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			long count = modelService.count( session, QuestionnaireDefinition.class, "company.legalName", "Company0" );
 			blackhole.consume( count );
+		}
+	}
 
-			// full text search on indexEmbedded
-			questionnaires = modelService.search( session, QuestionnaireDefinition.class, "questions.text", "2022" );
+	@Benchmark
+	@Group("questions_g2")
+	public void questions_fullTextSearch_indexEmbedded(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<QuestionnaireDefinition> questionnaires = modelService.search(
+					session, QuestionnaireDefinition.class, "questions.text", "2022" );
 			blackhole.consume( questionnaires );
+		}
+	}
 
-			// numeric field
+	@Benchmark
+	@Group("questions_g2")
+	public void questions_numeric(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<ClosedQuestion> questions = modelService.search( session, ClosedQuestion.class, "weight", 7 );
 			blackhole.consume( questions );
 		}
 	}
 
 	@Benchmark
-	@Threads(3)
-	public void answers(Blackhole blackhole) {
+	@Group("answers_g1")
+	public void answers_highMatchCount_fullTextField(Blackhole blackhole) {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
-			// high-match count on full text field
 			long count = modelService.count( session, OpenAnswer.class, "text", "search" );
 			blackhole.consume( count );
+		}
+	}
 
-			// high-match range
+	@Benchmark
+	@Group("answers_g1")
+	public void answers_highMatch_range(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<ClosedAnswer> closedAnswers = modelService.range( session, ClosedAnswer.class, "choice", 5, 7 );
 			blackhole.consume( closedAnswers );
+		}
+	}
 
-			// high-match on nested full text field
+	@Benchmark
+	@Group("answers_g1")
+	public void answers_highMatch_nested_fullText(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<QuestionnaireInstance> questionnaires = modelService.search(
 					session, QuestionnaireInstance.class, "openAnswers.text", "annotation" );
 			blackhole.consume( questionnaires );
+		}
+	}
 
-			// more predicates
-			closedAnswers = modelService.searchAnd(
+	@Benchmark
+	@Group("answers_g2")
+	public void answers_predicates_closedAnswers(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
+			List<ClosedAnswer> closedAnswers = modelService.searchAnd(
 					session, ClosedAnswer.class, "questionnaire.uniqueCode", "0:0:0", "choice", 7 );
 			blackhole.consume( closedAnswers );
+		}
+	}
 
+	@Benchmark
+	@Group("answers_g2")
+	public void answers_predicates_performanceSummary(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<PerformanceSummary> performances = modelService.searchAnd(
 					session, PerformanceSummary.class, "employee.manager.manager.surname", "surname0", "year", 2025 );
 			blackhole.consume( performances );
+		}
+	}
+
+	@Benchmark
+	@Group("answers_g2")
+	public void answers_predicates_performanceSummary_projection(Blackhole blackhole) {
+		try ( Session session = ( sessionFactory.openSession() ) ) {
 			List<List<?>> projections = modelService.project(
 					session, PerformanceSummary.class, "employee.surname", "surname77", "year", 2025, "maxScore",
 					"employeeScore"
