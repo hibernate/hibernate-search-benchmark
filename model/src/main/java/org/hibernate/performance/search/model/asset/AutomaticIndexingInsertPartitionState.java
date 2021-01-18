@@ -12,9 +12,6 @@ public class AutomaticIndexingInsertPartitionState {
 
 	private final DomainDataFiller domainDataFiller;
 	private final Function<Integer, List<Integer>> companyIdsFunction;
-	private final int initialIndexSize;
-	private final int iterationStepSize;
-	private final int threadNumber;
 
 	private int invocation = 0;
 
@@ -23,23 +20,12 @@ public class AutomaticIndexingInsertPartitionState {
 			int threadNumber) {
 		this.domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
 		this.companyIdsFunction = companyIdsFunction( initialIndexSize, invocationSize, numberOfThreads, threadNumber );
-		this.initialIndexSize = initialIndexSize;
-		this.iterationStepSize = invocationSize * numberOfThreads;
-		this.threadNumber = threadNumber;
 	}
 
 	public void executeInsert() {
 		for ( int companyId : companyIdsFunction.apply( invocation++ ) ) {
 			domainDataFiller.fillData( companyId );
 		}
-	}
-
-	public int actualIndexSize() {
-		return initialIndexSize + ( iterationStepSize * invocation );
-	}
-
-	public int threadNumber() {
-		return threadNumber;
 	}
 
 	private static Function<Integer, List<Integer>> companyIdsFunction(int initialIndexSize, int invocationSize,

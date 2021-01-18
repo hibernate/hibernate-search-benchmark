@@ -36,7 +36,7 @@ public class AutomaticLargeIndexingStateIT {
 	private static final int[] BEFORE_INSERT_SIZES = { 1, 10, 200, 100, 100, 10, 10, 100, 11880, 118800, 118800, 1000 };
 	private static final int[] AFTER_INSERT_SIZES = { 2, 20, 400, 200, 200, 20, 20, 200, 23760, 237600, 237600, 2000 };
 	private static final int[] AFTER_UPDATE_SIZES = { 3, 20, 400, 200, 200, 20, 20, 200, 23760, 237600, 237600, 2000 };
-	private static final int[] AFTER_DELETE_SIZES = { 3, 20, 400, 200, 200, 18, 18, 180, 21360, 213600, 213600, 1800 };
+	private static final int[] AFTER_DELETE_SIZES = { 3, 20, 400, 200, 200, 18, 18, 180, 21340, 213400, 213400, 1800 };
 
 	private static final AutomaticIndexingState indexingState = new AutomaticIndexingState(
 			RelationshipSize.LARGE, INITIAL_INDEX_SIZE, INSERT_INVOCATION_SIZE, UPDATE_INVOCATION_SIZE,
@@ -48,11 +48,9 @@ public class AutomaticLargeIndexingStateIT {
 		indexingState.startTrial();
 		checkTheSize( BEFORE_INSERT_SIZES );
 
-		int expectedIndexSize = INITIAL_INDEX_SIZE + INSERT_INVOCATION_SIZE * NUMBER_OF_THREADS;
 		for ( int i = 0; i < NUMBER_OF_THREADS; i++ ) {
 			AutomaticIndexingInsertPartitionState partition = indexingState.getInsertPartition( i );
 			partition.executeInsert();
-			assertThat( partition.actualIndexSize() ).isEqualTo( expectedIndexSize );
 		}
 
 		checkTheSize( AFTER_INSERT_SIZES );

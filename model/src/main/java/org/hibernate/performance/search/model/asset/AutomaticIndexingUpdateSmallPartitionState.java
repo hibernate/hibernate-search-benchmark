@@ -5,8 +5,8 @@ import org.hibernate.SessionFactory;
 public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexingUpdatePartitionState {
 
 	public AutomaticIndexingUpdateSmallPartitionState(SessionFactory sessionFactory,
-			int actualIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
-		super( sessionFactory, actualIndexSize, numberOfThreads, threadNumber, invocationSize );
+			int initialIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
+		super( sessionFactory, initialIndexSize, numberOfThreads, threadNumber, invocationSize );
 	}
 
 	@Override

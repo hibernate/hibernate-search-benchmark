@@ -46,7 +46,6 @@ public class AutomaticSmallIndexingStateIT {
 		for ( int i = 0; i < NUMBER_OF_THREADS; i++ ) {
 			AutomaticIndexingInsertPartitionState partition = indexingState.getInsertPartition( i );
 			partition.executeInsert();
-			assertThat( partition.actualIndexSize() ).isEqualTo( expectedIndexSize );
 		}
 
 		checkTheSize( expectedIndexSize, expectedIndexSize, expectedIndexSize );

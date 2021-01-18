@@ -16,10 +16,10 @@ public class AutomaticIndexingDeletePartitionState {
 	private int invocation = 0;
 
 	public AutomaticIndexingDeletePartitionState(SessionFactory sessionFactory, RelationshipSize relationshipSize,
-			int actualIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
+			int initialIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
 		this.domainDataRemover = new DomainDataRemover( sessionFactory );
 		this.partitionIds = businessUnitPartitionIds(
-				relationshipSize, actualIndexSize, numberOfThreads, threadNumber );
+				relationshipSize, initialIndexSize, numberOfThreads, threadNumber );
 		this.invocationSize = invocationSize;
 	}
 
@@ -35,13 +35,13 @@ public class AutomaticIndexingDeletePartitionState {
 		}
 	}
 
-	private static List<Integer> businessUnitPartitionIds(RelationshipSize relationshipSize, int actualIndexSize,
+	private static List<Integer> businessUnitPartitionIds(RelationshipSize relationshipSize, int initialIndexSize,
 			int numberOfThreads, int threadNumber) {
-		int numberOfBusinessUnit = relationshipSize.getUnitsPerCompany() * actualIndexSize;
+		int numberOfBusinessUnit = relationshipSize.getUnitsPerCompany() * initialIndexSize;
 		List<Integer> result = new ArrayList<>( numberOfBusinessUnit / numberOfThreads + 1 );
 
 		int i = 0;
-		for ( int id : businessUnitIds( relationshipSize, actualIndexSize ) ) {
+		for ( int id : businessUnitIds( relationshipSize, initialIndexSize ) ) {
 			if ( i++ % numberOfThreads == threadNumber ) {
 				result.add( id );
 			}
@@ -49,12 +49,12 @@ public class AutomaticIndexingDeletePartitionState {
 		return result;
 	}
 
-	private static List<Integer> businessUnitIds(RelationshipSize relationshipSize, int actualIndexSize) {
+	private static List<Integer> businessUnitIds(RelationshipSize relationshipSize, int initialIndexSize) {
 		int unitsPerCompany = relationshipSize.getUnitsPerCompany();
-		List<Integer> result = new ArrayList<>( unitsPerCompany * actualIndexSize );
+		List<Integer> result = new ArrayList<>( unitsPerCompany * initialIndexSize );
 
 		for ( int i = 0; i < unitsPerCompany; i++ ) {
-			for ( int j = 0; j < actualIndexSize; j++ ) {
+			for ( int j = 0; j < initialIndexSize; j++ ) {
 				result.add( unitsPerCompany - 1 - i + j * unitsPerCompany );
 			}
 		}
