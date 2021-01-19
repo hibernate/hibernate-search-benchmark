@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
@@ -29,7 +29,7 @@ public class DomainDataIT {
 	@Test
 	public void test() {
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() ) ) {
-			new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
+			new DomainDataInitializer( sessionFactory, RelationshipSize.LARGE ).initAllCompanyData( 0 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );

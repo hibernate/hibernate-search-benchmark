@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
@@ -107,9 +107,9 @@ public class AutomaticIndexingState {
 	}
 
 	private void start() {
-		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
 		for ( int i = 0; i < initialIndexSize; i++ ) {
-			domainDataFiller.fillData( i );
+			domainDataInitializer.initAllCompanyData( i );
 		}
 		indexInsertPartitions = createInsertPartitions();
 		indexUpdatePartitions = createUpdatePartitions();

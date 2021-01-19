@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
@@ -72,9 +72,9 @@ public class RelationshipSizeIT {
 	}
 
 	private void test(RelationshipSize relationshipSize, int questionnaireInstancesForCompany, int scaleSize) {
-		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
 		for ( int i = 0; i < scaleSize; i++ ) {
-			domainDataFiller.fillData( i );
+			domainDataInitializer.initAllCompanyData( i );
 		}
 
 		try ( Session session = sessionFactory.openSession() ) {

@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
@@ -34,10 +34,10 @@ public class TruncateAllIT {
 
 	@Test
 	public void test() {
-		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, RelationshipSize.SMALL );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, RelationshipSize.SMALL );
 		DomainDataRemover domainDataRemover = new DomainDataRemover( sessionFactory );
 
-		domainDataFiller.fillData( 0 );
+		domainDataInitializer.initAllCompanyData( 0 );
 		checkSize( 1 );
 
 		domainDataRemover.truncateAll();

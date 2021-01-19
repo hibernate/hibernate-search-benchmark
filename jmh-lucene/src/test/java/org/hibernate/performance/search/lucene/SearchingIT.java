@@ -8,7 +8,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.BackendType;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.IndexingType;
 import org.hibernate.performance.search.model.application.ModelService;
@@ -48,7 +48,7 @@ public class SearchingIT {
 		sessionFactory = HibernateORMHelper.buildSessionFactory(
 				modelService.properties( BackendType.LUCENE, IndexingType.MANUAL ) );
 
-		new DomainDataFiller( sessionFactory, RelationshipSize.LARGE ).fillData( 0 );
+		new DomainDataInitializer( sessionFactory, RelationshipSize.LARGE ).initAllCompanyData( 0 );
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			modelService.massIndexing( session );
 		}

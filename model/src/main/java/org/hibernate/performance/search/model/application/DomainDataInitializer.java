@@ -17,21 +17,21 @@ import org.hibernate.performance.search.model.service.QuestionnaireDefinitionFac
 import org.hibernate.performance.search.model.service.QuestionnaireInstanceFactory;
 import org.hibernate.performance.search.model.service.Scorer;
 
-public class DomainDataFiller {
+public class DomainDataInitializer {
 
 	private final SessionFactory sessionFactory;
 	private final CompanyFactory companyFactory;
 	private final EmployeeFactory employeeFactory;
 	private final QuestionnaireDefinitionFactory questionnaireDefinitionFactory;
 
-	public DomainDataFiller(SessionFactory sessionFactory, RelationshipSize relationshipSize) {
+	public DomainDataInitializer(SessionFactory sessionFactory, RelationshipSize relationshipSize) {
 		this.sessionFactory = sessionFactory;
 		this.companyFactory = new CompanyFactory( relationshipSize );
 		this.employeeFactory = new EmployeeFactory( relationshipSize );
 		this.questionnaireDefinitionFactory = new QuestionnaireDefinitionFactory( relationshipSize );
 	}
 
-	public void fillData(int companyId) {
+	public void initAllCompanyData(int companyId) {
 		HibernateORMHelper.inTransaction( sessionFactory, session -> {
 			// Phase 1: create the company and its business units
 			Company company = companyFactory.createCompanyAndUnits( companyId );

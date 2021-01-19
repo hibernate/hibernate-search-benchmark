@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
 import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.application.ModelServiceFactory;
@@ -35,9 +35,9 @@ public abstract class MassIndexingPerformanceTest {
 
 	@Setup
 	public void init() {
-		DomainDataFiller domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
 		for ( int i = 0; i < initialCompanyCount; i++ ) {
-			domainDataFiller.fillData( i );
+			domainDataInitializer.initAllCompanyData( i );
 		}
 	}
 

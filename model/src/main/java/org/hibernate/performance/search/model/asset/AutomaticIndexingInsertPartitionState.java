@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataFiller;
+import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public class AutomaticIndexingInsertPartitionState {
 
-	private final DomainDataFiller domainDataFiller;
+	private final DomainDataInitializer domainDataInitializer;
 	private final Function<Integer, List<Integer>> companyIdsFunction;
 
 	private int invocation = 0;
@@ -18,13 +18,13 @@ public class AutomaticIndexingInsertPartitionState {
 	public AutomaticIndexingInsertPartitionState(SessionFactory sessionFactory,
 			RelationshipSize relationshipSize, int initialIndexSize, int invocationSize, int numberOfThreads,
 			int threadNumber) {
-		this.domainDataFiller = new DomainDataFiller( sessionFactory, relationshipSize );
+		this.domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
 		this.companyIdsFunction = companyIdsFunction( initialIndexSize, invocationSize, numberOfThreads, threadNumber );
 	}
 
 	public void executeInsert() {
 		for ( int companyId : companyIdsFunction.apply( invocation++ ) ) {
-			domainDataFiller.fillData( companyId );
+			domainDataInitializer.initAllCompanyData( companyId );
 		}
 	}
 
