@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataUpdater;
 
@@ -11,7 +12,7 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 
 	private static final int LARGE_NUMBER = 100_000_000;
 
-	protected final DomainDataUpdater domainDataUpdater;
+	private final DomainDataUpdater domainDataUpdater;
 	protected final int initialIndexSize;
 	private final int numberOfThreads;
 	private final int threadNumber;
@@ -38,27 +39,35 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	}
 
 	public void updateCompanyBU() {
-		for ( int i = 0; i < invocationSize; i++ ) {
-			updateCompanyBUOneTime();
-		}
+		domainDataUpdater.inTransaction( ( (session, up) -> {
+			for ( int i = 0; i < invocationSize; i++ ) {
+				updateCompanyBUOneTime( session, up );
+			}
+		} ) );
 	}
 
 	public void updateEmployee() {
-		for ( int i = 0; i < invocationSize; i++ ) {
-			updateEmployeeOneTime();
-		}
+		domainDataUpdater.inTransaction( ( (session, up) -> {
+			for ( int i = 0; i < invocationSize; i++ ) {
+				updateEmployeeOneTime( session, up );
+			}
+		} ) );
 	}
 
 	public void updateQuestionnaire() {
-		for ( int i = 0; i < invocationSize; i++ ) {
-			updateQuestionnaireOneTime();
-		}
+		domainDataUpdater.inTransaction( ( (session, up) -> {
+			for ( int i = 0; i < invocationSize; i++ ) {
+				updateQuestionnaireOneTime( session, up );
+			}
+		} ) );
 	}
 
 	public void updateQuestion() {
-		for ( int i = 0; i < invocationSize; i++ ) {
-			updateQuestionOneTime();
-		}
+		domainDataUpdater.inTransaction( ( (session, up) -> {
+			for ( int i = 0; i < invocationSize; i++ ) {
+				updateQuestionOneTime( session, up );
+			}
+		} ) );
 	}
 
 	public int getCompanyBUInvocation() {
@@ -77,11 +86,11 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 		return questionsInvocation;
 	}
 
-	protected abstract void updateEmployeeOneTime();
+	protected abstract void updateEmployeeOneTime(Session session, DomainDataUpdater up);
 
-	protected abstract void updateQuestionnaireOneTime();
+	protected abstract void updateQuestionnaireOneTime(Session session, DomainDataUpdater up);
 
-	protected abstract void updateQuestionOneTime();
+	protected abstract void updateQuestionOneTime(Session session, DomainDataUpdater up);
 
 	protected Integer partitionId(int index) {
 		return partitionIds.get( index % partitionIds.size() );
@@ -91,14 +100,14 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 		return randomFixedSource.nextInt( upperBoundExcluded - lowerBoundIncluded ) + lowerBoundIncluded;
 	}
 
-	private void updateCompanyBUOneTime() {
+	private void updateCompanyBUOneTime(Session session, DomainDataUpdater up) {
 		boolean reverse = companyBUInvocation % 2 == 1;
 		int companyId = partitionId( companyBUInvocation / 2 );
 
 		int fromCompanyId = ( reverse ) ? alternativeCompanyId : companyId;
 		int toCompanyId = ( reverse ) ? companyId : alternativeCompanyId;
 
-		domainDataUpdater.doSomeChangesOnCompanyAndBusinessUnit( companyBUInvocation++, fromCompanyId, toCompanyId );
+		up.doSomeChangesOnCompanyAndBusinessUnit( session, companyBUInvocation++, fromCompanyId, toCompanyId );
 	}
 
 	private List<Integer> partitionIds() {

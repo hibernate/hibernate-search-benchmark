@@ -1,6 +1,8 @@
 package org.hibernate.performance.search.model.asset;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUpdatePartitionState {
@@ -19,7 +21,7 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 	}
 
 	@Override
-	public void updateEmployeeOneTime() {
+	public void updateEmployeeOneTime(Session session, DomainDataUpdater up) {
 		int employeePerCompany = relationshipSize.getEmployeesPerBusinessUnit() * relationshipSize.getUnitsPerCompany();
 
 		boolean reverse = employeeInvocation % 2 == 1;
@@ -29,11 +31,11 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 		int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
 		int employeeId = baseEmployeeId + employeeBaseId;
 
-		domainDataUpdater.doSomeChangesOnEmployee( employeeInvocation++, employeeId, managerId );
+		up.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId );
 	}
 
 	@Override
-	public void updateQuestionnaireOneTime() {
+	public void updateQuestionnaireOneTime(Session session, DomainDataUpdater up) {
 		int companyId = partitionId( questionnaireInvocation );
 		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
 
@@ -41,11 +43,11 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 		int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
 
 		int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
-		domainDataUpdater.updateQuestionnaire( questionnaireInvocation++, questionnaireDefinitionId );
+		up.updateQuestionnaire( session, questionnaireInvocation++, questionnaireDefinitionId );
 	}
 
 	@Override
-	public void updateQuestionOneTime() {
+	public void updateQuestionOneTime(Session session, DomainDataUpdater up) {
 		int companyId = partitionId( questionsInvocation );
 		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
 
@@ -53,6 +55,6 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 		int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
 
 		int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
-		domainDataUpdater.updateQuestionsAndAnswers( questionsInvocation++, questionnaireDefinitionId );
+		up.updateQuestionsAndAnswers( session, questionsInvocation++, questionnaireDefinitionId );
 	}
 }

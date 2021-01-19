@@ -1,6 +1,8 @@
 package org.hibernate.performance.search.model.asset;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.model.application.DomainDataUpdater;
 
 public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexingUpdatePartitionState {
 
@@ -10,7 +12,7 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 	}
 
 	@Override
-	public void updateEmployeeOneTime() {
+	public void updateEmployeeOneTime(Session session, DomainDataUpdater up) {
 		boolean reverse = employeeInvocation % 2 == 1;
 		int index = ( employeeInvocation / 2 ) % partitionIds.size();
 
@@ -18,23 +20,24 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
 
 		if ( reverse ) {
-			domainDataUpdater.removeManagerFromEmployee( employeeInvocation++, employeeId );
-		} else {
-			domainDataUpdater.doSomeChangesOnEmployee( employeeInvocation++, employeeId, managerId );
+			up.removeManagerFromEmployee( session, employeeInvocation++, employeeId );
+		}
+		else {
+			up.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId );
 		}
 	}
 
 	@Override
-	public void updateQuestionnaireOneTime() {
+	public void updateQuestionnaireOneTime(Session session, DomainDataUpdater up) {
 		int companyId = partitionId( questionnaireInvocation );
 		// companyId == questionnaireDefinitionId for this RelationshipSize
-		domainDataUpdater.updateQuestionnaire( questionnaireInvocation++, companyId );
+		up.updateQuestionnaire( session, questionnaireInvocation++, companyId );
 	}
 
 	@Override
-	public void updateQuestionOneTime() {
+	public void updateQuestionOneTime(Session session, DomainDataUpdater up) {
 		int companyId = partitionId( questionsInvocation );
 		// companyId == questionnaireDefinitionId for this RelationshipSize
-		domainDataUpdater.updateQuestionsAndAnswers( questionsInvocation++, companyId );
+		up.updateQuestionsAndAnswers( session, questionsInvocation++, companyId );
 	}
 }
