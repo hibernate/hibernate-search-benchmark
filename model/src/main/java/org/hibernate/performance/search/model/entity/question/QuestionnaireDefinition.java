@@ -23,7 +23,7 @@ public class QuestionnaireDefinition extends IdEntity {
 	private Company company;
 
 	@OneToMany(mappedBy = "questionnaire")
-	@Cascade( CascadeType.PERSIST )
+	@Cascade( CascadeType.ALL )
 	private List<Question> questions;
 
 	public QuestionnaireDefinition() {

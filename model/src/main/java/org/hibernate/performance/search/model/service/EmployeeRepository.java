@@ -145,21 +145,23 @@ public class EmployeeRepository {
 		return entityManager.createQuery( query ).getResultList();
 	}
 
+	public List<QuestionnaireInstance> findByApproval(Integer approvalId) {
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
+		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
+
+		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
+				.where( builder.equal( root.get( "approval" ).<String>get( "id" ), approvalId ) );
+
+		return entityManager.createQuery( query ).getResultList();
+	}
+
 	public List<QuestionnaireInstance> findByDefinition(QuestionnaireDefinition questionnaireDefinition) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
 				.where( builder.equal( root.get( "definition" ), questionnaireDefinition ) );
-		return entityManager.createQuery( query ).getResultList();
-	}
-
-	public List<Employee> findEmployeesWithManager() {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Employee> criteria = builder.createQuery( Employee.class );
-		Root<Employee> root = criteria.from( Employee.class );
-		CriteriaQuery<Employee> query = criteria.select( root )
-				.where( builder.isNotNull( root.get( "manager" ) ) );
 		return entityManager.createQuery( query ).getResultList();
 	}
 }

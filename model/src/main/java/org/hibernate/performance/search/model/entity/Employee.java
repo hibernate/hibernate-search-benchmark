@@ -48,11 +48,11 @@ public class Employee extends IdEntity {
 	public Employee(Manager manager, int id) {
 		super( id );
 
-		this.firstName = "name"+id;
-		this.surname = "surname"+id;
-		this.socialSecurityNumber = "socialSecurityNumber"+id;
+		this.firstName = "name" + id;
+		this.surname = "surname" + id;
+		this.socialSecurityNumber = "socialSecurityNumber" + id;
 		this.manager = manager;
-		this.businessUnit = manager.businessUnit;
+		this.businessUnit = manager.getBusinessUnit();
 		this.company = businessUnit.getOwner();
 	}
 
@@ -70,6 +70,10 @@ public class Employee extends IdEntity {
 
 	public void setSurname(String surname) {
 		this.surname = surname;
+	}
+
+	public Company getCompany() {
+		return company;
 	}
 
 	public BusinessUnit getBusinessUnit() {

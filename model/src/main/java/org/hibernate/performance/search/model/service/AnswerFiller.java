@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 
 public class AnswerFiller {
 
-	private final static String[] OPEN_ANSWER_RESPONSE_TYPES = {
+	public final static String[] OPEN_ANSWER_RESPONSE_TYPES = {
 			"Full text search engines like Apache Lucene are very powerful technologies to add efficient free text search capabilities to applications. However, Lucene suffers several mismatches when dealing with object domain models. Amongst other things indexes have to be kept up to date and mismatches between index structure and domain model as well as query mismatches have to be avoided.",
 			// 0
 			"Hibernate Search addresses these shortcomings - it indexes your domain model with the help of a few annotations, takes care of database/index synchronization and brings back regular managed objects from free text queries. To achieve this Hibernate Search is combining the power of Hibernate ORM and Apache Lucene/Elasticsearch.",

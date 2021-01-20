@@ -21,19 +21,20 @@ public final class QuestionnaireDefinitionFactory {
 	public List<QuestionnaireDefinition> createQuestionnaireDefinitions(Company company) {
 		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
 		ArrayList<QuestionnaireDefinition> result = new ArrayList<>( definitionsForCompany );
-
 		for ( int i = 0; i < definitionsForCompany; i++ ) {
 			int id = company.getId() * definitionsForCompany + i;
 			int year = 2020 + i;
-			String title = "Questionnaire " + company + " " + year;
-
-			QuestionnaireDefinition questionnaire = new QuestionnaireDefinition( id, title, title, year, company );
-			result.add( questionnaire );
-
-			addQuestions( questionnaire );
+			result.add( createQuestionnaireDefinition( company, id, year ) );
 		}
 
 		return result;
+	}
+
+	public QuestionnaireDefinition createQuestionnaireDefinition(Company company, int id, int year) {
+		String title = "Questionnaire " + company + " " + year;
+		QuestionnaireDefinition questionnaire = new QuestionnaireDefinition( id, title, title, year, company );
+		addQuestions( questionnaire );
+		return questionnaire;
 	}
 
 	private void addQuestions(QuestionnaireDefinition questionnaire) {
