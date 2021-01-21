@@ -18,24 +18,21 @@ public class AutomaticIndexingState {
 	private final int initialIndexSize;
 	private final int insertInvocationSize;
 	private final int updateInvocationSize;
-	private final int deleteInvocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
 	private final ModelService modelService;
 
-	private List<AutomaticIndexingInsertPartitionState> indexInsertPartitions;
 	private List<AutomaticIndexingUpdatePartitionState> indexUpdatePartitions;
-	private List<AutomaticIndexingDeletePartitionState> indexDeletePartitions;
+	private List<AutomaticIndexingDeleteInsertPartitionState> indexingDeleteInsertPartitions;
 	private SessionFactory sessionFactory;
 	private boolean started;
 
 	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
-			int updateInvocationSize, int deleteInvocationSize, int numberOfThreads, Properties additionalProperties,
+			int updateInvocationSize, int numberOfThreads, Properties additionalProperties,
 			ModelService modelService) {
 		this.relationshipSize = relationshipSize;
 		this.initialIndexSize = initialIndexSize;
 		this.insertInvocationSize = insertInvocationSize;
-		this.deleteInvocationSize = deleteInvocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
 		this.modelService = modelService;
@@ -87,19 +84,14 @@ public class AutomaticIndexingState {
 		stop();
 	}
 
-	public AutomaticIndexingInsertPartitionState getInsertPartition(int threadNumber) {
-		checkThreadNumber( threadNumber );
-		return indexInsertPartitions.get( threadNumber );
-	}
-
 	public AutomaticIndexingUpdatePartitionState getUpdatePartition(int threadNumber) {
 		checkThreadNumber( threadNumber );
 		return indexUpdatePartitions.get( threadNumber );
 	}
 
-	public AutomaticIndexingDeletePartitionState getDeletePartition(int threadNumber) {
+	public AutomaticIndexingDeleteInsertPartitionState getDeleteInsertPartition(int threadNumber) {
 		checkThreadNumber( threadNumber );
-		return indexDeletePartitions.get( threadNumber );
+		return indexingDeleteInsertPartitions.get( threadNumber );
 	}
 
 	public SessionFactory getSessionFactory() {
@@ -111,28 +103,15 @@ public class AutomaticIndexingState {
 		for ( int i = 0; i < initialIndexSize; i++ ) {
 			domainDataInitializer.initAllCompanyData( i );
 		}
-		indexInsertPartitions = createInsertPartitions();
 		indexUpdatePartitions = createUpdatePartitions();
-		indexDeletePartitions = createDeletePartitions();
+		indexingDeleteInsertPartitions = createDeleteInsertPartitions();
 		started = true;
 	}
 
 	private void stop() {
-		indexInsertPartitions = null;
 		indexUpdatePartitions = null;
-		indexDeletePartitions = null;
+		indexingDeleteInsertPartitions = null;
 		started = false;
-	}
-
-	private List<AutomaticIndexingInsertPartitionState> createInsertPartitions() {
-		List<AutomaticIndexingInsertPartitionState> result = new ArrayList<>( numberOfThreads );
-		for ( int i = 0; i < numberOfThreads; i++ ) {
-			result.add( new AutomaticIndexingInsertPartitionState( sessionFactory, relationshipSize, initialIndexSize,
-					insertInvocationSize, numberOfThreads, i
-			) );
-		}
-
-		return result;
 	}
 
 	private List<AutomaticIndexingUpdatePartitionState> createUpdatePartitions() {
@@ -151,11 +130,11 @@ public class AutomaticIndexingState {
 		);
 	}
 
-	private List<AutomaticIndexingDeletePartitionState> createDeletePartitions() {
-		List<AutomaticIndexingDeletePartitionState> result = new ArrayList<>( numberOfThreads );
+	private List<AutomaticIndexingDeleteInsertPartitionState> createDeleteInsertPartitions() {
+		List<AutomaticIndexingDeleteInsertPartitionState> result = new ArrayList<>( numberOfThreads );
 		for ( int i = 0; i < numberOfThreads; i++ ) {
-			result.add( new AutomaticIndexingDeletePartitionState(
-					sessionFactory, relationshipSize, initialIndexSize, numberOfThreads, i, deleteInvocationSize
+			result.add( new AutomaticIndexingDeleteInsertPartitionState(
+					sessionFactory, relationshipSize, initialIndexSize, numberOfThreads, i, insertInvocationSize
 			) );
 		}
 		return result;

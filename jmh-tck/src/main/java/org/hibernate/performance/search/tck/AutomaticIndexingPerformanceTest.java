@@ -1,7 +1,6 @@
 package org.hibernate.performance.search.tck;
 
-import org.hibernate.performance.search.model.asset.AutomaticIndexingDeletePartitionState;
-import org.hibernate.performance.search.model.asset.AutomaticIndexingInsertPartitionState;
+import org.hibernate.performance.search.model.asset.AutomaticIndexingDeleteInsertPartitionState;
 import org.hibernate.performance.search.model.asset.AutomaticIndexingState;
 import org.hibernate.performance.search.model.asset.AutomaticIndexingUpdatePartitionState;
 
@@ -43,44 +42,58 @@ public abstract class AutomaticIndexingPerformanceTest {
 
 	@Benchmark
 	@Threads(3)
-	public void test1_insert() {
-		AutomaticIndexingInsertPartitionState insertPartition = indexingState.getInsertPartition( threadIndex );
-		insertPartition.executeInsert();
-	}
-
-	@Benchmark
-	@Threads(3)
-	public void test2_update_companyBU() {
+	public void update_companyBU() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateCompanyBU();
 	}
 
 	@Benchmark
 	@Threads(3)
-	public void test3_update_employee() {
+	public void update_employee() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateEmployee();
 	}
 
 	@Benchmark
 	@Threads(3)
-	public void test4_update_questionnaire() {
+	public void update_questionnaire() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestionnaire();
 	}
 
 	@Benchmark
 	@Threads(3)
-	public void test5_update_question() {
+	public void update_question() {
 		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestion();
 	}
 
 	@Benchmark
 	@Threads(3)
-	public void test6_delete() {
-		AutomaticIndexingDeletePartitionState deletePartition = indexingState.getDeletePartition( threadIndex );
-		deletePartition.executeDelete();
+	public void employeesInsertDelete() {
+		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
+		partition.employeesInsertDelete();
+	}
+
+	@Benchmark
+	@Threads(3)
+	public void questionnaireDefinitions() {
+		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
+		partition.questionnaireDefinitions();
+	}
+
+	@Benchmark
+	@Threads(3)
+	public void questionnaireInstances() {
+		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
+		partition.questionnaireInstances();
+	}
+
+	@Benchmark
+	@Threads(3)
+	public void performanceSummaries() {
+		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
+		partition.performanceSummaries();
 	}
 
 	protected void setIndexingState(AutomaticIndexingState indexingState) {

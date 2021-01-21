@@ -93,7 +93,7 @@ public class AutomaticIndexingDeleteInsertPartitionState {
 		AtomicInteger instancesWorked = new AtomicInteger( 0 );
 		while ( instancesWorked.get() < invocationSize ) {
 			deleteInserter.inTransaction( (session, delIns) -> instancesWorked
-					.addAndGet( delIns.deleteQuestionnaireInstancesFor( session, employeeId ) ) );
+					.addAndGet( delIns.deletePerformanceSummaryFor( session, employeeId ) ) );
 			deleteInserter.inTransaction(
 					(session, delIns) -> delIns.createPerformanceSummaryFor( session, employeeId ) );
 		}

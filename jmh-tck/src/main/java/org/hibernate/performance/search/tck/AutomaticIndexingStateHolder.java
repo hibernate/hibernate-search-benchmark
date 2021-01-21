@@ -29,9 +29,6 @@ public abstract class AutomaticIndexingStateHolder {
 	@Param({ "10" })
 	private int updateInvocationSize;
 
-	@Param({ "10" })
-	private int deleteInvocationSize;
-
 	private AutomaticIndexingState automaticIndexingState;
 
 	@Setup(Level.Trial)
@@ -41,7 +38,7 @@ public abstract class AutomaticIndexingStateHolder {
 
 		automaticIndexingState = new AutomaticIndexingState(
 				relationshipSize, initialIndexSize, insertInvocationSize, updateInvocationSize,
-				deleteInvocationSize, threadParams.getThreadCount(), properties, modelService
+				threadParams.getThreadCount(), properties, modelService
 		);
 	}
 
