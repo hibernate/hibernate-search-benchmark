@@ -40,4 +40,8 @@ public enum RelationshipSize {
 	public int getOpenQuestionsForQuestionnaire() {
 		return openQuestionsForQuestionnaire;
 	}
+
+	public int getEmployeesPerCompany() {
+		return unitsPerCompany * employeesPerBusinessUnit;
+	}
 }

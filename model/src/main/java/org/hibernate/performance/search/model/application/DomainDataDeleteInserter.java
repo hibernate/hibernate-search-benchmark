@@ -63,13 +63,15 @@ public class DomainDataDeleteInserter {
 		session.remove( questionnaire );
 	}
 
-	public void deleteQuestionnaireInstancesFor(Session session, int approvalId) {
+	public int deleteQuestionnaireInstancesFor(Session session, int approvalId) {
 		List<QuestionnaireInstance> questionnaireInstances = new EmployeeRepository( session ).findByApproval(
 				approvalId );
 
 		for ( QuestionnaireInstance questionnaireInstance : questionnaireInstances ) {
 			session.remove( questionnaireInstance );
 		}
+
+		return questionnaireInstances.size();
 	}
 
 	public void createAndFillQuestionnaireInstancesFor(Session session, int approvalId) {
@@ -91,13 +93,15 @@ public class DomainDataDeleteInserter {
 		}
 	}
 
-	public void deletePerformanceSummaryFor(Session session, int employeeId) {
+	public int deletePerformanceSummaryFor(Session session, int employeeId) {
 		Employee employee = session.load( Employee.class, employeeId );
 		List<PerformanceSummary> performanceSummaries = new EmployeeRepository( session ).findByEmployee( employee );
 
 		for ( PerformanceSummary performanceSummary : performanceSummaries ) {
 			session.remove( performanceSummary );
 		}
+
+		return performanceSummaries.size();
 	}
 
 	public void createPerformanceSummaryFor(Session session, int employeeId) {
