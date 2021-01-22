@@ -11,10 +11,12 @@ import org.hibernate.performance.search.model.application.ModelServiceFactory;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 
 @State(Scope.Benchmark)
 public abstract class MassIndexingPerformanceTest {
@@ -45,6 +47,13 @@ public abstract class MassIndexingPerformanceTest {
 	public void massIndexing() throws Exception {
 		try ( Session session = ( sessionFactory.openSession() ) ) {
 			modelService.massIndexing( session );
+		}
+	}
+
+	@TearDown
+	public void tearDown() {
+		if ( sessionFactory != null ) {
+			sessionFactory.close();
 		}
 	}
 
