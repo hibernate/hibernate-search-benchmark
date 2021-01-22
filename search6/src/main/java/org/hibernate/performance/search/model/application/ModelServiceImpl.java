@@ -12,7 +12,12 @@ import org.hibernate.search.mapper.orm.schema.management.SchemaManagementStrateg
 import org.hibernate.search.mapper.orm.schema.management.SearchSchemaManager;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ModelServiceImpl implements ModelService {
+
+	private static final Logger logger = LogManager.getLogger(ModelService.class);
 
 	@Override
 	public Properties properties(BackendType backend, IndexingType indexing) {
@@ -31,6 +36,8 @@ public class ModelServiceImpl implements ModelService {
 		if ( IndexingType.MANUAL.equals( indexing ) ) {
 			properties.put( HibernateOrmMapperSettings.AUTOMATIC_INDEXING_STRATEGY, AutomaticIndexingStrategyName.NONE );
 		}
+
+		logger.info( "Creating Search instance using properties: " + properties.toString() );
 
 		return properties;
 	}

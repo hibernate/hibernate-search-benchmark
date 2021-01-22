@@ -12,9 +12,13 @@ import org.hibernate.search.Search;
 import org.hibernate.search.cfg.Environment;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Query;
 
 public class ModelServiceImpl implements ModelService {
+
+	private static final Logger logger = LogManager.getLogger(ModelService.class);
 
 	@Override
 	public Properties properties(BackendType backend, IndexingType indexing) {
@@ -35,6 +39,8 @@ public class ModelServiceImpl implements ModelService {
 		if ( IndexingType.MANUAL.equals( indexing ) ) {
 			properties.put( "hibernate.search.indexing_strategy", "manual" );
 		}
+
+		logger.info( "Creating Search instance using properties: " + properties.toString() );
 
 		return properties;
 	}
