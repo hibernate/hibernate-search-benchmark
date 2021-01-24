@@ -100,12 +100,12 @@ lock(label: esAwsBuildEnv.lockedResourcesLabel) {
 					sh """ \
 							java \
 							-jar benchmarks.jar \
-							-jvmArgsAppend -Duris=$esAwsBuildEnv.endpointUris \
-							-jvmArgsAppend -Daws.signing.enabled=true \
-							-jvmArgsAppend -Daws.region=$esAwsBuildEnv.awsRegion \
-							-jvmArgsAppend -Daws.credentials.type=static \
-							-jvmArgsAppend -Daws.credentials.access_key_id=$AWS_ACCESS_KEY_ID \
-							-jvmArgsAppend -Daws.credentials.secret_access_key=$AWS_SECRET_ACCESS_KEY \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.host=$esAwsBuildEnv.endpointUris \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.required_index_status=yellow \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.signing.enabled=true \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.region=$esAwsBuildEnv.awsRegion \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.access_key=$AWS_ACCESS_KEY_ID \
+							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.secret_key=$AWS_SECRET_ACCESS_KEY \
 							-wi 1 -i 10 \
 							-rff output/benchmark-results-search5-elasticsearch.csv \
 					"""

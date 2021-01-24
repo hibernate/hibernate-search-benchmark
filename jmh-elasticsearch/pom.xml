@@ -202,6 +202,11 @@
                     <artifactId>hibernate-search-elasticsearch</artifactId>
                     <version>${version.hibernate.search5}</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-search-elasticsearch-aws</artifactId>
+                    <version>${version.hibernate.search5}</version>
+                </dependency>
             </dependencies>
             <build>
                 <pluginManagement>
