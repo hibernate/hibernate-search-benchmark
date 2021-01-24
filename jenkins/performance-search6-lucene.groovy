@@ -40,7 +40,7 @@ pipeline {
                 sh """ \
 					java \
 					-jar benchmarks.jar \
-					-wi 1 -i 10 \
+					-wi 1 -i 3 \
 					-rff output/benchmark-results-search6-lucene.csv \
 			"""
                 sh 'docker stop postgresql'
