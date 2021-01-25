@@ -23,9 +23,6 @@ public abstract class AutomaticIndexingStateHolder {
 	@Param({ "100" })
 	private int initialCompanyCount;
 
-	@Param({ "10" })
-	private int updateInvocationSize;
-
 	private AutomaticIndexingState automaticIndexingState;
 
 	@Setup(Level.Trial)
@@ -34,9 +31,7 @@ public abstract class AutomaticIndexingStateHolder {
 		Properties properties = autoProperties( modelService );
 
 		automaticIndexingState = new AutomaticIndexingState(
-				relationshipSize, initialCompanyCount, updateInvocationSize,
-				threadParams.getThreadCount(), properties, modelService
-		);
+				relationshipSize, initialCompanyCount, threadParams.getThreadCount(), properties, modelService );
 	}
 
 	public AutomaticIndexingState getAutomaticIndexingState() {

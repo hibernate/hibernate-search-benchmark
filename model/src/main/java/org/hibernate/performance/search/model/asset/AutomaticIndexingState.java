@@ -16,7 +16,6 @@ public class AutomaticIndexingState {
 
 	private final RelationshipSize relationshipSize;
 	private final int initialCompanyCount;
-	private final int updateInvocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
 	private final ModelService modelService;
@@ -28,21 +27,13 @@ public class AutomaticIndexingState {
 	private boolean trialStarted = false;
 	private boolean iterationStarted = false;
 
-	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount, int updateInvocationSize,
+	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount,
 			int numberOfThreads, Properties additionalProperties, ModelService modelService) {
 		this.relationshipSize = relationshipSize;
 		this.initialCompanyCount = initialCompanyCount;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
 		this.modelService = modelService;
-
-		if ( RelationshipSize.SMALL.equals( relationshipSize ) && updateInvocationSize % 2 == 1 ) {
-			// make the invocationSize even
-			this.updateInvocationSize = updateInvocationSize + 1;
-		}
-		else {
-			this.updateInvocationSize = updateInvocationSize;
-		}
 	}
 
 	public synchronized void startTrial() {
@@ -115,9 +106,9 @@ public class AutomaticIndexingState {
 
 	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int threadNumber) {
 		return ( RelationshipSize.SMALL.equals( relationshipSize ) ) ? new AutomaticIndexingUpdateSmallPartitionState(
-				sessionFactory, initialCompanyCount, numberOfThreads, threadNumber, updateInvocationSize
+				sessionFactory, initialCompanyCount, numberOfThreads, threadNumber
 		) : new AutomaticIndexingUpdateMLPartitionState(
-				sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, threadNumber, updateInvocationSize
+				sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, threadNumber
 		);
 	}
 

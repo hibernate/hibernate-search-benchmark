@@ -1,8 +1,6 @@
 package org.hibernate.performance.search.model.asset;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 
 public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUpdatePartitionState {
@@ -13,48 +11,54 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 
 	public AutomaticIndexingUpdateMLPartitionState(SessionFactory sessionFactory,
 			RelationshipSize relationshipSize, int initialCompanyCount,
-			int numberOfThreads, int threadNumber, int invocationSize) {
-		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber, invocationSize );
+			int numberOfThreads, int threadNumber) {
+		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber );
 		this.relationshipSize = relationshipSize;
 		this.alternativeManagerBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 3 : 30;
 		this.employeeBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 5 : 70;
 	}
 
 	@Override
-	public void updateEmployeeOneTime(Session session, DomainDataUpdater up) {
-		int employeePerCompany = relationshipSize.getEmployeesPerBusinessUnit() * relationshipSize.getUnitsPerCompany();
+	public void updateEmployee() {
+		domainDataUpdater.inTransaction( (session, up) -> {
+			int employeePerCompany = relationshipSize.getEmployeesPerCompany();
 
-		boolean reverse = employeeInvocation % 2 == 1;
-		int companyId = partitionId( employeeInvocation / 2 );
-		int baseEmployeeId = companyId * employeePerCompany;
+			boolean reverse = employeeInvocation % 2 == 1;
+			int companyId = partitionId( employeeInvocation / 2 );
+			int baseEmployeeId = companyId * employeePerCompany;
 
-		int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
-		int employeeId = baseEmployeeId + employeeBaseId;
+			int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
+			int employeeId = baseEmployeeId + employeeBaseId;
 
-		up.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId );
+			up.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId );
+		} );
 	}
 
 	@Override
-	public void updateQuestionnaireOneTime(Session session, DomainDataUpdater up) {
-		int companyId = partitionId( questionnaireInvocation );
-		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
+	public void updateQuestionnaire() {
+		domainDataUpdater.inTransaction( (session, up) -> {
+			int companyId = partitionId( questionnaireInvocation );
+			int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
 
-		int lowerBoundIncluded = companyId * definitionsForCompany;
-		int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
+			int lowerBoundIncluded = companyId * definitionsForCompany;
+			int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
 
-		int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
-		up.updateQuestionnaire( session, questionnaireInvocation++, questionnaireDefinitionId );
+			int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
+			up.updateQuestionnaire( session, questionnaireInvocation++, questionnaireDefinitionId );
+		} );
 	}
 
 	@Override
-	public void updateQuestionOneTime(Session session, DomainDataUpdater up) {
-		int companyId = partitionId( questionsInvocation );
-		int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
+	public void updateQuestion() {
+		domainDataUpdater.inTransaction( (session, up) -> {
+			int companyId = partitionId( questionsInvocation );
+			int definitionsForCompany = relationshipSize.getQuestionnaireDefinitionsForCompany();
 
-		int lowerBoundIncluded = companyId * definitionsForCompany;
-		int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
+			int lowerBoundIncluded = companyId * definitionsForCompany;
+			int upperBoundExcluded = lowerBoundIncluded + definitionsForCompany;
 
-		int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
-		up.updateQuestionsAndAnswers( session, questionsInvocation++, questionnaireDefinitionId );
+			int questionnaireDefinitionId = getRandomOf( lowerBoundIncluded, upperBoundExcluded );
+			up.updateQuestionsAndAnswers( session, questionsInvocation++, questionnaireDefinitionId );
+		} );
 	}
 }
