@@ -16,7 +16,6 @@ public class AutomaticIndexingState {
 
 	private final RelationshipSize relationshipSize;
 	private final int initialCompanyCount;
-	private final int insertInvocationSize;
 	private final int updateInvocationSize;
 	private final int numberOfThreads;
 	private final Properties additionalProperties;
@@ -29,12 +28,10 @@ public class AutomaticIndexingState {
 	private boolean trialStarted = false;
 	private boolean iterationStarted = false;
 
-	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount, int insertInvocationSize,
-			int updateInvocationSize, int numberOfThreads, Properties additionalProperties,
-			ModelService modelService) {
+	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount, int updateInvocationSize,
+			int numberOfThreads, Properties additionalProperties, ModelService modelService) {
 		this.relationshipSize = relationshipSize;
 		this.initialCompanyCount = initialCompanyCount;
-		this.insertInvocationSize = insertInvocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
 		this.modelService = modelService;
@@ -128,7 +125,7 @@ public class AutomaticIndexingState {
 		List<AutomaticIndexingDeleteInsertPartitionState> result = new ArrayList<>( numberOfThreads );
 		for ( int i = 0; i < numberOfThreads; i++ ) {
 			result.add( new AutomaticIndexingDeleteInsertPartitionState(
-					sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, i, insertInvocationSize
+					sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, i
 			) );
 		}
 		return result;
