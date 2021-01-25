@@ -25,7 +25,9 @@ public class AutomaticIndexingState {
 	private List<AutomaticIndexingUpdatePartitionState> indexUpdatePartitions;
 	private List<AutomaticIndexingDeleteInsertPartitionState> indexingDeleteInsertPartitions;
 	private SessionFactory sessionFactory;
-	private boolean started;
+
+	private boolean trialStarted = false;
+	private boolean iterationStarted = false;
 
 	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount, int insertInvocationSize,
 			int updateInvocationSize, int numberOfThreads, Properties additionalProperties,
@@ -47,32 +49,38 @@ public class AutomaticIndexingState {
 	}
 
 	public synchronized void startTrial() {
-		if ( started ) {
+		if ( trialStarted ) {
 			return;
 		}
 		sessionFactory = HibernateORMHelper.buildSessionFactory( additionalProperties );
-		start();
+		trialStarted = true;
 	}
 
 	public synchronized void stopTrial() {
-		if ( !started ) {
+		if ( !trialStarted ) {
 			return;
 		}
 		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
-		stop();
+		trialStarted = false;
 	}
 
 	public synchronized void startIteration() {
-		if ( started ) {
+		if ( iterationStarted ) {
 			return;
 		}
-		start();
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
+			domainDataInitializer.initAllCompanyData( i );
+		}
+		indexUpdatePartitions = createUpdatePartitions();
+		indexingDeleteInsertPartitions = createDeleteInsertPartitions();
+		iterationStarted = true;
 	}
 
 	public synchronized void stopIteration() {
-		if ( !started ) {
+		if ( !iterationStarted ) {
 			return;
 		}
 		new DomainDataRemover( sessionFactory ).truncateAll();
@@ -81,7 +89,9 @@ public class AutomaticIndexingState {
 				modelService.purgeAllIndexes( session );
 			}
 		}
-		stop();
+		indexUpdatePartitions = null;
+		indexingDeleteInsertPartitions = null;
+		iterationStarted = false;
 	}
 
 	public AutomaticIndexingUpdatePartitionState getUpdatePartition(int threadNumber) {
@@ -96,22 +106,6 @@ public class AutomaticIndexingState {
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
-	}
-
-	private void start() {
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
-		for ( int i = 0; i < initialCompanyCount; i++ ) {
-			domainDataInitializer.initAllCompanyData( i );
-		}
-		indexUpdatePartitions = createUpdatePartitions();
-		indexingDeleteInsertPartitions = createDeleteInsertPartitions();
-		started = true;
-	}
-
-	private void stop() {
-		indexUpdatePartitions = null;
-		indexingDeleteInsertPartitions = null;
-		started = false;
 	}
 
 	private List<AutomaticIndexingUpdatePartitionState> createUpdatePartitions() {
