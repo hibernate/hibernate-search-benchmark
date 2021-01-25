@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'Performance'
+    }
     tools {
         maven "Apache Maven 3.6"
         jdk "OpenJDK 11 Latest"
