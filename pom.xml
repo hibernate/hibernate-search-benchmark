@@ -49,6 +49,12 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${version.hibernate.orm}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-agroal</artifactId>
+                <version>${version.hibernate.orm}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
