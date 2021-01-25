@@ -20,6 +20,9 @@ public abstract class AutomaticIndexingPerformanceTest {
 	private AutomaticIndexingState indexingState;
 	private int threadIndex;
 
+	private AutomaticIndexingDeleteInsertPartitionState deleteInsertPartition;
+	private AutomaticIndexingUpdatePartitionState updatePartition;
+
 	@Setup(Level.Trial)
 	public void prepareTrial() {
 		indexingState.startTrial();
@@ -33,67 +36,63 @@ public abstract class AutomaticIndexingPerformanceTest {
 	@Setup(Level.Iteration)
 	public void prepareIteration() {
 		indexingState.startIteration();
+		deleteInsertPartition = indexingState.getDeleteInsertPartition( threadIndex );
+		updatePartition = indexingState.getUpdatePartition( threadIndex );
 	}
 
 	@TearDown(Level.Iteration)
 	public void tearDownIteration() {
 		indexingState.stopIteration();
+		deleteInsertPartition = null;
+		updatePartition = null;
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void update_companyBU() {
-		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateCompanyBU();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void update_employee() {
-		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateEmployee();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void update_questionnaire() {
-		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestionnaire();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void update_question() {
-		AutomaticIndexingUpdatePartitionState updatePartition = indexingState.getUpdatePartition( threadIndex );
 		updatePartition.updateQuestion();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void employeesInsertDelete() {
-		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
-		partition.employeesInsertDelete();
+		deleteInsertPartition.employeesInsertDelete();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void questionnaireDefinitions() {
-		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
-		partition.questionnaireDefinitions();
+		deleteInsertPartition.questionnaireDefinitions();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void questionnaireInstances() {
-		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
-		partition.questionnaireInstances();
+		deleteInsertPartition.questionnaireInstances();
 	}
 
 	@Benchmark
 	@Threads(3)
 	public void performanceSummaries() {
-		AutomaticIndexingDeleteInsertPartitionState partition = indexingState.getDeleteInsertPartition( threadIndex );
-		partition.performanceSummaries();
+		deleteInsertPartition.performanceSummaries();
 	}
 
 	protected void setIndexingState(AutomaticIndexingState indexingState) {
