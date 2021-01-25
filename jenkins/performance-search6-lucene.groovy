@@ -33,7 +33,6 @@ pipeline {
         stage('Performance test') {
             steps {
                 unstash name: 'jar'
-                sh 'docker stop postgresql || true && docker rm -f postgresql || true' // stop and remove any old container
                 sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
                 sh 'mkdir -p output'
@@ -42,11 +41,15 @@ pipeline {
 					-jar benchmarks.jar \
 					-wi 1 -i 3 \
 					-rff output/benchmark-results-search6-lucene.csv \
-			"""
-                sh 'docker stop postgresql'
-                sh 'docker rm -f postgresql'
+				"""
                 archiveArtifacts artifacts: 'output/**'
             }
+        }
+    }
+    post {
+        always {
+            // stop and remove any created container
+            sh 'docker stop postgresql || true && docker rm -f postgresql || true'
         }
     }
 }
