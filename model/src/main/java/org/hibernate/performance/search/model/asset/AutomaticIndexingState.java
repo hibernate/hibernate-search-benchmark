@@ -15,7 +15,7 @@ import org.hibernate.performance.search.model.param.RelationshipSize;
 public class AutomaticIndexingState {
 
 	private final RelationshipSize relationshipSize;
-	private final int initialIndexSize;
+	private final int initialCompanyCount;
 	private final int insertInvocationSize;
 	private final int updateInvocationSize;
 	private final int numberOfThreads;
@@ -27,11 +27,11 @@ public class AutomaticIndexingState {
 	private SessionFactory sessionFactory;
 	private boolean started;
 
-	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialIndexSize, int insertInvocationSize,
+	public AutomaticIndexingState(RelationshipSize relationshipSize, int initialCompanyCount, int insertInvocationSize,
 			int updateInvocationSize, int numberOfThreads, Properties additionalProperties,
 			ModelService modelService) {
 		this.relationshipSize = relationshipSize;
-		this.initialIndexSize = initialIndexSize;
+		this.initialCompanyCount = initialCompanyCount;
 		this.insertInvocationSize = insertInvocationSize;
 		this.numberOfThreads = numberOfThreads;
 		this.additionalProperties = additionalProperties;
@@ -100,7 +100,7 @@ public class AutomaticIndexingState {
 
 	private void start() {
 		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
-		for ( int i = 0; i < initialIndexSize; i++ ) {
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			domainDataInitializer.initAllCompanyData( i );
 		}
 		indexUpdatePartitions = createUpdatePartitions();
@@ -124,9 +124,9 @@ public class AutomaticIndexingState {
 
 	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int threadNumber) {
 		return ( RelationshipSize.SMALL.equals( relationshipSize ) ) ? new AutomaticIndexingUpdateSmallPartitionState(
-				sessionFactory, initialIndexSize, numberOfThreads, threadNumber, updateInvocationSize
+				sessionFactory, initialCompanyCount, numberOfThreads, threadNumber, updateInvocationSize
 		) : new AutomaticIndexingUpdateMLPartitionState(
-				sessionFactory, relationshipSize, initialIndexSize, numberOfThreads, threadNumber, updateInvocationSize
+				sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, threadNumber, updateInvocationSize
 		);
 	}
 
@@ -134,7 +134,7 @@ public class AutomaticIndexingState {
 		List<AutomaticIndexingDeleteInsertPartitionState> result = new ArrayList<>( numberOfThreads );
 		for ( int i = 0; i < numberOfThreads; i++ ) {
 			result.add( new AutomaticIndexingDeleteInsertPartitionState(
-					sessionFactory, relationshipSize, initialIndexSize, numberOfThreads, i, insertInvocationSize
+					sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, i, insertInvocationSize
 			) );
 		}
 		return result;

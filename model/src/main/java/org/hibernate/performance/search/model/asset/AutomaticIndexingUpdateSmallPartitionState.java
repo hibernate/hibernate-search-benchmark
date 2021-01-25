@@ -7,8 +7,8 @@ import org.hibernate.performance.search.model.application.DomainDataUpdater;
 public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexingUpdatePartitionState {
 
 	public AutomaticIndexingUpdateSmallPartitionState(SessionFactory sessionFactory,
-			int initialIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
-		super( sessionFactory, initialIndexSize, numberOfThreads, threadNumber, invocationSize );
+			int initialCompanyCount, int numberOfThreads, int threadNumber, int invocationSize) {
+		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber, invocationSize );
 	}
 
 	@Override

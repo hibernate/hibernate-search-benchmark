@@ -15,7 +15,7 @@ public class AutomaticIndexingDeleteInsertPartitionState {
 	private final DomainDataDeleteInserter deleteInserter;
 	private final RelationshipSize relationshipSize;
 
-	private final int initialIndexSize;
+	private final int initialCompanyCount;
 	private final int numberOfThreads;
 	private final int threadNumber;
 	private final int invocationSize;
@@ -26,11 +26,11 @@ public class AutomaticIndexingDeleteInsertPartitionState {
 	private int insertDeleteCount = 0;
 
 	public AutomaticIndexingDeleteInsertPartitionState(SessionFactory sessionFactory,
-			RelationshipSize relationshipSize, int initialIndexSize,
+			RelationshipSize relationshipSize, int initialCompanyCount,
 			int numberOfThreads, int threadNumber, int invocationSize) {
 		this.deleteInserter = new DomainDataDeleteInserter( sessionFactory, relationshipSize );
 		this.relationshipSize = relationshipSize;
-		this.initialIndexSize = initialIndexSize;
+		this.initialCompanyCount = initialCompanyCount;
 		this.numberOfThreads = numberOfThreads;
 		this.threadNumber = threadNumber;
 		this.invocationSize = invocationSize;
@@ -104,8 +104,8 @@ public class AutomaticIndexingDeleteInsertPartitionState {
 	}
 
 	private List<Integer> companyIds() {
-		List<Integer> result = new ArrayList<>( initialIndexSize / numberOfThreads + 1 );
-		for ( int i = 0; i < initialIndexSize; i++ ) {
+		List<Integer> result = new ArrayList<>( initialCompanyCount / numberOfThreads + 1 );
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			if ( i % numberOfThreads == threadNumber ) {
 				result.add( i );
 			}

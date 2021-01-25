@@ -12,9 +12,9 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 	private final int employeeBaseId;
 
 	public AutomaticIndexingUpdateMLPartitionState(SessionFactory sessionFactory,
-			RelationshipSize relationshipSize, int initialIndexSize,
+			RelationshipSize relationshipSize, int initialCompanyCount,
 			int numberOfThreads, int threadNumber, int invocationSize) {
-		super( sessionFactory, initialIndexSize, numberOfThreads, threadNumber, invocationSize );
+		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber, invocationSize );
 		this.relationshipSize = relationshipSize;
 		this.alternativeManagerBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 3 : 30;
 		this.employeeBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 5 : 70;

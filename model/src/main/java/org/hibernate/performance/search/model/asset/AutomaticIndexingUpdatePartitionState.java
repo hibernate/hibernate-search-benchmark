@@ -13,7 +13,7 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	private static final int LARGE_NUMBER = 100_000_000;
 
 	private final DomainDataUpdater domainDataUpdater;
-	protected final int initialIndexSize;
+	protected final int initialCompanyCount;
 	private final int numberOfThreads;
 	private final int threadNumber;
 	protected final List<Integer> partitionIds;
@@ -27,9 +27,9 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	protected int questionsInvocation = 0;
 
 	public AutomaticIndexingUpdatePartitionState(SessionFactory sessionFactory,
-			int initialIndexSize, int numberOfThreads, int threadNumber, int invocationSize) {
+			int initialCompanyCount, int numberOfThreads, int threadNumber, int invocationSize) {
 		this.domainDataUpdater = new DomainDataUpdater( sessionFactory );
-		this.initialIndexSize = initialIndexSize;
+		this.initialCompanyCount = initialCompanyCount;
 		this.numberOfThreads = numberOfThreads;
 		this.threadNumber = threadNumber;
 		this.partitionIds = partitionIds();
@@ -111,8 +111,8 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	}
 
 	private List<Integer> partitionIds() {
-		List<Integer> result = new ArrayList<>( initialIndexSize / numberOfThreads + 1 );
-		for ( int i = 0; i < initialIndexSize; i++ ) {
+		List<Integer> result = new ArrayList<>( initialCompanyCount / numberOfThreads + 1 );
+		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			if ( i % numberOfThreads == threadNumber ) {
 				result.add( i );
 			}
