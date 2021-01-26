@@ -156,12 +156,13 @@ public class EmployeeRepository {
 		return entityManager.createQuery( query ).getResultList();
 	}
 
-	public List<QuestionnaireInstance> findByDefinition(QuestionnaireDefinition questionnaireDefinition) {
+	public List<QuestionnaireInstance> findByDefinition(QuestionnaireDefinition questionnaireDefinition,
+			int maxResults) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
 		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
 		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
 				.where( builder.equal( root.get( "definition" ), questionnaireDefinition ) );
-		return entityManager.createQuery( query ).getResultList();
+		return entityManager.createQuery( query ).setMaxResults( maxResults ).getResultList();
 	}
 }

@@ -1,6 +1,7 @@
 package org.hibernate.performance.search.model.application;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiConsumer;
 
 import org.hibernate.Session;
@@ -19,6 +20,7 @@ import org.hibernate.performance.search.model.service.EmployeeRepository;
 public class DomainDataUpdater {
 
 	private final SessionFactory sessionFactory;
+	private final Random random = new Random( 333 );
 
 	public DomainDataUpdater(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -113,7 +115,7 @@ public class DomainDataUpdater {
 
 		session.merge( definition );
 
-		List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
+		List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition, 3 );
 		for ( QuestionnaireInstance instance : instances ) {
 			instance.setNotes( "This is a note for questionnaire instance #" + instance
 					.getId() + " - invocation #" + invocation + "." );
@@ -132,17 +134,25 @@ public class DomainDataUpdater {
 			session.merge( question );
 		}
 
-		List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition );
+		List<QuestionnaireInstance> instances = new EmployeeRepository( session ).findByDefinition( definition, 2 );
 		for ( QuestionnaireInstance instance : instances ) {
-			for ( ClosedAnswer answer : instance.getClosedAnswers() ) {
-				answer.setChoice( invocation % 8 );
-				session.merge( answer );
-			}
-			for ( OpenAnswer answer : instance.getOpenAnswers() ) {
-				answer.setText( "This is a response to the open answer " + answer
-						.getId() + " - invocation #" + invocation + "." );
-				session.merge( answer );
-			}
+			ClosedAnswer closedAnswer = chooseOne( instance.getClosedAnswers() );
+			closedAnswer.setChoice( invocation % 8 );
+			session.merge( closedAnswer );
+
+			OpenAnswer openAnswer = chooseOne( instance.getOpenAnswers() );
+			openAnswer.setText( "This is a response to the open answer " + openAnswer
+					.getId() + " - invocation #" + invocation + "." );
+			session.merge( openAnswer );
 		}
+	}
+
+	private <T> T chooseOne(List<T> items) {
+		if ( items == null || items.isEmpty() ) {
+			return null;
+		}
+
+		int index = ( items.size() == 1 ) ? 0 : random.nextInt( items.size() );
+		return items.get( index );
 	}
 }
