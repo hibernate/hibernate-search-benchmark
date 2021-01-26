@@ -20,7 +20,8 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 	private final Random randomFixedSource;
 
 	protected int companyBUInvocation = 0;
-	protected int employeeInvocation = 0;
+	protected int employeeManagerInvocation = 0;
+	protected int employeeNameInvocation = 0;
 	protected int questionnaireInvocation = 0;
 	protected int questionsInvocation = 0;
 
@@ -47,7 +48,9 @@ public abstract class AutomaticIndexingUpdatePartitionState {
 		} ) );
 	}
 
-	public abstract void updateEmployee();
+	public abstract void updateEmployeeManager();
+
+	public abstract void updateEmployeeNames();
 
 	public abstract void updateQuestionnaire();
 

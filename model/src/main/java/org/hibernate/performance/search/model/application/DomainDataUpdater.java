@@ -62,7 +62,7 @@ public class DomainDataUpdater {
 		session.merge( newCompany );
 	}
 
-	public void doSomeChangesOnEmployee(Session session, int invocation, int employeeId, int managerId) {
+	public void assignNewManager(Session session, int employeeId, int managerId) {
 		Employee employee = session.load( Employee.class, employeeId );
 
 		Manager newManager = session.load( Manager.class, managerId );
@@ -76,16 +76,6 @@ public class DomainDataUpdater {
 		// add the employee to the new manager
 		newManager.getEmployees().add( employee );
 
-		// change their names
-		employee.setFirstName( "nameE" + invocation );
-		employee.setSurname( "surnameE" + invocation );
-		if ( oldManager != null ) {
-			oldManager.setFirstName( "nameOM" + invocation );
-			oldManager.setSurname( "surnameOM" + invocation );
-		}
-		newManager.setFirstName( "nameNM" + invocation );
-		newManager.setSurname( "surnameNM" + invocation );
-
 		session.merge( employee );
 		if ( oldManager != null ) {
 			session.merge( oldManager );
@@ -93,7 +83,17 @@ public class DomainDataUpdater {
 		session.merge( newManager );
 	}
 
-	public void removeManagerFromEmployee(Session session, int invocation, int employeeId) {
+	public void changeEmployeeName(Session session, int employeeId, int invocation) {
+		Employee employee = session.load( Employee.class, employeeId );
+
+		// change his/her names
+		employee.setFirstName( "nameE" + invocation );
+		employee.setSurname( "surnameE" + invocation );
+
+		session.merge( employee );
+	}
+
+	public void removeManagerFromEmployee(Session session, int employeeId) {
 		Employee employee = session.load( Employee.class, employeeId );
 
 		Manager oldManager = employee.getManager();
@@ -101,12 +101,6 @@ public class DomainDataUpdater {
 		employee.setManager( null );
 		// remove the employee from old manager
 		oldManager.getEmployees().remove( employee );
-
-		// change their names
-		employee.setFirstName( "nameE" + invocation );
-		employee.setSurname( "surnameE" + invocation );
-		oldManager.setFirstName( "nameOM" + invocation );
-		oldManager.setSurname( "surnameOM" + invocation );
 
 		session.merge( employee );
 		session.merge( oldManager );

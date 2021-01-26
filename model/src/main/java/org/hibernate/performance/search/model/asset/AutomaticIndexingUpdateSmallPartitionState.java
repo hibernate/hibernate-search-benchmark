@@ -10,16 +10,33 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 	}
 
 	@Override
-	public void updateEmployee() {
-		int index = ( employeeInvocation / 2 ) % partitionIds.size();
+	public void updateEmployeeManager() {
+		int index = ( employeeManagerInvocation / 2 ) % partitionIds.size();
 
-		int managerId = partitionId( employeeInvocation );
+		int managerId = partitionId( employeeManagerInvocation );
 		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
 
 		domainDataUpdater.inTransaction( ( (session, up) -> up
-				.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId ) ) );
+				.assignNewManager( session, employeeId, managerId ) ) );
 		domainDataUpdater.inTransaction( ( (session, up) -> up
-				.removeManagerFromEmployee( session, employeeInvocation++, employeeId ) ) );
+				.removeManagerFromEmployee( session, employeeId ) ) );
+
+		employeeManagerInvocation++;
+	}
+
+	@Override
+	public void updateEmployeeNames() {
+		int index = ( employeeNameInvocation / 2 ) % partitionIds.size();
+
+		int managerId = partitionId( employeeNameInvocation );
+		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
+
+		domainDataUpdater.inTransaction( (session, up) -> {
+			up.changeEmployeeName( session, managerId, employeeNameInvocation );
+			up.changeEmployeeName( session, employeeId, employeeNameInvocation );
+		} );
+
+		employeeNameInvocation++;
 	}
 
 	@Override

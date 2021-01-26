@@ -65,7 +65,12 @@ public class DomainDataIT {
 				assertThat( manager.getId() ).isEqualTo( 30 );
 			}
 
-			updater.inTransaction( (session, up) -> up.doSomeChangesOnEmployee( session, 0, 70, 0 ) );
+			updater.inTransaction( (session, up) -> {
+				up.assignNewManager( session, 70, 0 );
+				up.changeEmployeeName( session, 0, 0 );
+				up.changeEmployeeName( session, 30, 1 );
+				up.changeEmployeeName( session, 70, 2 );
+			} );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				Employee employee = session.load( Employee.class, 70 );

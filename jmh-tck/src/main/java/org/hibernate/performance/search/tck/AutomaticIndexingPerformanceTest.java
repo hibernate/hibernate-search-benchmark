@@ -55,8 +55,14 @@ public abstract class AutomaticIndexingPerformanceTest {
 
 	@Benchmark
 	@Threads(3)
-	public void update_employee() {
-		updatePartition.updateEmployee();
+	public void update_employeeManager() {
+		updatePartition.updateEmployeeManager();
+	}
+
+	@Benchmark
+	@Threads(3)
+	public void update_employeeNames() {
+		updatePartition.updateEmployeeNames();
 	}
 
 	@Benchmark

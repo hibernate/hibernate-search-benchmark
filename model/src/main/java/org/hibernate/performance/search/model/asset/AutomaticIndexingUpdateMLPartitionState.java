@@ -19,19 +19,40 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 	}
 
 	@Override
-	public void updateEmployee() {
+	public void updateEmployeeManager() {
+		int employeePerCompany = relationshipSize.getEmployeesPerCompany();
+
+		boolean reverse = employeeManagerInvocation % 2 == 1;
+		int companyId = partitionId( employeeManagerInvocation / 2 );
+		int baseEmployeeId = companyId * employeePerCompany;
+
+		int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
+		int employeeId = baseEmployeeId + employeeBaseId;
+
 		domainDataUpdater.inTransaction( (session, up) -> {
-			int employeePerCompany = relationshipSize.getEmployeesPerCompany();
-
-			boolean reverse = employeeInvocation % 2 == 1;
-			int companyId = partitionId( employeeInvocation / 2 );
-			int baseEmployeeId = companyId * employeePerCompany;
-
-			int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
-			int employeeId = baseEmployeeId + employeeBaseId;
-
-			up.doSomeChangesOnEmployee( session, employeeInvocation++, employeeId, managerId );
+			up.assignNewManager( session, employeeId, managerId );
 		} );
+
+		employeeManagerInvocation++;
+	}
+
+	@Override
+	public void updateEmployeeNames() {
+		int employeePerCompany = relationshipSize.getEmployeesPerCompany();
+
+		boolean reverse = employeeNameInvocation % 2 == 1;
+		int companyId = partitionId( employeeNameInvocation / 2 );
+		int baseEmployeeId = companyId * employeePerCompany;
+
+		int managerId = ( reverse ) ? baseEmployeeId + alternativeManagerBaseId : baseEmployeeId;
+		int employeeId = baseEmployeeId + employeeBaseId;
+
+		domainDataUpdater.inTransaction( (session, up) -> {
+			up.changeEmployeeName( session, employeeId, employeeNameInvocation );
+			up.changeEmployeeName( session, managerId, employeeNameInvocation );
+		} );
+
+		employeeNameInvocation++;
 	}
 
 	@Override
