@@ -20,6 +20,7 @@ public class PerformanceTestCheckIT {
 				.include( ".*" )
 				.warmupIterations( 0 )
 				.measurementIterations( 1 )
+				.shouldFailOnError( true )
 				.forks( 0 )
 				.build();
 
