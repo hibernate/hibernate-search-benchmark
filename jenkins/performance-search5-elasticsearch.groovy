@@ -54,7 +54,7 @@ pipeline {
 							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.region=$ES_AWS_REGION \
 							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.access_key=$AWS_ACCESS_KEY_ID \
 							-jvmArgsAppend -Dhibernate.search.default.elasticsearch.aws.secret_key=$AWS_SECRET_ACCESS_KEY \
-							-wi 1 -i 3 \
+							-wi 1 -i 10 \
 							-rff output/benchmark-results-search5-elasticsearch.csv \
 					    """
                     }
