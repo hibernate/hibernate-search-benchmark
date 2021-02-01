@@ -59,7 +59,8 @@ public class QuestionnaireInstance {
 	@Column(name = "notes", columnDefinition = "text")
 	private String notes;
 
-	private QuestionnaireInstance() {
+	QuestionnaireInstance() {
+		// For Hibernate
 	}
 
 	public QuestionnaireInstance(QuestionnaireDefinition definition, Employee approval, Employee subject,

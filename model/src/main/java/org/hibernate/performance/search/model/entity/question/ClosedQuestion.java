@@ -7,7 +7,8 @@ public class ClosedQuestion extends Question {
 
 	private Integer weight;
 
-	private ClosedQuestion() {
+	ClosedQuestion() {
+		// For Hibernate
 	}
 
 	public ClosedQuestion(Integer id, QuestionnaireDefinition questionnaire, String text, Integer weight) {

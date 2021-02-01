@@ -21,7 +21,8 @@ public class Company extends IdEntity {
 	@Cascade(CascadeType.ALL)
 	private List<BusinessUnit> businessUnits = new ArrayList<>();
 
-	public Company() {
+	Company() {
+		// For Hibernate
 	}
 
 	public Company(Integer id, String legalName) {
