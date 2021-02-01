@@ -34,6 +34,7 @@ public class ModelServiceImpl implements ModelService {
 					"hibernate.search.default.elasticsearch.index_schema_management_strategy",
 					"drop-and-create-and-drop"
 			);
+			properties.put( "hibernate.search.default.elasticsearch.required_index_status", "yellow" );
 		}
 
 		if ( IndexingType.MANUAL.equals( indexing ) ) {
