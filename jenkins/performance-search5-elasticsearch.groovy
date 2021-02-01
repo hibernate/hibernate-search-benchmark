@@ -23,10 +23,10 @@ pipeline {
         stage('Build') {
             steps {
                 sh """ \
-					mvn clean install -P search5 \
-					-U -pl jmh-elasticsearch -am \
-					-DskipTests -Ddocker.skip -Dtest.elasticsearch.run.skip=true \
-			    """
+                    mvn clean install -P search5 \
+                    -U -pl jmh-elasticsearch -am \
+                    -DskipTests -Ddocker.skip -Dtest.elasticsearch.run.skip=true \
+                """
                 dir ('jmh-elasticsearch/target') {
                     stash name:'jar', includes:'benchmarks.jar'
                 }
@@ -35,8 +35,9 @@ pipeline {
         stage('Performance test') {
             steps {
                 unstash name: 'jar'
-                sh 'docker stop postgresql || true && docker rm -f postgresql || true'
-                sh 'docker stop elasticsearch || true && docker rm -f elasticsearch || true'
+                dir ('jenkins') {
+                    sh 'sh ./docker-prune.sh'
+                }
                 sh 'docker run -it --rm=true --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:5.6.16'
                 sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
@@ -55,9 +56,9 @@ pipeline {
     }
     post {
         always {
-            // stop and remove any created container
-            sh 'docker stop postgresql || true && docker rm -f postgresql || true'
-            sh 'docker stop elasticsearch || true && docker rm -f elasticsearch || true'
+            dir ('jenkins') {
+                sh 'sh ./docker-prune.sh'
+            }
         }
     }
 }

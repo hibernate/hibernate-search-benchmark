@@ -37,7 +37,6 @@ nbactions.xml
 
 # Miscellaneous
 *.log
-*.sh
 .clover
 .DS_Store
 .attach_pid*
