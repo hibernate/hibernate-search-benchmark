@@ -67,7 +67,7 @@ public class RelationshipSizeIT {
 
 	@AfterEach
 	public void afterEach() {
-		if ( sessionFactory == null ) {
+		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
 	}
