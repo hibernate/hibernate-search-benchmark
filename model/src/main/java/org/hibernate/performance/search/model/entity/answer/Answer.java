@@ -5,12 +5,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 
 @MappedSuperclass
 public abstract class Answer {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(generator = "answer_seq")
+	@SequenceGenerator(name = "answer_seq")
 	protected Integer id;
 
 	@ManyToOne
