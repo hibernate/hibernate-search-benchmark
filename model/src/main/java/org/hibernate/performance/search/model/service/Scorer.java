@@ -12,7 +12,6 @@ import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
-import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
 public class Scorer {
 	private static final int EMPLOYEE_BATCH_SIZE = 100;
@@ -42,9 +41,8 @@ public class Scorer {
 	}
 
 	public static void generateScoreForQuestionnaires(Session session, Employee employee) {
-		EmployeeRepository repository = new EmployeeRepository( session );
-		List<PerformanceSummary> performanceSummaries = repository.findByEmployee( employee );
-		List<QuestionnaireInstance> questionnaireInstances = repository.findBySubject( employee );
+		List<PerformanceSummary> performanceSummaries = employee.getPerformanceSummaries();
+		List<QuestionnaireInstance> questionnaireInstances = employee.getQuestionnaires();
 
 		Map<Integer, List<PerformanceSummary>> performances = performanceSummaries.stream().collect(
 				Collectors.groupingBy( (ps) -> ps.getYear() ) );

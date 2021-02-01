@@ -95,7 +95,7 @@ public class DomainDataDeleteInserter {
 
 	public int deletePerformanceSummaryFor(Session session, int employeeId) {
 		Employee employee = session.load( Employee.class, employeeId );
-		List<PerformanceSummary> performanceSummaries = new EmployeeRepository( session ).findByEmployee( employee );
+		List<PerformanceSummary> performanceSummaries = employee.getPerformanceSummaries();
 
 		for ( PerformanceSummary performanceSummary : performanceSummaries ) {
 			session.remove( performanceSummary );
