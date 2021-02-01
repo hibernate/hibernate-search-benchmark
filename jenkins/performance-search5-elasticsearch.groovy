@@ -38,8 +38,8 @@ pipeline {
                 dir ('jenkins') {
                     sh 'sh ./docker-prune.sh'
                 }
-                sh 'docker run -it --rm=true --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:5.6.16'
-                sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
+                sh 'docker run -it --rm=true --name elasticsearch-search5 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:5.6.16'
+                sh 'docker run --name postgresql-search5-elasticsearch -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
                 sh 'mkdir -p output'
 

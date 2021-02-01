@@ -38,7 +38,7 @@ pipeline {
                 dir ('jenkins') {
                     sh 'sh ./docker-prune.sh'
                 }
-                sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
+                sh 'docker run --name postgresql-search5-lucene -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
                 sh 'mkdir -p output'
                 sh """ \
