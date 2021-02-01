@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -28,7 +29,8 @@ public class QuestionnaireInstance {
 	}
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(generator = "questionnaireinstance_seq")
+	@SequenceGenerator(name = "questionnaireinstance_seq")
 	protected Integer id;
 
 	@ManyToOne

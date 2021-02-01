@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 
 import org.hibernate.performance.search.model.entity.Employee;
 
@@ -11,7 +12,8 @@ import org.hibernate.performance.search.model.entity.Employee;
 public class PerformanceSummary {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(generator = "performancesummary_seq")
+	@SequenceGenerator(name = "performancesummary_seq")
 	private Integer id;
 
 	@ManyToOne
