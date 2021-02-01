@@ -35,8 +35,9 @@ pipeline {
         stage('Performance test') {
             steps {
                 unstash name: 'jar'
-                sh 'docker stop postgresql || true && docker rm -f postgresql || true'
-                sh 'docker stop elasticsearch || true && docker rm -f elasticsearch || true'
+                dir ('jenkins') {
+                    sh 'sh ./docker-prune.sh'
+                }
                 sh 'docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -d docker.elastic.co/elasticsearch/elasticsearch:7.10.2'
                 sh 'docker run --name postgresql -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
@@ -55,9 +56,9 @@ pipeline {
     }
     post {
         always {
-            // stop and remove any created container
-            sh 'docker stop postgresql || true && docker rm -f postgresql || true'
-            sh 'docker stop elasticsearch || true && docker rm -f elasticsearch || true'
+            dir ('jenkins') {
+                sh 'sh ./docker-prune.sh'
+            }
         }
     }
 }
