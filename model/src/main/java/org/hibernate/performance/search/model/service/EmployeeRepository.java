@@ -6,15 +6,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Session;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
 import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
-import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
 import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
 public class EmployeeRepository {
@@ -25,13 +24,13 @@ public class EmployeeRepository {
 		this.entityManager = entityManager;
 	}
 
-	public List<Employee> getEmployees(Company company) {
+	public Scroll<Employee> getEmployees(Company company, int batchSize) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Employee> criteria = builder.createQuery( Employee.class );
 		Root<Employee> root = criteria.from( Employee.class );
 		CriteriaQuery<Employee> query = criteria.select( root )
 				.where( builder.equal( root.get( "company" ), company ) );
-		return entityManager.createQuery( query ).getResultList();
+		return new Scroll<>( entityManager.unwrap( Session.class ).createQuery( query ), batchSize );
 	}
 
 	public List<Employee> getEmployees(Integer businessUnitId) {
@@ -59,7 +58,7 @@ public class EmployeeRepository {
 		return entityManager.createQuery( criteria ).getSingleResult();
 	}
 
-	public List<OpenAnswer> findAllOpenAnswersInNaturalOrder(Integer companyId) {
+	public Scroll<OpenAnswer> findAllOpenAnswersInNaturalOrder(Integer companyId, int batchSize) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<OpenAnswer> criteria = builder.createQuery( OpenAnswer.class );
@@ -72,10 +71,10 @@ public class EmployeeRepository {
 		CriteriaQuery<OpenAnswer> query = criteria.select( root )
 				.where( builder.equal( companyIdPath, companyId ) )
 				.orderBy( questionnaireUniqueCode, questionId );
-		return entityManager.createQuery( query ).getResultList();
+		return new Scroll<>( entityManager.unwrap( Session.class ).createQuery( query ), batchSize );
 	}
 
-	public List<ClosedAnswer> findAllClosedAnswersInNaturalOrder(Integer companyId) {
+	public Scroll<ClosedAnswer> findAllClosedAnswersInNaturalOrder(Integer companyId, int batchSize) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
 		CriteriaQuery<ClosedAnswer> criteria = builder.createQuery( ClosedAnswer.class );
@@ -88,7 +87,7 @@ public class EmployeeRepository {
 		CriteriaQuery<ClosedAnswer> query = criteria.select( root )
 				.where( builder.equal( companyIdPath, companyId ) )
 				.orderBy( questionnaireUniqueCode, questionId );
-		return entityManager.createQuery( query ).getResultList();
+		return new Scroll<>( entityManager.unwrap( Session.class ).createQuery( query ), batchSize );
 	}
 
 	public long countFilledClosedAnswer() {

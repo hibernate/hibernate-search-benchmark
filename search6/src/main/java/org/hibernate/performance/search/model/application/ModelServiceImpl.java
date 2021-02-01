@@ -43,6 +43,15 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public void flushOrmAndIndexesAndClear(Session session) {
+		// Hibernate Search 6 will detect the flush
+		// and buffer the pending documents in the session,
+		// so we don't need anything specific here.
+		session.flush();
+		session.clear();
+	}
+
+	@Override
 	public <E> List<E> search(Session session, Class<E> entityClass, Integer limit) {
 		return Search.session( session ).search( entityClass ).where( f -> f.matchAll() ).fetchHits( limit );
 	}

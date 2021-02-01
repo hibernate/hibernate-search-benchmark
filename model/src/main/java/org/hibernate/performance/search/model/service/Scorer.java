@@ -7,30 +7,38 @@ import java.util.stream.Collectors;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
+import org.hibernate.performance.search.model.entity.question.QuestionnaireDefinition;
 
 public class Scorer {
+	private static final int EMPLOYEE_BATCH_SIZE = 100;
 
+	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 
-	public Scorer(SessionFactory sessionFactory) {
+	public Scorer(ModelService modelService, SessionFactory sessionFactory) {
+		this.modelService = modelService;
 		this.sessionFactory = sessionFactory;
 	}
 
 	public void generateScoreForQuestionnaires(Integer companyId) {
-		Company company;
-		List<Employee> employees;
-		try ( Session session = sessionFactory.openSession() ) {
-			company = session.load( Company.class, companyId );
-			employees = new EmployeeRepository( session ).getEmployees( company );
-		}
+		HibernateORMHelper.inTransaction( sessionFactory, session -> {
+			Company company = session.load( Company.class, companyId );
+			EmployeeRepository repository = new EmployeeRepository( session );
 
-		for ( Employee employee : employees ) {
-			generateScoreForQuestionnaires( employee );
-		}
+			try ( Scroll<Employee> employees = repository.getEmployees( company, EMPLOYEE_BATCH_SIZE ) ) {
+				while ( employees.hasNext() ) {
+					for ( Employee employee : employees.next() ) {
+						generateScoreForQuestionnaires( session, employee );
+					}
+					modelService.flushOrmAndIndexesAndClear( session );
+				}
+			}
+		} );
 	}
 
 	public static void generateScoreForQuestionnaires(Session session, Employee employee) {
@@ -61,10 +69,4 @@ public class Scorer {
 		}
 	}
 
-	private void generateScoreForQuestionnaires(Employee employee) {
-		HibernateORMHelper.inTransaction( sessionFactory, session -> {
-			session.refresh( employee );
-			generateScoreForQuestionnaires( session, employee );
-		} );
-	}
 }

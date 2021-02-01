@@ -16,15 +16,20 @@ import org.hibernate.performance.search.model.service.EmployeeRepository;
 import org.hibernate.performance.search.model.service.QuestionnaireDefinitionFactory;
 import org.hibernate.performance.search.model.service.QuestionnaireInstanceFactory;
 import org.hibernate.performance.search.model.service.Scorer;
+import org.hibernate.performance.search.model.service.Scroll;
 
 public class DomainDataInitializer {
+	private static final int EMPLOYEE_BATCH_SIZE = 100;
 
+	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 	private final CompanyFactory companyFactory;
 	private final EmployeeFactory employeeFactory;
 	private final QuestionnaireDefinitionFactory questionnaireDefinitionFactory;
 
-	public DomainDataInitializer(SessionFactory sessionFactory, RelationshipSize relationshipSize) {
+	public DomainDataInitializer(ModelService modelService, SessionFactory sessionFactory,
+			RelationshipSize relationshipSize) {
+		this.modelService = modelService;
 		this.sessionFactory = sessionFactory;
 		this.companyFactory = new CompanyFactory( relationshipSize );
 		this.employeeFactory = new EmployeeFactory( relationshipSize );
@@ -50,26 +55,32 @@ public class DomainDataInitializer {
 
 			// Phase 4: instantiate questionnaires for the employees
 			EmployeeRepository repository = new EmployeeRepository( session );
-			List<Employee> employees = repository.getEmployees( company );
+
 			List<QuestionnaireDefinition> definitions = repository.getQuestionnaireDefinitions( company );
+			try ( Scroll<Employee> employees = repository.getEmployees( company, EMPLOYEE_BATCH_SIZE ) ) {
+				while ( employees.hasNext() ) {
+					for ( Employee employee : employees.next() ) {
+						for ( QuestionnaireDefinition definition : definitions ) {
+							List<QuestionnaireInstance> questionnaireInstances = QuestionnaireInstanceFactory
+									.createQuestionnaireInstances( employee, definition );
 
-			for ( Employee employee : employees ) {
-				for ( QuestionnaireDefinition definition : definitions ) {
-					List<QuestionnaireInstance> questionnaireInstances = QuestionnaireInstanceFactory
-							.createQuestionnaireInstances( employee, definition );
-
-					for ( QuestionnaireInstance instance : questionnaireInstances ) {
-						session.persist( instance );
+							for ( QuestionnaireInstance instance : questionnaireInstances ) {
+								session.persist( instance );
+							}
+						}
 					}
+					modelService.flushOrmAndIndexesAndClear( session );
+					company = session.load( Company.class, companyId );
+					definitions = repository.getQuestionnaireDefinitions( company );
 				}
 			}
 		} );
 
 		// Phase 5: simulate the employees filling the questionnaires
-		new AnswerFiller( sessionFactory ).fillAllAnswers( companyId );
+		new AnswerFiller( modelService, sessionFactory ).fillAllAnswers( companyId );
 
 		// Phase 6: evaluate the performances based on the outputs of the questionnaires
-		new Scorer( sessionFactory ).generateScoreForQuestionnaires( companyId );
+		new Scorer( modelService, sessionFactory ).generateScoreForQuestionnaires( companyId );
 	}
 
 }

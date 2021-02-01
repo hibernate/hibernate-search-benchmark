@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.DomainDataRemover;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -34,7 +35,8 @@ public class TruncateAllIT {
 
 	@Test
 	public void test() {
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, RelationshipSize.SMALL );
+		ModelService modelService = new NoIndexingModelService();
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, RelationshipSize.SMALL );
 		DomainDataRemover domainDataRemover = new DomainDataRemover( sessionFactory );
 
 		domainDataInitializer.initAllCompanyData( 0 );

@@ -11,6 +11,8 @@ public interface ModelService {
 
 	Properties properties(BackendType backend, IndexingType indexing);
 
+	void flushOrmAndIndexesAndClear(Session session);
+
 	<E> List<E> search(Session session, Class<E> entityClass, Integer limit);
 
 	<E> List<E> search(Session session, Class<E> entityClass, String fieldName, Object value);

@@ -47,6 +47,16 @@ public class ModelServiceImpl implements ModelService {
 	}
 
 	@Override
+	public void flushOrmAndIndexesAndClear(Session session) {
+		FullTextSession fullTextSession = Search.getFullTextSession( session );
+		fullTextSession.flush();
+		// Hibernate Search 5 will not detect the flush,
+		// so we need to tell it to flush to indexes explicitly.
+		fullTextSession.flushToIndexes();
+		fullTextSession.clear();
+	}
+
+	@Override
 	public <E> List<E> search(Session session, Class<E> entityClass, Integer limit) {
 		FullTextSession fullTextSession = Search.getFullTextSession( session );
 
