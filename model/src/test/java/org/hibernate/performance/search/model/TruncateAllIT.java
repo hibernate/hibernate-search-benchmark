@@ -53,7 +53,7 @@ public class TruncateAllIT {
 
 	@AfterAll
 	public void afterEach() {
-		if ( sessionFactory == null ) {
+		if ( sessionFactory != null ) {
 			sessionFactory.close();
 		}
 	}
