@@ -112,38 +112,6 @@ public class EmployeeRepository {
 		return entityManager.createQuery( query ).getSingleResult();
 	}
 
-	public List<PerformanceSummary> findByEmployee(Employee employee) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<PerformanceSummary> criteria = builder.createQuery( PerformanceSummary.class );
-		Root<PerformanceSummary> root = criteria.from( PerformanceSummary.class );
-		CriteriaQuery<PerformanceSummary> query = criteria.select( root )
-				.where( builder.equal( root.get( "employee" ), employee ) );
-		return entityManager.createQuery( query ).getResultList();
-	}
-
-	public List<QuestionnaireInstance> findBySubject(Employee subject) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
-		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
-		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
-				.where( builder.equal( root.get( "subject" ), subject ) );
-		return entityManager.createQuery( query ).getResultList();
-	}
-
-	public List<QuestionnaireInstance> findByApprovalOrSubject(Employee employee) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
-		Root<QuestionnaireInstance> root = criteria.from( QuestionnaireInstance.class );
-
-		Predicate subjectPredicate = builder.equal( root.get( "subject" ), employee );
-		Predicate employeePredicate = builder.equal( root.get( "approval" ), employee );
-
-		CriteriaQuery<QuestionnaireInstance> query = criteria.select( root )
-				.where( builder.or( subjectPredicate, employeePredicate ) );
-
-		return entityManager.createQuery( query ).getResultList();
-	}
-
 	public List<QuestionnaireInstance> findByApproval(Integer approvalId) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<QuestionnaireInstance> criteria = builder.createQuery( QuestionnaireInstance.class );
