@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'Performance'
+        label 'Worker'
     }
     tools {
         maven "Apache Maven 3.6"
