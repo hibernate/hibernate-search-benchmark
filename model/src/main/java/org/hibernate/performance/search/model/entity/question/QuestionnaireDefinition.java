@@ -26,7 +26,8 @@ public class QuestionnaireDefinition extends IdEntity {
 	@Cascade( CascadeType.ALL )
 	private List<Question> questions;
 
-	public QuestionnaireDefinition() {
+	QuestionnaireDefinition() {
+		// For Hibernate
 	}
 
 	public QuestionnaireDefinition(Integer id, String title, String description, Integer year, Company company) {

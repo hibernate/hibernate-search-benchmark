@@ -25,7 +25,8 @@ public class PerformanceSummary {
 
 	private Integer employeeScore;
 
-	private PerformanceSummary() {
+	PerformanceSummary() {
+		// For Hibernate
 	}
 
 	public PerformanceSummary(Employee employee, Integer year, Integer maxScore, Integer employeeScore) {

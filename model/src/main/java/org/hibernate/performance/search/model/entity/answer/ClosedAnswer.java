@@ -15,7 +15,8 @@ public class ClosedAnswer extends Answer {
 
 	private Integer choice;
 
-	private ClosedAnswer() {
+	ClosedAnswer() {
+		// For Hibernate
 	}
 
 	public ClosedAnswer(QuestionnaireInstance questionnaire, ClosedQuestion question) {

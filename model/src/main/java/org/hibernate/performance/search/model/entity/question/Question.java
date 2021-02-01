@@ -13,7 +13,8 @@ public abstract class Question extends IdEntity {
 
 	private String text;
 
-	protected Question() {
+	Question() {
+		// For Hibernate
 	}
 
 	protected Question(Integer id, QuestionnaireDefinition questionnaire, String text) {

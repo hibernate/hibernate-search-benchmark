@@ -38,7 +38,8 @@ public class Employee extends IdEntity {
 	@Cascade(CascadeType.PERSIST)
 	private List<PerformanceSummary> performanceSummaries;
 
-	protected Employee() {
+	Employee() {
+		// For Hibernate
 	}
 
 	public Employee(Integer id) {

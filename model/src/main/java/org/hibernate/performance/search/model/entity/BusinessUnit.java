@@ -11,7 +11,8 @@ public class BusinessUnit extends IdEntity {
 	@ManyToOne
 	private Company owner;
 
-	public BusinessUnit() {
+	BusinessUnit() {
+		// For Hibernate
 	}
 
 	public BusinessUnit(Integer id, String name, Company owner) {

@@ -18,7 +18,8 @@ public abstract class Answer {
 	@ManyToOne
 	protected QuestionnaireInstance questionnaire;
 
-	protected Answer() {
+	Answer() {
+		// For Hibernate
 	}
 
 	public Answer(QuestionnaireInstance questionnaire) {

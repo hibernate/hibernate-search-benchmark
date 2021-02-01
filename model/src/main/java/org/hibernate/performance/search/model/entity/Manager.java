@@ -14,7 +14,8 @@ public class Manager extends Employee {
 	@Cascade(CascadeType.PERSIST)
 	private List<Employee> employees;
 
-	public Manager() {
+	Manager() {
+		// For Hibernate
 	}
 
 	public Manager(BusinessUnit businessUnit, int baseId) {

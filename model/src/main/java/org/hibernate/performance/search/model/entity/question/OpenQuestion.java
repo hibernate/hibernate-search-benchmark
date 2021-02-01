@@ -5,7 +5,8 @@ import javax.persistence.Entity;
 @Entity
 public class OpenQuestion extends Question {
 
-	private OpenQuestion() {
+	OpenQuestion() {
+		// For Hibernate
 	}
 
 	public OpenQuestion(Integer id, QuestionnaireDefinition questionnaire, String text) {

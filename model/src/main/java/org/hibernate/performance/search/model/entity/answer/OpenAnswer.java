@@ -15,7 +15,8 @@ public class OpenAnswer extends Answer {
 	@Column(name = "text", columnDefinition = "text")
 	private String text;
 
-	private OpenAnswer() {
+	OpenAnswer() {
+		// For Hibernate
 	}
 
 	public OpenAnswer(QuestionnaireInstance questionnaire, OpenQuestion question) {
