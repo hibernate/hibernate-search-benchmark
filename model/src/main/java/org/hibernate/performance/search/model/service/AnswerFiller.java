@@ -2,12 +2,12 @@ package org.hibernate.performance.search.model.service;
 
 import static org.hibernate.performance.search.model.application.HibernateORMHelper.inTransaction;
 
-import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.performance.search.model.application.ModelService;
+import org.hibernate.performance.search.model.entity.answer.ClosedAnswer;
+import org.hibernate.performance.search.model.entity.answer.OpenAnswer;
 
 public class AnswerFiller {
 
@@ -31,51 +31,34 @@ public class AnswerFiller {
 	};
 	public static final int BATCH_SIZE = 100;
 
+	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 	private final Random random;
 
-	public AnswerFiller(SessionFactory sessionFactory) {
+	public AnswerFiller(ModelService modelService, SessionFactory sessionFactory) {
+		this.modelService = modelService;
 		this.sessionFactory = sessionFactory;
 		this.random = new Random( 739 ); // fixed seed so all the tests will have the same results
 	}
 
 	public void fillAllAnswers(Integer companyId) {
-		try ( Session session = sessionFactory.openSession() ) {
-			EmployeeRepository repository = new EmployeeRepository( session );
-			batch(
-					repository.findAllClosedAnswersInNaturalOrder( companyId ),
-					(answer) -> answer.setChoice( random.nextInt( 8 ) )
-			);
-			batch(
-					repository.findAllOpenAnswersInNaturalOrder( companyId ),
-					(answer) -> answer.setText( OPEN_ANSWER_RESPONSE_TYPES[random.nextInt( 8 )] )
-			);
-		}
-	}
-
-	public <T> void batch(List<T> elements, Consumer<T> action) {
-		int quotient = elements.size() / BATCH_SIZE;
-
-		for ( int t = 0; t < quotient; t++ ) {
-			int iteration = t;
-			inTransaction( sessionFactory, session -> {
-				for ( int i = 0; i < BATCH_SIZE; i++ ) {
-					int index = iteration * BATCH_SIZE + i;
-					T answer = elements.get( index );
-					action.accept( answer );
-					session.merge( answer );
-				}
-			} );
-		}
-
-		int reminder = elements.size() % BATCH_SIZE;
 		inTransaction( sessionFactory, session -> {
-			for ( int i = 0; i < reminder; i++ ) {
-				int index = quotient + i;
-
-				T answer = elements.get( index );
-				action.accept( answer );
-				session.merge( answer );
+			EmployeeRepository repository = new EmployeeRepository( session );
+			try ( Scroll<ClosedAnswer> closedAnswers = repository.findAllClosedAnswersInNaturalOrder( companyId, BATCH_SIZE ) ) {
+				while ( closedAnswers.hasNext() ) {
+					for ( ClosedAnswer answer : closedAnswers.next() ) {
+						answer.setChoice( random.nextInt( 8 ) );
+					}
+					modelService.flushOrmAndIndexesAndClear( session );
+				}
+			}
+			try ( Scroll<OpenAnswer> openAnswers = repository.findAllOpenAnswersInNaturalOrder( companyId, BATCH_SIZE ) ) {
+				while ( openAnswers.hasNext() ) {
+					for ( OpenAnswer answer : openAnswers.next() ) {
+						answer.setText( OPEN_ANSWER_RESPONSE_TYPES[random.nextInt( 8 )] );
+					}
+					modelService.flushOrmAndIndexesAndClear( session );
+				}
 			}
 		} );
 	}

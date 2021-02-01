@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.param.RelationshipSize;
 import org.hibernate.performance.search.model.service.EmployeeRepository;
@@ -20,7 +21,8 @@ public class BiDirectionalRelationshipCheckIT {
 	@Test
 	public void test() {
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() ) ) {
-			new DomainDataInitializer( sessionFactory, RelationshipSize.MEDIUM ).initAllCompanyData( 0 );
+			ModelService modelService = new NoIndexingModelService();
+			new DomainDataInitializer( modelService, sessionFactory, RelationshipSize.MEDIUM ).initAllCompanyData( 0 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );

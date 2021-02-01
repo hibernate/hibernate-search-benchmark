@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -72,7 +73,8 @@ public class RelationshipSizeIT {
 	}
 
 	private void test(RelationshipSize relationshipSize, int questionnaireInstancesForCompany, int scaleSize) {
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
+		ModelService modelService = new NoIndexingModelService();
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, relationshipSize );
 		for ( int i = 0; i < scaleSize; i++ ) {
 			domainDataInitializer.initAllCompanyData( i );
 		}

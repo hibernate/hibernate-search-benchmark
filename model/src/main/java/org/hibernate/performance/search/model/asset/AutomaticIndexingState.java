@@ -58,7 +58,7 @@ public class AutomaticIndexingState {
 		if ( iterationStarted ) {
 			return;
 		}
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, relationshipSize );
 		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			domainDataInitializer.initAllCompanyData( i );
 		}

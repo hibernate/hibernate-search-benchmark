@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataDeleteInserter;
 import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.Employee;
 import org.hibernate.performance.search.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.performance.search.model.entity.performance.PerformanceSummary;
@@ -29,9 +30,10 @@ public class DomainDataDeleteInserterIT {
 
 	@BeforeEach
 	public void beforeEach() {
+		ModelService modelService = new NoIndexingModelService();
 		sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() );
 		deleteInserter = new DomainDataDeleteInserter( sessionFactory, RelationshipSize.MEDIUM );
-		DomainDataInitializer initializer = new DomainDataInitializer( sessionFactory, RelationshipSize.MEDIUM );
+		DomainDataInitializer initializer = new DomainDataInitializer( modelService, sessionFactory, RelationshipSize.MEDIUM );
 		initializer.initAllCompanyData( 0 );
 	}
 

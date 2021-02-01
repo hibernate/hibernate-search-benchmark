@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.performance.search.model.application.DomainDataInitializer;
 import org.hibernate.performance.search.model.application.DomainDataUpdater;
 import org.hibernate.performance.search.model.application.HibernateORMHelper;
+import org.hibernate.performance.search.model.application.ModelService;
 import org.hibernate.performance.search.model.entity.BusinessUnit;
 import org.hibernate.performance.search.model.entity.Company;
 import org.hibernate.performance.search.model.entity.Employee;
@@ -27,8 +28,9 @@ public class DomainDataIT {
 
 	@Test
 	public void test() {
+		ModelService modelService = new NoIndexingModelService();
 		try ( SessionFactory sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() ) ) {
-			new DomainDataInitializer( sessionFactory, RelationshipSize.LARGE ).initAllCompanyData( 0 );
+			new DomainDataInitializer( modelService, sessionFactory, RelationshipSize.LARGE ).initAllCompanyData( 0 );
 
 			try ( Session session = sessionFactory.openSession() ) {
 				EmployeeRepository repository = new EmployeeRepository( session );

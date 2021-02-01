@@ -50,7 +50,7 @@ public abstract class SearchingPerformanceTest {
 
 	@Setup(Level.Trial)
 	public void setup() throws Exception {
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( sessionFactory, relationshipSize );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, relationshipSize );
 		for ( int i = 0; i < initialCompanyCount; i++ ) {
 			domainDataInitializer.initAllCompanyData( i );
 		}
