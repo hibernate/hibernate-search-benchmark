@@ -35,9 +35,7 @@ pipeline {
         stage('Performance test') {
             steps {
                 unstash name: 'jar'
-                dir ('jenkins') {
-                    sh 'sh ./docker-prune.sh'
-                }
+                sh 'jenkins/docker-prune.sh'
                 sh 'docker run --rm=true --name postgresql-search6-lucene -p 5431:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=database -d postgres:10.5'
                 sleep(time:10,unit:"SECONDS") // wait for postgres to be ready
                 sh 'mkdir -p output'
@@ -53,9 +51,7 @@ pipeline {
     }
     post {
         always {
-            dir ('jenkins') {
-                sh 'sh ./docker-prune.sh'
-            }
+            sh 'jenkins/docker-prune.sh'
         }
     }
 }
