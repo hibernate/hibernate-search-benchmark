@@ -20,10 +20,16 @@ pipeline {
                     stage('Build and test') {
                         steps {
                             checkout scm
+                            sh 'jenkins/docker-prune.sh'
                             sh """ \
                                 mvn clean install -U -P ${HSEARCH_VERSION_PROFILE}
                             """
                         }
+                    }
+                }
+                post {
+                    always {
+                        sh 'jenkins/docker-prune.sh'
                     }
                 }
             }
