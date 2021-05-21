@@ -16,6 +16,7 @@ import org.hibernate.search.benchmark.model.entity.question.Question;
 import org.hibernate.search.benchmark.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.cfg.EntityMapping;
 import org.hibernate.search.cfg.IndexedMapping;
 import org.hibernate.search.cfg.PropertyMapping;
 import org.hibernate.search.cfg.SearchMapping;
@@ -86,7 +87,7 @@ public final class SearchProgrammaticMapping {
 		questions.containedIn();
 
 		// Question
-		IndexedMapping question = mapping.entity( Question.class ).indexed();
+		EntityMapping question = mapping.entity( Question.class );
 		question.property( "text", ElementType.FIELD ).field();
 
 		PropertyMapping questionnaire = question.property( "questionnaire", ElementType.FIELD );
