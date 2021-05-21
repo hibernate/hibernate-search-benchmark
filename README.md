@@ -6,6 +6,13 @@ How to run the performance tests.
 
 See `run.sh`. Run `./run.sh` for usage.
 
+For example:
+
+```bash
+./run.sh -b /tmp/search-bench/bin -t /tmp/search-bench/out -- '.*AutomaticIndexing.*\.performanceSummaries' -wi 1 -i 1 -r 60s -p initialCompanyCount=10 -v silent
+```
+
+
 ## Lucene
 
 ### Search 6

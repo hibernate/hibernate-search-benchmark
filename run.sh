@@ -36,7 +36,7 @@ for DIR in "$BIN" "$TARGET"
 do
 	if ! [ -e "$DIR" ]
 	then
-		mkdir "$DIR"
+		mkdir -p "$DIR"
 	fi
 done
 
