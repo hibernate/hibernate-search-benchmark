@@ -40,3 +40,6 @@ nbactions.xml
 .clover
 .DS_Store
 .attach_pid*
+
+# Benchmark output
+*.csv
