@@ -18,7 +18,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 @State(Scope.Benchmark)
-public abstract class MassIndexingPerformanceTest {
+public abstract class MassIndexingBenchmark {
 
 	@Param({ "SMALL" })
 	private RelationshipSize relationshipSize;
@@ -29,7 +29,7 @@ public abstract class MassIndexingPerformanceTest {
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 
-	public MassIndexingPerformanceTest() {
+	public MassIndexingBenchmark() {
 		modelService = ModelServiceFactory.create();
 		sessionFactory = HibernateORMHelper.buildSessionFactory( manualProperties( modelService ) );
 	}

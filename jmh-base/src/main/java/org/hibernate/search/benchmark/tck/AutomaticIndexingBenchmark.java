@@ -15,7 +15,7 @@ import org.openjdk.jmh.annotations.Threads;
 
 @Fork(1)
 @State(Scope.Thread)
-public abstract class AutomaticIndexingPerformanceTest {
+public abstract class AutomaticIndexingBenchmark {
 
 	private AutomaticIndexingState indexingState;
 	private int threadIndex;

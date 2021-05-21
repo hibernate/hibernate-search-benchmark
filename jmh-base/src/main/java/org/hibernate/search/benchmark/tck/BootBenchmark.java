@@ -23,11 +23,11 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.SingleShotTime)
-public abstract class BootPerformanceTest {
+public abstract class BootBenchmark {
 
 	private final Properties properties;
 
-	public BootPerformanceTest() {
+	public BootBenchmark() {
 		properties = autoProperties( ModelServiceFactory.create() );
 	}
 
