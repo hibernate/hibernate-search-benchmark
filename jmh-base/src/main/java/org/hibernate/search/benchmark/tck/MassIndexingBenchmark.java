@@ -11,19 +11,23 @@ import org.hibernate.search.benchmark.model.application.ModelServiceFactory;
 import org.hibernate.search.benchmark.model.param.RelationshipSize;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Warmup;
 
 @State(Scope.Benchmark)
+@Warmup(iterations = 1)
+@Measurement(iterations = 5)
 public abstract class MassIndexingBenchmark {
 
 	@Param({ "MEDIUM" })
 	private RelationshipSize relationshipSize;
 
-	@Param({ "100" })
+	@Param({ "20" })
 	private int initialCompanyCount;
 
 	private final ModelService modelService;

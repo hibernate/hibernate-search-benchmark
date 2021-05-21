@@ -20,7 +20,7 @@ public abstract class AutomaticIndexingStateHolder {
 	@Param({ "MEDIUM" })
 	private RelationshipSize relationshipSize;
 
-	@Param({ "100" })
+	@Param({ "20" })
 	private int initialCompanyCount;
 
 	private AutomaticIndexingState automaticIndexingState;
