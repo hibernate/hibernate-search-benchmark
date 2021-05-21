@@ -10,6 +10,7 @@ public final class ModelServiceFactory {
 	private ModelServiceFactory() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public static ModelService create() {
 		Class<? extends ModelService> implementation;
 		try {

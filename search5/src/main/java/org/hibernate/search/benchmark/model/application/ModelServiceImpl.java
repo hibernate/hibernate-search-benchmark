@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Query;
 
+@SuppressWarnings("unchecked")
 public class ModelServiceImpl implements ModelService {
 
 	private static final Logger logger = LogManager.getLogger(ModelService.class);
