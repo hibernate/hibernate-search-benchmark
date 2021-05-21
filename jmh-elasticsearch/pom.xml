@@ -145,11 +145,6 @@
                     <artifactId>hibernate-search-backend-elasticsearch</artifactId>
                     <version>${version.hibernate.search6}</version>
                 </dependency>
-                <dependency>
-                    <groupId>org.hibernate.search</groupId>
-                    <artifactId>hibernate-search-backend-elasticsearch-aws</artifactId>
-                    <version>${version.hibernate.search6}</version>
-                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -170,11 +165,6 @@
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-search-elasticsearch</artifactId>
-                    <version>${version.hibernate.search5}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-search-elasticsearch-aws</artifactId>
                     <version>${version.hibernate.search5}</version>
                 </dependency>
             </dependencies>
