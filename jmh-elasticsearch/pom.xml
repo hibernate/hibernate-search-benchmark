@@ -12,14 +12,7 @@
     <artifactId>hibernate-search-benchmark-jmh-elasticsearch</artifactId>
 
     <properties>
-        <version.elasticsearch.search6>7.10.0</version.elasticsearch.search6>
-        <version.elasticsearch.search5>5.6.16</version.elasticsearch.search5>
-        <version.elasticsearch.plugin>6.19</version.elasticsearch.plugin>
-
-        <elasticsearch.plugin.config.search6>7.10</elasticsearch.plugin.config.search6>
-        <elasticsearch.plugin.config.search5>5.6</elasticsearch.plugin.config.search5>
-
-        <test.elasticsearch.run.skip>false</test.elasticsearch.run.skip>
+        <container.elasticsearch.skip>false</container.elasticsearch.skip>
     </properties>
 
     <dependencies>
@@ -118,32 +111,6 @@
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>com.github.alexcojocaru</groupId>
-                <artifactId>elasticsearch-maven-plugin</artifactId>
-                <version>${version.elasticsearch.plugin}</version>
-                <configuration>
-                    <skip>${test.elasticsearch.run.skip}</skip>
-                    <timeout>90</timeout>
-                    <autoCreateIndex>false</autoCreateIndex>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start-elasticsearch</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>runforked</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-elasticsearch</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -171,22 +138,6 @@
                     <version>${version.hibernate.search6}</version>
                 </dependency>
             </dependencies>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>com.github.alexcojocaru</groupId>
-                            <artifactId>elasticsearch-maven-plugin</artifactId>
-                            <version>${version.elasticsearch.plugin}</version>
-                            <configuration>
-                                <version>${version.elasticsearch.search6}</version>
-                                <pathConf>${project.basedir}/src/main/elasticsearch-maven-plugin/${elasticsearch.plugin.config.search6}/configuration/</pathConf>
-                                <pathInitScript>${project.basedir}/src/main/elasticsearch-maven-plugin/${elasticsearch.plugin.config.search6}/init/init.json</pathInitScript>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
         <profile>
             <id>search5</id>
@@ -208,22 +159,6 @@
                     <version>${version.hibernate.search5}</version>
                 </dependency>
             </dependencies>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>com.github.alexcojocaru</groupId>
-                            <artifactId>elasticsearch-maven-plugin</artifactId>
-                            <version>${version.elasticsearch.plugin}</version>
-                            <configuration>
-                                <version>${version.elasticsearch.search5}</version>
-                                <pathConf>${project.basedir}/src/main/elasticsearch-maven-plugin/${elasticsearch.plugin.config.search5}/configuration/</pathConf>
-                                <pathInitScript>${project.basedir}/src/main/elasticsearch-maven-plugin/${elasticsearch.plugin.config.search5}/init/init.script</pathInitScript>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
     </profiles>
 </project>
