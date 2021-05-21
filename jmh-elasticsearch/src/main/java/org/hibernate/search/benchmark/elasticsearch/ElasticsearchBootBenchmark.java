@@ -5,9 +5,9 @@ import java.util.Properties;
 import org.hibernate.search.benchmark.model.application.BackendType;
 import org.hibernate.search.benchmark.model.application.IndexingType;
 import org.hibernate.search.benchmark.model.application.ModelService;
-import org.hibernate.search.benchmark.tck.BootPerformanceTest;
+import org.hibernate.search.benchmark.tck.BootBenchmark;
 
-public class ElasticsearchBootPerformanceTest extends BootPerformanceTest {
+public class ElasticsearchBootBenchmark extends BootBenchmark {
 
 	@Override
 	protected Properties autoProperties(ModelService modelService) {

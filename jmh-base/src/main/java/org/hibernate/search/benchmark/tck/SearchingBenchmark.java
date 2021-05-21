@@ -32,7 +32,7 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Benchmark)
-public abstract class SearchingPerformanceTest {
+public abstract class SearchingBenchmark {
 
 	@Param({ "SMALL" })
 	private RelationshipSize relationshipSize;
@@ -43,7 +43,7 @@ public abstract class SearchingPerformanceTest {
 	private final ModelService modelService;
 	private final SessionFactory sessionFactory;
 
-	public SearchingPerformanceTest() {
+	public SearchingBenchmark() {
 		modelService = ModelServiceFactory.create();
 		sessionFactory = HibernateORMHelper.buildSessionFactory( manualProperties( modelService ) );
 	}
