@@ -46,6 +46,9 @@
         <container.elasticsearch.image.version.search5>5.6.16</container.elasticsearch.image.version.search5>
 
         <jmh.uberjar.name>benchmarks</jmh.uberjar.name>
+
+        <!-- Testing Hibernate Search 6 by default -->
+        <hsearch.version>6</hsearch.version>
     </properties>
 
     <dependencyManagement>
@@ -183,10 +186,37 @@
     </build>
 
     <profiles>
+        <!-- The profiles `skippingAllTests` and `skippingIntegrationTests` are currently duplicates,
+            as one can't trigger the profile activation on either/or property -->
+        <profile>
+            <id>skippingAllTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                </property>
+            </activation>
+            <properties>
+                <docker.skip>true</docker.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>skippingIntegrationTests</id>
+            <activation>
+                <property>
+                    <name>skipITs</name>
+                </property>
+            </activation>
+            <properties>
+                <docker.skip>true</docker.skip>
+            </properties>
+        </profile>
         <profile>
             <id>search6</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>hsearch.version</name>
+                    <value>6</value>
+                </property>
             </activation>
             <properties>
                 <container.elasticsearch.image.version>${container.elasticsearch.image.version.search6}</container.elasticsearch.image.version>
@@ -194,6 +224,12 @@
         </profile>
         <profile>
             <id>search5</id>
+            <activation>
+                <property>
+                    <name>hsearch.version</name>
+                    <value>5</value>
+                </property>
+            </activation>
             <properties>
                 <container.elasticsearch.image.version>${container.elasticsearch.image.version.search5}</container.elasticsearch.image.version>
             </properties>
