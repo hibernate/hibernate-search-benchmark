@@ -37,7 +37,13 @@
         <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
         <version.docker.maven.plugin>0.35.0</version.docker.maven.plugin>
 
-        <postgres.image>postgres:13.3</postgres.image>
+        <container.postgres.skip>false</container.postgres.skip>
+        <container.postgres.image>postgres:13.3</container.postgres.image>
+        <container.elasticsearch.skip>true</container.elasticsearch.skip>
+        <container.elasticsearch.image>docker.elastic.co/elasticsearch/elasticsearch:${container.elasticsearch.image.version}</container.elasticsearch.image>
+        <container.elasticsearch.image.version></container.elasticsearch.image.version>
+        <container.elasticsearch.image.version.search6>7.10.2</container.elasticsearch.image.version.search6>
+        <container.elasticsearch.image.version.search5>5.6.16</container.elasticsearch.image.version.search5>
 
         <jmh.uberjar.name>benchmarks</jmh.uberjar.name>
     </properties>
@@ -84,14 +90,20 @@
                     <configuration>
                         <images>
                             <image>
-                                <name>${postgres.image}</name>
+                                <name>${container.postgres.image}</name>
                                 <alias>postgresql</alias>
                                 <run>
+                                    <skip>${container.postgres.skip}</skip>
                                     <env>
                                         <POSTGRES_USER>username</POSTGRES_USER>
                                         <POSTGRES_PASSWORD>password</POSTGRES_PASSWORD>
                                         <POSTGRES_DB>database</POSTGRES_DB>
                                     </env>
+                                    <log>
+                                        <prefix>postgres: </prefix>
+                                        <date>default</date>
+                                        <color>red</color>
+                                    </log>
                                     <ports>
                                         <port>5431:5432</port>
                                     </ports>
@@ -103,6 +115,43 @@
                                             </ports>
                                         </tcp>
                                         <time>10000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                            <image>
+                                <name>${container.elasticsearch.image}</name>
+                                <alias>elasticsearch</alias>
+                                <run>
+                                    <skip>${container.elasticsearch.skip}</skip>
+                                    <env>
+                                        <logger.level>WARN</logger.level>
+                                        <discovery.type>single-node</discovery.type>
+                                        <!-- Prevent swapping
+                                             This may trigger warnings upon boot if the system is not correctly set up.
+                                             See https://www.elastic.co/guide/en/elasticsearch/reference/7.5/setup-configuration-memory.html#bootstrap-memory_lock
+                                         -->
+                                        <bootstrap.memory_lock>true</bootstrap.memory_lock>
+                                        <!-- fix Docker images for older versions -->
+                                        <!-- Older images require HTTP authentication for all requests;
+                                             it's not practical for testing, so we disable that.
+                                         -->
+                                        <xpack.security.enabled>false</xpack.security.enabled>
+                                    </env>
+                                    <ports>
+                                        <port>9200:9200</port>
+                                    </ports>
+                                    <log>
+                                        <prefix>Elasticsearch: </prefix>
+                                        <date>default</date>
+                                        <color>cyan</color>
+                                    </log>
+                                    <wait>
+                                        <http>
+                                            <url>http://localhost:9200</url>
+                                            <method>GET</method>
+                                            <status>200</status>
+                                        </http>
+                                        <time>20000</time>
                                     </wait>
                                 </run>
                             </image>
@@ -132,4 +181,22 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>search6</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <container.elasticsearch.image.version>${container.elasticsearch.image.version.search6}</container.elasticsearch.image.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>search5</id>
+            <properties>
+                <container.elasticsearch.image.version>${container.elasticsearch.image.version.search5}</container.elasticsearch.image.version>
+            </properties>
+        </profile>
+    </profiles>
 </project>

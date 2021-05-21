@@ -25,7 +25,7 @@ pipeline {
                 sh """ \
                     mvn clean install -P search5 \
                     -U -pl jmh-elasticsearch -am \
-                    -DskipTests -Ddocker.skip -Dtest.elasticsearch.run.skip=true \
+                    -DskipTests -Ddocker.skip \
                 """
                 dir ('jmh-elasticsearch/target') {
                     stash name:'jar', includes:'benchmarks.jar'
