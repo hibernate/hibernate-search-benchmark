@@ -6,15 +6,15 @@
 
     <parent>
         <groupId>org.hibernate.performance</groupId>
-        <artifactId>hibernate-search-performance</artifactId>
+        <artifactId>hibernate-search-benchmark</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>hibernate-search-performance-jmh-lucene</artifactId>
+    <artifactId>hibernate-search-benchmark-jmh-lucene</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.hibernate.performance</groupId>
-            <artifactId>hibernate-search-performance-jmh-tck</artifactId>
+            <artifactId>hibernate-search-benchmark-jmh-tck</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -119,7 +119,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.hibernate.performance</groupId>
-                    <artifactId>hibernate-search-performance-search6</artifactId>
+                    <artifactId>hibernate-search-benchmark-search6</artifactId>
                     <version>${project.version}</version>
                     <scope>runtime</scope>
                 </dependency>
@@ -135,7 +135,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.hibernate.performance</groupId>
-                    <artifactId>hibernate-search-performance-search5</artifactId>
+                    <artifactId>hibernate-search-benchmark-search5</artifactId>
                     <version>${project.version}</version>
                     <scope>runtime</scope>
                 </dependency>
