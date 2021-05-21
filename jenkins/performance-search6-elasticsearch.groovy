@@ -23,9 +23,9 @@ pipeline {
         stage('Build') {
             steps {
                 sh """ \
-					mvn clean install \
+					mvn clean install -Dhsearch.version=6 \
 					-U -pl jmh-elasticsearch -am \
-					-DskipTests -Ddocker.skip \
+					-DskipTests \
 			    """
                 dir ('jmh-elasticsearch/target') {
                     stash name:'jar', includes:'benchmarks.jar'

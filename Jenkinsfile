@@ -12,8 +12,8 @@ pipeline {
                 }
                 axes {
                     axis {
-                        name 'HSEARCH_VERSION_PROFILE'
-                        values 'search5', 'search6'
+                        name 'HSEARCH_VERSION'
+                        values '5', '6'
                     }
                 }
                 stages {
@@ -22,7 +22,7 @@ pipeline {
                             checkout scm
                             sh 'jenkins/docker-prune.sh'
                             sh """ \
-                                mvn clean install -U -P ${HSEARCH_VERSION_PROFILE}
+                                mvn clean install -U -Dhsearch.version=${HSEARCH_VERSION}
                             """
                         }
                     }

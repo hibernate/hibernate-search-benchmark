@@ -23,9 +23,9 @@ pipeline {
         stage('Build') {
             steps {
                 sh """ \
-					mvn clean install \
+					mvn clean install -Dhsearch.version=6 \
 					-U -pl jmh-lucene -am \
-					-DskipTests -Ddocker.skip \
+					-DskipTests \
 			    """
                 dir('jmh-lucene/target') {
                     stash name: 'jar', includes: 'benchmarks.jar'
