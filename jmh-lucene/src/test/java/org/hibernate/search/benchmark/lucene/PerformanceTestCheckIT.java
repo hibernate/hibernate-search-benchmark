@@ -18,6 +18,8 @@ public class PerformanceTestCheckIT {
 	public void test() throws Exception {
 		Options opts = new OptionsBuilder()
 				.include( ".*" )
+				.param( "relationshipSize", "SMALL" )
+				.param( "initialCompanyCount", "8" )
 				.warmupIterations( 0 )
 				.measurementIterations( 1 )
 				.shouldFailOnError( true )
