@@ -23,13 +23,6 @@
             <artifactId>hibernate-search-mapper-orm</artifactId>
             <version>${version.hibernate.search6}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${version.junit.jupiter}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
