@@ -9,7 +9,7 @@
         <artifactId>hibernate-search-benchmark</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>hibernate-search-benchmark-jmh-tck</artifactId>
+    <artifactId>hibernate-search-benchmark-jmh-base</artifactId>
 
     <dependencies>
         <dependency>
