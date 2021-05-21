@@ -42,7 +42,6 @@ pipeline {
                 sh """ \
 					java \
 					-jar benchmarks.jar \
-					-wi 1 -i 10 \
 					-rff output/benchmark-results-search5-lucene.csv \
 			    """
                 archiveArtifacts artifacts: 'output/**'
