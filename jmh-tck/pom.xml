@@ -6,15 +6,15 @@
 
     <parent>
         <groupId>org.hibernate.performance</groupId>
-        <artifactId>hibernate-search-performance</artifactId>
+        <artifactId>hibernate-search-benchmark</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>hibernate-search-performance-jmh-tck</artifactId>
+    <artifactId>hibernate-search-benchmark-jmh-tck</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.hibernate.performance</groupId>
-            <artifactId>hibernate-search-performance-model</artifactId>
+            <artifactId>hibernate-search-benchmark-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 

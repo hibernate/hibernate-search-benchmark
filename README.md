@@ -1,4 +1,4 @@
-# hibernate-search-performance
+# hibernate-search-benchmark
 
 How to run the performance tests.
 
