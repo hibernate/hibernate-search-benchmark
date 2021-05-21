@@ -17,7 +17,7 @@ import org.openjdk.jmh.infra.ThreadParams;
 @State(Scope.Benchmark)
 public abstract class AutomaticIndexingStateHolder {
 
-	@Param({ "SMALL" })
+	@Param({ "MEDIUM" })
 	private RelationshipSize relationshipSize;
 
 	@Param({ "100" })

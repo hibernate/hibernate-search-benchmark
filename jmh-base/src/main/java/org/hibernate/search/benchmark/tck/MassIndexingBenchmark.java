@@ -20,7 +20,7 @@ import org.openjdk.jmh.annotations.TearDown;
 @State(Scope.Benchmark)
 public abstract class MassIndexingBenchmark {
 
-	@Param({ "SMALL" })
+	@Param({ "MEDIUM" })
 	private RelationshipSize relationshipSize;
 
 	@Param({ "100" })

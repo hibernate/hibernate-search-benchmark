@@ -34,7 +34,7 @@ import org.openjdk.jmh.infra.Blackhole;
 @State(Scope.Benchmark)
 public abstract class SearchingBenchmark {
 
-	@Param({ "SMALL" })
+	@Param({ "MEDIUM" })
 	private RelationshipSize relationshipSize;
 
 	@Param({ "100" })
