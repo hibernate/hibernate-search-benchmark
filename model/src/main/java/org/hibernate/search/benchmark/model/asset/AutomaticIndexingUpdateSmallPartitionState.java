@@ -14,7 +14,7 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 		int index = ( employeeManagerInvocation / 2 ) % partitionIds.size();
 
 		int managerId = partitionId( employeeManagerInvocation );
-		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
+		int employeeId = partitionId( index + 1 );
 
 		domainDataUpdater.inTransaction( ( (session, up) -> up
 				.assignNewManager( session, employeeId, managerId ) ) );
@@ -29,7 +29,7 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 		int index = ( employeeNameInvocation / 2 ) % partitionIds.size();
 
 		int managerId = partitionId( employeeNameInvocation );
-		int employeeId = ( index == partitionIds.size() - 1 ) ? partitionIds.get( 0 ) : partitionIds.get( index + 1 );
+		int employeeId = partitionId( index + 1 );
 
 		domainDataUpdater.inTransaction( (session, up) -> {
 			up.changeEmployeeName( session, managerId, employeeNameInvocation );
