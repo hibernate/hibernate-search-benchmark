@@ -42,12 +42,12 @@ public class RelationshipSizeIT {
 
 	@Test
 	public void medium_x1() {
-		test( RelationshipSize.MEDIUM, 48, 1 );
+		test( RelationshipSize.MEDIUM, 120, 1 );
 	}
 
 	@Test
 	public void medium_x30() {
-		test( RelationshipSize.MEDIUM, 48, 30 );
+		test( RelationshipSize.MEDIUM, 120, 30 );
 	}
 
 	@Test

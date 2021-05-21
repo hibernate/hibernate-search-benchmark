@@ -48,18 +48,18 @@ public class DomainDataDeleteInserterIT {
 	public void employees() {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
 			delIns.createEmployee( session, 0, 999997 );
 			delIns.createEmployee( session, 0, 999998 );
-			delIns.createEmployee( session, 3, 999999 );
+			delIns.createEmployee( session, 5, 999999 );
 		} );
 
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 9 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 13 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
@@ -70,7 +70,7 @@ public class DomainDataDeleteInserterIT {
 
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
 		}
 	}
 
@@ -79,7 +79,7 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 4 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 6 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 4 );
 		}
 
@@ -92,7 +92,7 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 5 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 15 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 10 );
 		}
 
@@ -105,7 +105,7 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 4 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 6 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 4 );
 		}
 	}
@@ -115,12 +115,12 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 4 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 6 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 4 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 48 );
-			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 96 );
-			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 96 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 120 );
+			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 360 );
+			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 240 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
@@ -131,12 +131,12 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 4 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 6 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 4 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 28 );
-			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 56 );
-			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 56 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 96 );
+			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 288 );
+			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 192 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
@@ -147,12 +147,12 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 4 );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( 6 );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( 4 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 48 );
-			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 96 );
-			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 96 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 120 );
+			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( 360 );
+			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( 240 );
 		}
 	}
 
@@ -161,9 +161,9 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 48 );
-			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 12 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 120 );
+			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 20 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
@@ -174,9 +174,9 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 48 );
-			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 8 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 120 );
+			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 16 );
 		}
 
 		deleteInserter.inTransaction( (session, delIns) -> {
@@ -187,9 +187,9 @@ public class DomainDataDeleteInserterIT {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
 			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( 2 );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( 6 );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 48 );
-			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 12 );
+			assertThat( repository.count( Employee.class ) ).isEqualTo( 10 );
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( 120 );
+			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( 20 );
 		}
 	}
 }

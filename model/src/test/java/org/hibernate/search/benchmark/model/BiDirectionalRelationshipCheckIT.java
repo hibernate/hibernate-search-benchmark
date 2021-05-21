@@ -38,8 +38,8 @@ public class BiDirectionalRelationshipCheckIT {
 
 				// verify that employee#questionnaires is filled
 				assertThat( employee.getQuestionnaires() ).hasSize(
-						// 4 is the scale size for MEDIUM relationship size
-						4 * RelationshipSize.MEDIUM.getQuestionnaireDefinitionsForCompany() );
+						// 6 is the number of questions per questionnaire for MEDIUM relationship size
+						6 * RelationshipSize.MEDIUM.getQuestionnaireDefinitionsForCompany() );
 			}
 		}
 	}
