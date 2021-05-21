@@ -25,7 +25,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hibernate.search.benchmark</groupId>
-            <artifactId>hibernate-search-benchmark-jmh-tck</artifactId>
+            <artifactId>hibernate-search-benchmark-jmh-base</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
