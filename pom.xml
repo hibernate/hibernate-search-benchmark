@@ -23,21 +23,21 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
 
-        <version.hibernate.orm>5.4.24.Final</version.hibernate.orm>
-        <version.hibernate.search6>6.0.0.Final</version.hibernate.search6>
-        <version.hibernate.search5>5.11.7.Final</version.hibernate.search5>
-        <version.postgresql.client>42.2.2</version.postgresql.client>
-        <version.jmh>1.26</version.jmh>
-        <version.log4j>2.13.3</version.log4j>
-        <version.junit.jupiter>5.7.0</version.junit.jupiter>
-        <version.assertj>3.18.1</version.assertj>
+        <version.hibernate.orm>5.4.31.Final</version.hibernate.orm>
+        <version.hibernate.search6>6.0.3.Final</version.hibernate.search6>
+        <version.hibernate.search5>5.11.9.Final</version.hibernate.search5>
+        <version.postgresql.client>42.2.20</version.postgresql.client>
+        <version.jmh>1.31</version.jmh>
+        <version.log4j>2.14.1</version.log4j>
+        <version.junit.jupiter>5.7.2</version.junit.jupiter>
+        <version.assertj>3.19.0</version.assertj>
 
         <version.processor.plugin>4.4</version.processor.plugin>
         <version.shade.plugin>3.2.4</version.shade.plugin>
         <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
         <version.docker.maven.plugin>0.31.0</version.docker.maven.plugin>
 
-        <postgres.image>postgres:10.5</postgres.image>
+        <postgres.image>postgres:13.3</postgres.image>
 
         <jmh.uberjar.name>benchmarks</jmh.uberjar.name>
     </properties>
@@ -107,7 +107,7 @@
                                 </run>
                             </image>
                         </images>
-                        <!--Stops all postgres:10.5 images currently running, not just those we just started.
+                        <!--Stops all postgres images currently running, not just those we just started.
                           Useful to stop processes still running from a previously failed integration test run -->
                         <allContainers>true</allContainers>
                     </configuration>
