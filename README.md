@@ -2,6 +2,10 @@
 
 How to run the performance tests.
 
+## All backends and Search versions
+
+See `run.sh`. Run `./run.sh` for usage.
+
 ## Lucene
 
 ### Search 6
