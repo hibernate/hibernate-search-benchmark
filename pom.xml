@@ -32,10 +32,10 @@
         <version.junit.jupiter>5.7.2</version.junit.jupiter>
         <version.assertj>3.19.0</version.assertj>
 
-        <version.processor.plugin>4.4</version.processor.plugin>
+        <version.processor.plugin>4.5</version.processor.plugin>
         <version.shade.plugin>3.2.4</version.shade.plugin>
         <version.failsafe.plugin>3.0.0-M5</version.failsafe.plugin>
-        <version.docker.maven.plugin>0.31.0</version.docker.maven.plugin>
+        <version.docker.maven.plugin>0.35.0</version.docker.maven.plugin>
 
         <postgres.image>postgres:13.3</postgres.image>
 
