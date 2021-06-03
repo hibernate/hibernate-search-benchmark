@@ -14,8 +14,14 @@ public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUp
 			int numberOfThreads, int threadNumber) {
 		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber );
 		this.relationshipSize = relationshipSize;
-		this.alternativeManagerBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 3 : 30;
-		this.employeeBaseId = ( RelationshipSize.MEDIUM.equals( relationshipSize ) ) ? 5 : 70;
+
+		alternativeManagerBaseId = relationshipSize.getEmployeesPerBusinessUnit();
+		int lastManagerBaseId = relationshipSize.getEmployeesPerCompany() -
+				relationshipSize.getEmployeesPerBusinessUnit();
+
+		// use the last manager if it is not already the alternative manager
+		this.employeeBaseId = ( alternativeManagerBaseId == lastManagerBaseId )
+				? lastManagerBaseId + 1 : lastManagerBaseId;
 	}
 
 	@Override
