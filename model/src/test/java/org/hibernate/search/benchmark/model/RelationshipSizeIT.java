@@ -32,32 +32,32 @@ public class RelationshipSizeIT {
 
 	@Test
 	public void small_x1() {
-		test( RelationshipSize.SMALL, 12, 1 );
+		test( RelationshipSize.SMALL, 1 );
 	}
 
 	@Test
 	public void small_x300() {
-		test( RelationshipSize.SMALL, 12, 300 );
+		test( RelationshipSize.SMALL, 300 );
 	}
 
 	@Test
 	public void medium_x1() {
-		test( RelationshipSize.MEDIUM, 120, 1 );
+		test( RelationshipSize.MEDIUM, 1 );
 	}
 
 	@Test
 	public void medium_x30() {
-		test( RelationshipSize.MEDIUM, 120, 30 );
+		test( RelationshipSize.MEDIUM, 30 );
 	}
 
 	@Test
 	public void large_x1() {
-		test( RelationshipSize.LARGE, 11880, 1 );
+		test( RelationshipSize.LARGE, 1 );
 	}
 
 	@Test
 	public void large_x3() {
-		test( RelationshipSize.LARGE, 11880, 3 );
+		test( RelationshipSize.LARGE, 3 );
 	}
 
 	@BeforeEach
@@ -72,7 +72,7 @@ public class RelationshipSizeIT {
 		}
 	}
 
-	private void test(RelationshipSize relationshipSize, int questionnaireInstancesForCompany, int scaleSize) {
+	private void test(RelationshipSize relationshipSize, int scaleSize) {
 		ModelService modelService = new NoIndexingModelService();
 		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, relationshipSize );
 		for ( int i = 0; i < scaleSize; i++ ) {
@@ -101,6 +101,8 @@ public class RelationshipSizeIT {
 			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( closedQuestions );
 			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( openQuestions );
 
+			int questionnaireInstancesForCompany =
+					InstancesNumberHelper.questionnaireInstancesForCompany( relationshipSize );
 			int questionnaireInstances = questionnaireInstancesForCompany * scaleSize;
 			int closedAnswers = closedQuestionsForQuestionnaire * questionnaireInstances;
 			int openAnswers = relationshipSize.getOpenQuestionsForQuestionnaire() * questionnaireInstances;

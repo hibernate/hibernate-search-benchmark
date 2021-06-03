@@ -76,8 +76,8 @@ public class TruncateAllIT {
 			assertThat( repository.count( Employee.class ) ).isEqualTo( employees );
 			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( employees );
 
-			// in case of RelationshipSize.SMALL
-			int questionnaireInstancesForCompany = 12;
+			int questionnaireInstancesForCompany = InstancesNumberHelper
+					.questionnaireInstancesForCompany( RELATIONSHIP_SIZE );
 			int questionnaireInstances = questionnaireInstancesForCompany * companies;
 
 			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( questionnaireInstances );
