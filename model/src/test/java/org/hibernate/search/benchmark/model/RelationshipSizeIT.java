@@ -55,11 +55,6 @@ public class RelationshipSizeIT {
 		test( RelationshipSize.LARGE, 1 );
 	}
 
-	@Test
-	public void large_x3() {
-		test( RelationshipSize.LARGE, 3 );
-	}
-
 	@BeforeEach
 	public void beforeEach() {
 		sessionFactory = HibernateORMHelper.buildSessionFactory( new Properties() );
