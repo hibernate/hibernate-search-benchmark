@@ -105,7 +105,7 @@ public class AutomaticIndexingState {
 	}
 
 	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int threadNumber) {
-		return new AutomaticIndexingUpdateSMLPartitionState(
+		return new AutomaticIndexingUpdatePartitionState(
 				sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, threadNumber
 		);
 	}
