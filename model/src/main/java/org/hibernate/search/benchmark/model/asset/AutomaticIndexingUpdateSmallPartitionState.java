@@ -11,9 +11,9 @@ public class AutomaticIndexingUpdateSmallPartitionState extends AutomaticIndexin
 
 	@Override
 	public void updateEmployeeManager() {
-		int index = ( employeeManagerInvocation / 2 ) % partitionIds.size();
+		int index = ( employeeManagerInvocation ) % partitionIds.size();
 
-		int managerId = partitionId( employeeManagerInvocation );
+		int managerId = partitionId( index );
 		int employeeId = partitionId( index + 1 );
 
 		domainDataUpdater.inTransaction( ( (session, up) -> up
