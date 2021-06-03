@@ -18,7 +18,6 @@ import org.hibernate.search.benchmark.model.entity.answer.QuestionnaireInstance;
 import org.hibernate.search.benchmark.model.entity.performance.PerformanceSummary;
 import org.hibernate.search.benchmark.model.entity.question.ClosedQuestion;
 import org.hibernate.search.benchmark.model.entity.question.OpenQuestion;
-import org.hibernate.search.benchmark.model.entity.question.Question;
 import org.hibernate.search.benchmark.model.entity.question.QuestionnaireDefinition;
 import org.hibernate.search.benchmark.model.param.RelationshipSize;
 import org.hibernate.search.benchmark.model.service.EmployeeRepository;
@@ -31,12 +30,15 @@ import org.junit.jupiter.api.TestInstance;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TruncateAllIT {
 
+	public static final RelationshipSize RELATIONSHIP_SIZE = RelationshipSize.SMALL;
 	private SessionFactory sessionFactory;
 
 	@Test
 	public void test() {
 		ModelService modelService = new NoIndexingModelService();
-		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory, RelationshipSize.SMALL );
+		DomainDataInitializer domainDataInitializer = new DomainDataInitializer( modelService, sessionFactory,
+				RELATIONSHIP_SIZE
+		);
 		DomainDataRemover domainDataRemover = new DomainDataRemover( sessionFactory );
 
 		domainDataInitializer.initAllCompanyData( 0 );
@@ -58,22 +60,29 @@ public class TruncateAllIT {
 		}
 	}
 
-	private void checkSize(int size) {
+	private void checkSize(int companies) {
 		try ( Session session = sessionFactory.openSession() ) {
 			EmployeeRepository repository = new EmployeeRepository( session );
+			assertThat( repository.count( Company.class ) ).isEqualTo( companies );
+			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( companies );
+			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( companies );
+			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( companies );
 
-			assertThat( repository.count( Company.class ) ).isEqualTo( size );
-			assertThat( repository.count( BusinessUnit.class ) ).isEqualTo( size );
-			assertThat( repository.count( Manager.class ) ).isEqualTo( size );
-			assertThat( repository.count( Employee.class ) ).isEqualTo( size );
-			assertThat( repository.count( QuestionnaireDefinition.class ) ).isEqualTo( size );
-			assertThat( repository.count( Question.class ) ).isEqualTo( 2 * size );
-			assertThat( repository.count( ClosedQuestion.class ) ).isEqualTo( size );
-			assertThat( repository.count( OpenQuestion.class ) ).isEqualTo( size );
-			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( size );
-			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( size );
-			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( size );
-			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( size );
+			int units = companies * RELATIONSHIP_SIZE.getUnitsPerCompany();
+			assertThat( repository.count( BusinessUnit.class ) ).isEqualTo( units );
+			assertThat( repository.count( Manager.class ) ).isEqualTo( units );
+
+			int employees = units * RELATIONSHIP_SIZE.getEmployeesPerBusinessUnit();
+			assertThat( repository.count( Employee.class ) ).isEqualTo( employees );
+			assertThat( repository.count( PerformanceSummary.class ) ).isEqualTo( employees );
+
+			// in case of RelationshipSize.SMALL
+			int questionnaireInstancesForCompany = 12;
+			int questionnaireInstances = questionnaireInstancesForCompany * companies;
+
+			assertThat( repository.count( QuestionnaireInstance.class ) ).isEqualTo( questionnaireInstances );
+			assertThat( repository.countFilledClosedAnswer() ).isEqualTo( questionnaireInstances );
+			assertThat( repository.countFilledOpenAnswer() ).isEqualTo( questionnaireInstances );
 		}
 	}
 }

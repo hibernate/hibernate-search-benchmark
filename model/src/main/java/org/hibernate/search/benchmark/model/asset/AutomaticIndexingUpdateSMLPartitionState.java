@@ -3,13 +3,13 @@ package org.hibernate.search.benchmark.model.asset;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.benchmark.model.param.RelationshipSize;
 
-public class AutomaticIndexingUpdateMLPartitionState extends AutomaticIndexingUpdatePartitionState {
+public class AutomaticIndexingUpdateSMLPartitionState extends AutomaticIndexingUpdatePartitionState {
 
 	private final RelationshipSize relationshipSize;
 	private final int alternativeManagerBaseId;
 	private final int employeeBaseId;
 
-	public AutomaticIndexingUpdateMLPartitionState(SessionFactory sessionFactory,
+	public AutomaticIndexingUpdateSMLPartitionState(SessionFactory sessionFactory,
 			RelationshipSize relationshipSize, int initialCompanyCount,
 			int numberOfThreads, int threadNumber) {
 		super( sessionFactory, initialCompanyCount, numberOfThreads, threadNumber );

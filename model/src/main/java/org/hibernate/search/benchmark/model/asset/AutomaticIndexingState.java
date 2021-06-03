@@ -105,9 +105,7 @@ public class AutomaticIndexingState {
 	}
 
 	private AutomaticIndexingUpdatePartitionState createUpdatePartition(int threadNumber) {
-		return ( RelationshipSize.SMALL.equals( relationshipSize ) ) ? new AutomaticIndexingUpdateSmallPartitionState(
-				sessionFactory, initialCompanyCount, numberOfThreads, threadNumber
-		) : new AutomaticIndexingUpdateMLPartitionState(
+		return new AutomaticIndexingUpdateSMLPartitionState(
 				sessionFactory, relationshipSize, initialCompanyCount, numberOfThreads, threadNumber
 		);
 	}

@@ -32,12 +32,12 @@ public class RelationshipSizeIT {
 
 	@Test
 	public void small_x1() {
-		test( RelationshipSize.SMALL, 1, 1 );
+		test( RelationshipSize.SMALL, 12, 1 );
 	}
 
 	@Test
 	public void small_x300() {
-		test( RelationshipSize.SMALL, 1, 300 );
+		test( RelationshipSize.SMALL, 12, 300 );
 	}
 
 	@Test
