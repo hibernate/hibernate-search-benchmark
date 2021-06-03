@@ -2,7 +2,7 @@ package org.hibernate.search.benchmark.model.param;
 
 public enum RelationshipSize {
 
-	SMALL( 1, 1, 1, new int[] { 3 }, 1 ),
+	SMALL( 2, 2, 1, new int[] { 3 }, 1 ),
 	MEDIUM( 2, 5, 2, new int[] { 7, 3, 9 }, 2 ),
 	LARGE( 10, 10, 10, new int[] { 7, 3, 9, 3, 3, 9, 7, 7, 7, 9 }, 10 );
 
