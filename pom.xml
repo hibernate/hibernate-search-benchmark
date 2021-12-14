@@ -27,7 +27,7 @@
         <version.hibernate.search5>5.11.9.Final</version.hibernate.search5>
         <version.postgresql.client>42.2.20</version.postgresql.client>
         <version.jmh>1.31</version.jmh>
-        <version.log4j>2.15.0</version.log4j>
+        <version.log4j>2.16.0</version.log4j>
         <version.junit.jupiter>5.7.2</version.junit.jupiter>
         <version.assertj>3.19.0</version.assertj>
 
